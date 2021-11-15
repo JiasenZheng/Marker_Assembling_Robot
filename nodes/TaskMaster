@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
+import smach
 import numpy as np
 import moveit_commander
 import geometry_msgs.msg
@@ -9,3 +10,120 @@ import geometry_msgs.msg
 from copy import deepcopy
 from match.match import match
 
+def Look_Procedure(item, data):
+    return data
+
+#This finite state machine for the time being is a test.
+#Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
+#The next state concerns a different marker.
+
+class lookProcedure(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['match', 'markerChanged', 'noMarkerChanged', 'capChanged', 'noCapChanged'])
+
+        def execute(self, userdata):
+            rospy.loginfo('Executing state LOOK_PROCEDURE')
+            if userdata.item == 2:
+                return 'match'
+            if userdata.item == 0:
+                if userdata.match:
+                    return 'nomarkerChanged'
+                else: 
+                    return 'markerChanged'
+            else:
+                if userdata.match:
+                    return 'capChanged'
+                else: 
+                    return 'noCapChanged'
+
+class NavigateToMarker(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['change?'])
+    
+    def execute(self, userdata):
+        rospy.loginfo('Executing State NAVIGATE_TO_MARKER')
+        userdata.item = 0
+        return 'change?'
+
+class Move_Marker(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['To_Input', 'To_Assymbly', 'ignore'])
+    
+    def execute(self, userdata):
+        rospy.loginfo('Executing state MOVE_MARKER')
+        if userdata.match:
+            userdata.at = 'assymbly'
+            return 'To_Assymbly'
+        else:
+            userdata.item = 0
+            if userdata.at == 'assymbly':
+                return 'To_Input'
+            else:
+                return 'ignore'
+
+
+class Navigate_To_Cap(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['change?'])
+
+    def execute(self, userdata):
+        rospy.loginfo('Executing State NAVIGATE_TO_CAP')
+        return 'change?'
+
+class Find_New_Match(smach.State):
+
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['success', 'failure'])
+
+    def execute(self, userdata):
+        rospy.loginfo('Executing State FIND_NEW_MATCH')
+        if userdata.match:
+            return 'success'
+        else:
+            return 'failure'
+
+class Assemble(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Done'])
+    
+    def execute(self, userdata):
+        rospy.loginfo('Executing State ASSEMBLE')
+        return 'Done'
+
+
+def main():
+    rospy.init_node('marker_assymbly_task_master')
+
+    #Create state machine
+    sm = smach.StateMachine(outcomes = ['Finished'])
+
+    #Open the container
+    with sm:
+        smach.StateMachine.add('LOOK_PROCEDURE', lookProcedure(), 
+                                transitions= {
+                                    'match':'NAVIGATE_TO_MARKER',
+                                    'markerChanged':'NAVIGATE_TO_MARKER',
+                                    'noMarkerChanged':'MOVE_MARKER',
+                                    'capChanged':'FIND_NEW_MATCH',
+                                    'noCapChanged':'ASSEMBLE'})
+
+        smach.StateMachine.add('NAVIGATE_TO_MARKER', NavigateToMarker(),
+                                transitions={'change?':'LOOK_PROCEDURE'})
+
+        smach.StateMachine.add('MOVE_MARKER', Move_Marker(),
+                                transitions={
+                                    'ignore':'LOOK_PROCEDURE',
+                                    'To_Assymbly':'NAVIGATE_TO_CAP',
+                                    'To_Input':'LOOK_PROCEDURE'})
+        
+        smach.StateMachine.add('NAVIGATE_TO_CAP', Navigate_To_Cap(),
+                                transitions={'change?':'LOOK_PROCEDURE'})
+        
+        smach.StateMachine.add('FIND_NEW_MATCH', Find_New_Match(),
+                                transitions={
+                                    'success':'ASSEMBLE', 
+                                    'failure':'MOVE_MARKER'})
+        
+        smach.StateMachine.add('ASSEMBLE', Assemble(), 
+                                transitions={'Done':'MOVE_MARKER'}
+        )
