@@ -9,22 +9,3 @@ import geometry_msgs.msg
 from copy import deepcopy
 from match.match import match
 
-eyes = 'eyes'
-rosdata = 'obj'
-
-class taskMaster:
-    def __init__(self):
-        #Set up the data structure
-        self.markers = []
-        self.caps = []
-        self.pairs = []
-        #Create match object
-        self.match = match()
-        #Subscribers and Publishers
-        self.eyes = rospy.Subscriber(eyes, rosdata, self.dataHandeler)
-        self.Command = rospy.Publisher("topic", type, queue_size=10)
-        self.Specify = rospy.Publisher("topic", type, queue_size=10)
-
-
-    def dataHandeler(self, data):
-        return
