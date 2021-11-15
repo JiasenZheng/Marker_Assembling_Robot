@@ -1,0 +1,22 @@
+<launch>
+
+<include file="$(find panda_moveit_config)/launch/demo.launch">
+
+
+</include>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</launch>
