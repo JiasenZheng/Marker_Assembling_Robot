@@ -179,6 +179,8 @@ include_directories(
 catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander
 #   scripts/my_python_script
 nodes/manipulation_cap
+nodes/plan_scene
+
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

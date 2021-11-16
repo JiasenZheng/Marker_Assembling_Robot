@@ -1,0 +1,10 @@
+<launch>
+
+<include file="$(find panda_moveit_config)/launch/demo.launch">
+    <arg name="load_gripper" default="true" />
+
+</include>
+
+<node name="scene" pkg="final-project-group-4-inc" type="plan_scene" />
+
+</launch>
