@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
 import rospy
-import moveit_msgs.msg
 import moveit_commander
 import geometry_msgs.msg
 from time import sleep
-import math
-from tf_conversions import transformations
+"""
+This node generates the planning scene with the table, and marker/pen hardware for the project.
 
+"""
 
 class Scene:
     def __init__(self):
         self.scene = moveit_commander.PlanningSceneInterface()
+        
         sleep(1)
 
         self.ground_pose = geometry_msgs.msg.PoseStamped()
@@ -27,29 +28,27 @@ class Scene:
         self.master_pose.pose.orientation.w=1
         self.master_pose.pose.position.x=0.5 
         self.master_pose.pose.position.y=-0.0       
-        self.master_pose.pose.position.z=+0.025   
+        self.master_pose.pose.position.z=+0.0635/2  
         self.master_name = "master"
-        self.scene.add_box(self.master_name,self.master_pose,size=(0.1,0.1,0.05))
-
-
+        self.scene.add_box(self.master_name,self.master_pose,size=(0.1778,0.2032,0.0635))
 
         self.pen_pose = geometry_msgs.msg.PoseStamped()
         self.pen_pose.header.frame_id = "world"
         self.pen_pose.pose.orientation.w=1
-        self.pen_pose.pose.position.x=0.35 
-        self.pen_pose.pose.position.y=-0.1       
-        self.pen_pose.pose.position.z=+0.025   
+        self.pen_pose.pose.position.x=0.5 
+        self.pen_pose.pose.position.y=-0.2032     
+        self.pen_pose.pose.position.z=+0.0635/2  
         self.pen_name = "pen"
-        self.scene.add_box(self.pen_name,self.pen_pose,size=(0.1,0.1,0.05))
+        self.scene.add_box(self.pen_name,self.pen_pose,size=(0.1778,0.2032,0.0635))
 
         self.marker_pose = geometry_msgs.msg.PoseStamped()
         self.marker_pose.header.frame_id = "world"
         self.marker_pose.pose.orientation.w=1
-        self.marker_pose.pose.position.x=0.35 
-        self.marker_pose.pose.position.y=0.1       
-        self.marker_pose.pose.position.z=+0.025   
+        self.marker_pose.pose.position.x=0.5 
+        self.marker_pose.pose.position.y=0.2032    
+        self.marker_pose.pose.position.z=+0.01/2   
         self.marker_name = "marker"
-        self.scene.add_box(self.marker_name,self.marker_pose,size=(0.1,0.1,0.05))
+        self.scene.add_box(self.marker_name,self.marker_pose,size=(0.1778,0.2032,0.01))
 
         pass
 
