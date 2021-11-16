@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(final-project-group-4-inc)
+# project(final-project-group-4-inc)
+project(group4)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -16,6 +17,7 @@ sensor_msgs
 moveit_msgs
 moveit_commander
 geometry_msgs
+franka_gripper
 )
 
 ## System dependencies are found with CMake's conventions
@@ -59,11 +61,18 @@ geometry_msgs
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  NamedMove.srv
+  JointsMove.srv
+  GripperOpen.srv
+  GripperClose.srv
+  PoseMove.srv
+  GetState.srv
+  GetPose.srv
+  GetStringList.srv
+  GetFloatList.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -78,6 +87,7 @@ generate_messages(
   std_msgs  # Or other packages containing msgs
   geometry_msgs
   moveit_msgs
+  franka_gripper
 )
 
 ################################################
@@ -112,7 +122,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES final-project-group-4-inc
- CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs
+ CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -168,6 +178,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander
 #   scripts/my_python_script
+nodes/manipulation_cap
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
