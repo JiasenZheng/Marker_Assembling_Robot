@@ -1,0 +1,22 @@
+# pickup_standoff: []
+# dropoff_standoff: []
+
+# position1: []
+# position2: []
+# position3: []
+# position4: []
+# position5: []
+# position6: []
+# position7: []
+# position8: []
+# position9: []
+
+pickup:
+  standoff0: [11, 8, 1, -125, 1, 135, 60]
+  standoff1: [22, 15, 3, -115, -1, 132, 116]
+  pick1: [12, 19, 1, -127, 1, 147, 56]
+
+dropoff:
+  standoff0: [-16, 22, -18, -107, 11, 128, 51]
+  standoff1: [-22, 30, -18, -96, 13, 124, 45]
+  place1: [-23, 37, -16, -97, 16, 133, 43]
