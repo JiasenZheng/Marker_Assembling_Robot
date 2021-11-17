@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 # from os import wait
+from os import wait
 import rospy
 import actionlib
 import sys
@@ -13,7 +14,7 @@ from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \
     StopAction, GraspActionGoal, MoveActionGoal, HomingActionGoal, \
         StopActionGoal, MoveGoal, StopGoal, GraspGoal, HomingGoal, GraspEpsilon
 from franka_msgs.msg import ErrorRecoveryActionGoal
-from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList
+from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, DeltaMove
 from numpy import pi
 import numpy as np
 
@@ -37,6 +38,7 @@ class ManipulationCapNode:
         self.pose_move_service= rospy.Service("pose_move", PoseMove, self.handle_pose_move)
         self.joints_move_service = rospy.Service("joints_move", JointsMove , self.handle_joints_move)
         self.named_move_service = rospy.Service("named_move", NamedMove, self.handle_named_move)
+        self.delta_move_service = rospy.Service("delta_move", DeltaMove, self.handle_delta_move)
         self.to_standoff_service = rospy.Service("to_standoff", E, self.handle_to_standoff)
 
         ## Setting up Services to actuate gripper
@@ -100,9 +102,20 @@ class ManipulationCapNode:
             return "Done"
         return "Invalid parameter name given"
 
+    def handle_delta_move(self, req):
+        # if len(req.val) != len(req.axes):
+        #     return "Inputs should be of matched lengths"
+        # for i in range(len(req.vals)):
+        #     rospy.loginfo("req.vals[i]")
+        #     rospy.loginfo(req.vals[i])
+        #     rospy.loginfo("req.axes[i]")
+        #     rospy.loginfo(req.axes[i])
+        self.arm.shift_pose_target(axis=int(req.axis), value=req.val)
+        self.arm.go(wait=True)
+        return "Done"
+
     def handle_gripper_open(self, req):
         goal = req.move_goal
-        # goal = MoveGoal(width=0.3, speed=0.5)
         self.gripper_move_client.send_goal(goal)
         self.gripper_move_client.wait_for_result()
         result = self.gripper_move_client.get_result()
@@ -110,7 +123,6 @@ class ManipulationCapNode:
 
     def handle_gripper_close(self, req):
         goal = req.grasp_goal
-        # goal = GraspGoal(width=0., speed=0.5 )
         self.gripper_grasp_client.send_goal(goal)
         self.gripper_grasp_client.wait_for_result()
         result = self.gripper_grasp_client.get_result()
@@ -159,6 +171,8 @@ class ManipulationCapNode:
         self.gripper_move_client.wait_for_result()
         result = self.gripper_move_client.get_result()
         return result.success, "Done"
+
+    
 
 if __name__ == "__main__":
     moveit_commander.roscpp_initialize(sys.argv)
