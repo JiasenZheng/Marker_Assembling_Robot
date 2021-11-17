@@ -1,0 +1,4 @@
+franka_gripper/MoveGoal move_goal
+---
+bool success
+string error

@@ -1,0 +1,181 @@
+#! /usr/bin/env python
+
+# from os import wait
+from os import wait
+import rospy
+import actionlib
+import sys
+import moveit_commander
+import moveit_msgs.msg 
+from geometry_msgs.msg import Pose
+from std_srvs.srv import Trigger, EmptyResponse, Empty as E
+from std_msgs.msg import Empty
+from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \
+    StopAction, GraspActionGoal, MoveActionGoal, HomingActionGoal, \
+        StopActionGoal, MoveGoal, StopGoal, GraspGoal, HomingGoal, GraspEpsilon
+from franka_msgs.msg import ErrorRecoveryActionGoal
+from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, DeltaMove
+from numpy import pi
+import numpy as np
+
+
+
+""""
+
+"""
+
+class ManipulationCapNode:
+    def __init__(self):
+
+        ## Setting up for moveit "arm" and "hand" control
+        self.robot = moveit_commander.RobotCommander()
+        self.arm_group_name = "panda_arm"
+        self.gripper_group_name = "hand"
+        self.arm = moveit_commander.MoveGroupCommander(self.arm_group_name)
+        self.gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name)
+        
+        ## Setting up Services to move the arm
+        self.pose_move_service= rospy.Service("pose_move", PoseMove, self.handle_pose_move)
+        self.joints_move_service = rospy.Service("joints_move", JointsMove , self.handle_joints_move)
+        self.named_move_service = rospy.Service("named_move", NamedMove, self.handle_named_move)
+        self.delta_move_service = rospy.Service("delta_move", DeltaMove, self.handle_delta_move)
+        self.to_standoff_service = rospy.Service("to_standoff", E, self.handle_to_standoff)
+
+        ## Setting up Services to actuate gripper
+        ## For grasp action dialog: rosrun actionlib_tools axclient.py /franka_gripper/grasp
+        ## For move action dialog: rosrun actionlib_tools axclient.py /franka_gripper/move
+
+        self.gripper_grasp_client = actionlib.SimpleActionClient("/franka_gripper/grasp", GraspAction)
+        self.gripper_move_client = actionlib.SimpleActionClient("/franka_gripper/move", MoveAction)
+        self.gripper_stop_client = actionlib.SimpleActionClient("/franka_gripper/stop", StopAction)
+        self.gripper_homing_client = actionlib.SimpleActionClient("/franka_gripper/homing", HomingAction)
+        self.gripper_grasp_client.wait_for_server()
+        self.gripper_move_client.wait_for_server()
+        self.gripper_stop_client.wait_for_server()
+        self.gripper_homing_client.wait_for_server()
+
+        self.close_service = rospy.Service("grip", GripperClose, self.handle_gripper_close)
+        self.open_service = rospy.Service("release", GripperOpen, self.handle_gripper_open)
+
+        ## Error Recovery
+        self.error_recovery_service = rospy.Service("error_recovery", E, self.handle_error_recovery)
+        
+        ## Querying the robot state
+        self.get_arm_pose = rospy.Service("get_arm_pose", GetPose, self.handle_get_arm_pose)
+        self.get_arm_joints = rospy.Service("get_arm_joints", GetFloatList, self.handle_get_arm_joints)
+        self.get_arm_rpy = rospy.Service("get_arm_rpy", GetFloatList, self.handle_get_arm_rpy)
+        self.get_current_gripper_state = rospy.Service("get_gripper_joints", GetFloatList, self.handle_get_gripper_joints)
+
+        ## gripping cap parameter
+        ## For grasp action dialog: rosrun actionlib_tools axclient.py /franka_gripper/grasp
+        ## For move action dialog: rosrun actionlib_tools axclient.py /franka_gripper/move
+        self.cap_grip = GraspGoal(width=0.01840, epsilon=GraspEpsilon(0.01, 0.02), speed=0.5, force=5)
+        self.cap_releaase = MoveGoal(width=0.03, speed=0.5)
+        self.grip_cap_service = rospy.Service("grip_cap", Trigger, self.grip_cap)
+        self.release_cap_service = rospy.Service("release_cap", Trigger, self.release_cap)
+
+    def handle_pose_move(self, req):
+        x = req.point.x
+        y = req.point.y
+        z = req.point.z
+        rot_x = req.orientation.x
+        rot_y = req.orientation.y
+        rot_z = req.orientation.z
+        pose = [x, y, z, rot_x, rot_y, rot_z]
+        self.arm.set_pose_target(pose)
+        self.arm.go(wait=True)
+        return "Done"
+
+    def handle_joints_move(self, req):
+        joint_angles = [i*pi/180  for i in req.joint_angles]
+        self.arm.set_joint_value_target(joint_angles)
+        self.arm.go(wait=True)
+        return "Done"
+
+    def handle_named_move(self, req):
+        target= rospy.get_param(req.target, None)
+        if target:
+            joint_angles = [i*pi/180  for i in target]
+            rospy.loginfo(joint_angles)
+            self.arm.set_joint_value_target(joint_angles)
+            self.arm.go(wait=True)
+            return "Done"
+        return "Invalid parameter name given"
+
+    def handle_delta_move(self, req):
+        # if len(req.val) != len(req.axes):
+        #     return "Inputs should be of matched lengths"
+        # for i in range(len(req.vals)):
+        #     rospy.loginfo("req.vals[i]")
+        #     rospy.loginfo(req.vals[i])
+        #     rospy.loginfo("req.axes[i]")
+        #     rospy.loginfo(req.axes[i])
+        self.arm.shift_pose_target(axis=int(req.axis), value=req.val)
+        self.arm.go(wait=True)
+        return "Done"
+
+    def handle_gripper_open(self, req):
+        goal = req.move_goal
+        self.gripper_move_client.send_goal(goal)
+        self.gripper_move_client.wait_for_result()
+        result = self.gripper_move_client.get_result()
+        return result.success, result.error
+
+    def handle_gripper_close(self, req):
+        goal = req.grasp_goal
+        self.gripper_grasp_client.send_goal(goal)
+        self.gripper_grasp_client.wait_for_result()
+        result = self.gripper_grasp_client.get_result()
+        return result.success, result.error
+
+    def handle_error_recovery(self, req):
+        goal = ErrorRecoveryActionGoal()
+        self.error_recovery_pub.publish(goal)
+        return EmptyResponse()
+
+    def handle_to_standoff(self, req):
+        rospy.loginfo("current joint vals:")
+        rospy.loginfo(self.arm.get_current_joint_values())
+        rospy.loginfo("standoff:")
+        rospy.loginfo([11/pi, 8/pi, 1/pi, -125/pi, 1/pi, 135/pi, 60/pi])
+        self.arm.set_joint_value_target([11*pi/180, 8*pi/180, 1*pi/180, -125*pi/180, 1*pi/180, 135*pi/180, 60*pi/180])
+        self.arm.go(wait=True)
+        return EmptyResponse()
+
+    def handle_get_arm_pose(self, req):
+        current_pose = self.arm.get_current_pose()
+        return current_pose
+
+    def handle_get_arm_joints(self, req):
+        current_joints = self.arm.get_current_joint_values()
+        rospy.loginfo(type(current_joints))
+        rospy.loginfo(current_joints)
+        return list(current_joints)
+
+    def handle_get_arm_rpy(self, req):
+        current_rpy = self.arm.get_current_rpy()
+        return list(current_rpy)
+
+    def handle_get_gripper_joints(self, req):
+        current_joints = self.gripper.get_current_joint_values()
+        return list(current_joints)
+
+    def grip_cap(self, req):
+        self.gripper_grasp_client.send_goal(self.cap_grip)
+        self.gripper_grasp_client.wait_for_result()
+        result = self.gripper_grasp_client.get_result()
+        return result.success, "Done"
+
+    def release_cap(self, req):
+        self.gripper_move_client.send_goal(self.cap_releaase)
+        self.gripper_move_client.wait_for_result()
+        result = self.gripper_move_client.get_result()
+        return result.success, "Done"
+
+    
+
+if __name__ == "__main__":
+    moveit_commander.roscpp_initialize(sys.argv)
+    rospy.init_node("man_cap", anonymous=True)
+    node = ManipulationCapNode()
+    rospy.spin()
