@@ -1,0 +1,8 @@
+<launch>
+    <arg name="example_controller" default="impedance_example_controller"/>
+    <include file="$(find franka_gazebo)/launch/panda.launch">
+        <arg name="controller" value="$(arg example_controller)"/>
+        <arg name="paused" value="true"/>
+    </include>
+
+</launch>

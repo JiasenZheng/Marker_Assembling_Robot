@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+import rospy
+import numpy as np
+import moveit_commander
+import geometry_msgs.msg
+
+# from std_msgs.msg import String
+from copy import deepcopy
+from match.match import match
+
+eyes = 'eyes'
+rosdata = 'obj'
+
+class taskCommander:
+    def __init__(self):
+        #Set up the data structure
+        self.markers = []
+        self.caps = []
+        self.pairs = []
+        #Create match object
+        self.match = match()
+        #Subscribers and Publishers
+        self.eyes = rospy.Subscriber(eyes, rosdata, self.dataHandeler)
+        self.Command = rospy.Publisher("Commander", type, queue_size=10)
+        self.Specify = rospy.Publisher("Specifier", type, queue_size=10)
+
+
+    def dataHandeler(self, data):
+        return
+

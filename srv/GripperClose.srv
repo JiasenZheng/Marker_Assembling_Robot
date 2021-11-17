@@ -1,0 +1,4 @@
+franka_gripper/GraspGoal grasp_goal
+---
+bool success
+string error
