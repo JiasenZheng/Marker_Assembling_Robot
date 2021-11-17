@@ -35,5 +35,7 @@ def detect_contour(file_name = "image.png"):
     subplot2.imshow(cv.cvtColor(img0, cv.COLOR_BGR2RGB))
     plt.show()
 
+    return cs
+
 if __name__ == "__main__":
-    detect_contour(file_name = "image.png")
+    cs = detect_contour(file_name = "image.png")
