@@ -68,10 +68,12 @@ add_service_files(
   GripperOpen.srv
   GripperClose.srv
   PoseMove.srv
+  DeltaMove.srv
   GetState.srv
   GetPose.srv
   GetStringList.srv
   GetFloatList.srv
+
 )
 
 ## Generate actions in the 'action' folder

@@ -62,6 +62,7 @@
   <exec_depend>rviz</exec_depend>
   
   <build_depend>geometry_msgs</build_depend>
+  <build_depend>smach</build_depend>
   <build_depend>moveit_msgs</build_depend>
   <build_depend>moveit_commander</build_depend>
   <build_depend>sensor_msgs</build_depend>
@@ -73,6 +74,7 @@
 
 
   <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>smach</build_export_depend>
   <build_export_depend>moveit_msgs</build_export_depend>
   <build_export_depend>moveit_commander</build_export_depend>
   <build_export_depend>message_generation</build_export_depend>
