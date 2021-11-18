@@ -13,3 +13,4 @@
 * Please hold off on doing this.  There is a real posibility that we can't use smach_viewer.
 #### Running Task master
 * To run task master simply run: `rosrun group4 TaskMaster`
+* hi
