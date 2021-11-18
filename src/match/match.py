@@ -11,6 +11,10 @@ class match:
         return
     
     def fbsearch(self, arr, data):
+        if len(arr) < 2:
+            ans = deepcopy(arr[0])
+            del arr[0]
+            return ans
         front = 0
         back = len(arr)-1
         while front <= back:
