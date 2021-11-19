@@ -19,29 +19,31 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from xdot import *
+from xdot_k import *
+from xdot_k.xdot import *
+from xdot_k.xdot_qt import *
 
 
 __all__ = ['WxDotWindow', 'WxDotFrame']
 
 # We need to get the wx version with built-in cairo support
-import wxversion
-if wxversion.checkInstalled("2.8"):
-    wxversion.select("2.8")
-else:
-    print("wxversion 2.8 is not installed, installed versions are {}".format(wxversion.getInstalled()))
+# import wxversion
+# if wxversion.checkInstalled("2.8"):
+#     wxversion.select("2.8")
+# else:
+#     print("wxversion 2.8 is not installed, installed versions are {}".format(wxversion.getInstalled()))
 import wx
 import wx.lib.wxcairo as wxcairo
 
-# This is a crazy hack to get this to work on 64-bit systems
-if 'wxMac' in wx.PlatformInfo:
-  pass # Implement if necessary
-elif 'wxMSW' in wx.PlatformInfo:
-  pass # Implement if necessary
-elif 'wxGTK' in wx.PlatformInfo:
-  import ctypes
-  gdkLib = wx.lib.wxcairo._findGDKLib()
-  gdkLib.gdk_cairo_create.restype = ctypes.c_void_p
+# This is a crazy hack to get this to work on 64-bit systems ***DEPRICATED***
+# if 'wxMac' in wx.PlatformInfo:
+#   pass # Implement if necessary
+# elif 'wxMSW' in wx.PlatformInfo:
+#   pass # Implement if necessary
+# elif 'wxGTK' in wx.PlatformInfo:
+#   import ctypes
+#   gdkLib = wx.lib.wxcairo._findGDKLib()
+#   gdkLib.gdk_cairo_create.restype = ctypes.c_void_p
 
 class WxDragAction(object):
   def __init__(self, dot_widget):

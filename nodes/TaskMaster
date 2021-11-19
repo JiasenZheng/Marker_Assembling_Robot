@@ -114,7 +114,7 @@ def main():
                                     'match':'NAVIGATE_TO_MARKER',
                                     'markerChanged':'NAVIGATE_TO_MARKER',
                                     'noMarkerChanged':'MOVE_MARKER',
-                                    'capChanged':'FIND_NMOVE_MARKEREW_MATCH',
+                                    'capChanged':'FIND_NEW_MATCH',
                                     'noCapChanged':'ASSEMBLE'},                            
                                     remapping = {
                                     'item_input':'item'

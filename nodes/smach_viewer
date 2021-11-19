@@ -87,7 +87,10 @@ import textwrap
 #    return module
 
 #smach_viewer = import_non_local('smach_viewer')
-from smach_viewer import xdot
+# from smach_viewer import xdot
+# from xdot_k import xdot
+import xdot_k as xdot
+# import xdot.xdot as xdot
 ##
 import smach
 import smach_ros
