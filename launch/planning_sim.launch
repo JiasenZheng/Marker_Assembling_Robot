@@ -1,0 +1,11 @@
+<launch>
+
+ <rosparam command="load" file="$(find group4)/config/scene.yaml"/>
+
+<include file="$(find panda_moveit_config)/launch/demo.launch">
+    <arg name="load_gripper" default="true" />
+</include>
+
+<node name="plan_scene" pkg="group4" type="plan_scene" />
+
+</launch>
