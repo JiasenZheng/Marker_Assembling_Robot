@@ -10,6 +10,7 @@
     </include> -->
 
     <include file="$(find panda_moveit_config)/launch/demo.launch" if="$(arg use_moveit_sim)"/>
+    <node pkg="group4" name="plan_scene" type="plan_scene" output="screen" />
     <node pkg="group4" name="manipulation_cap" type="manipulation_cap" output="screen" />
 
 </launch>

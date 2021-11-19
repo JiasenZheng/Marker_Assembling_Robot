@@ -73,7 +73,7 @@ add_service_files(
   GetPose.srv
   GetStringList.srv
   GetFloatList.srv
-
+  Grasp.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -182,6 +182,7 @@ catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander
 #   scripts/my_python_script
 nodes/manipulation_cap
 nodes/plan_scene
+nodes/manipulation_pen
 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

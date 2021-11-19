@@ -5,7 +5,8 @@ import moveit_commander
 import geometry_msgs.msg
 from time import sleep
 """
-This node generates the planning scene with the table, and marker/pen hardware for the project.
+This node generates the planning scene with the table, and marker/pen hardware for the project. The planning scene
+loads parameters from a scene.yaml
 
 """
 
@@ -13,6 +14,31 @@ class Scene:
     def __init__(self):
         self.scene = moveit_commander.PlanningSceneInterface()
         
+        self.wid = rospy.get_param('wid')
+        self.len = rospy.get_param('len')
+        self.h1 = rospy.get_param('h1')
+        self.h2 = rospy.get_param('h2')
+
+        self.o1 = rospy.get_param('o1')
+        self.o2 = rospy.get_param('o2')
+        self.o3 = rospy.get_param('o3')
+
+        self.x1 = rospy.get_param('x1')
+        self.x2 = rospy.get_param('x2')
+        self.x3 = rospy.get_param('x3')
+
+        self.y1 = rospy.get_param('y1')
+        self.y2 = rospy.get_param('y2')
+        self.y3 = rospy.get_param('y3')
+
+        self.r = rospy.get_param('r')
+
+        self.h11 = rospy.get_param('h11')
+        self.h12 = rospy.get_param('h12')
+        self.h13 = rospy.get_param('h13')
+
+
+
         sleep(1)
 
         self.ground_pose = geometry_msgs.msg.PoseStamped()
@@ -26,29 +52,76 @@ class Scene:
         self.master_pose = geometry_msgs.msg.PoseStamped()
         self.master_pose.header.frame_id = "world"
         self.master_pose.pose.orientation.w=1
-        self.master_pose.pose.position.x=0.5 
-        self.master_pose.pose.position.y=-0.0       
-        self.master_pose.pose.position.z=+0.0635/2  
+        self.master_pose.pose.orientation.z=self.o1
+        self.master_pose.pose.position.x=self.x1 
+        self.master_pose.pose.position.y=self.y1       
+        self.master_pose.pose.position.z=+self.h1/2  
         self.master_name = "master"
-        self.scene.add_box(self.master_name,self.master_pose,size=(0.1778,0.2032,0.0635))
+        self.scene.add_box(self.master_name,self.master_pose,size=(self.wid,self.len,self.h1))
 
         self.pen_pose = geometry_msgs.msg.PoseStamped()
         self.pen_pose.header.frame_id = "world"
         self.pen_pose.pose.orientation.w=1
-        self.pen_pose.pose.position.x=0.5 
-        self.pen_pose.pose.position.y=-0.2032     
-        self.pen_pose.pose.position.z=+0.0635/2  
+        self.pen_pose.pose.orientation.z=self.o2
+        self.pen_pose.pose.position.x=self.x2 
+        self.pen_pose.pose.position.y=self.y2     
+        self.pen_pose.pose.position.z=+self.h1/2  
         self.pen_name = "pen"
-        self.scene.add_box(self.pen_name,self.pen_pose,size=(0.1778,0.2032,0.0635))
+        self.scene.add_box(self.pen_name,self.pen_pose,size=(self.wid,self.len,self.h1))
 
         self.marker_pose = geometry_msgs.msg.PoseStamped()
         self.marker_pose.header.frame_id = "world"
         self.marker_pose.pose.orientation.w=1
-        self.marker_pose.pose.position.x=0.5 
-        self.marker_pose.pose.position.y=0.2032    
-        self.marker_pose.pose.position.z=+0.01/2   
-        self.marker_name = "marker"
-        self.scene.add_box(self.marker_name,self.marker_pose,size=(0.1778,0.2032,0.01))
+        self.pen_pose.pose.orientation.z=self.o3        
+        self.marker_pose.pose.position.x=self.x3 
+        self.marker_pose.pose.position.y=self.y3    
+        self.marker_pose.pose.position.z=self.h2/2   
+        self.marker_name = "cap"
+        self.scene.add_box(self.marker_name,self.marker_pose,size=(self.wid,self.len,self.h2))
+
+        
+        
+        for i in range(3):
+            for j in range(3):
+                self.marker_pose = geometry_msgs.msg.PoseStamped()
+                self.marker_pose.header.frame_id = "world"
+                self.marker_pose.pose.orientation.w=1
+                self.marker_pose.pose.position.x= 0.067818*i + self.x1 - 0.067818
+                self.marker_pose.pose.position.y=0.067818*j  + self.y1 - 0.06718
+                self.marker_pose.pose.position.z=self.h1 + self.h11/2  
+                self.marker_name = "master"+str(i)+str(j)
+                self.scene.add_cylinder(self.marker_name,self.marker_pose,height=self.h11,radius=self.r)
+                pass
+            pass
+        
+        
+        for i in range(3):
+            for j in range(3):
+                self.marker_pose = geometry_msgs.msg.PoseStamped()
+                self.marker_pose.header.frame_id = "world"
+                self.marker_pose.pose.orientation.w=1
+                self.marker_pose.pose.position.x= 0.067818*i + self.x2 - 0.067818
+                self.marker_pose.pose.position.y=0.067818*j + self.y2  - 0.067818
+                self.marker_pose.pose.position.z=self.h1 + self.h12/2  
+                self.marker_name = "pen"+str(i)+str(j)
+                self.scene.add_cylinder(self.marker_name,self.marker_pose,height=self.h12,radius=self.r)
+                pass   
+            pass
+
+        for i in range(3):
+            for j in range(3):
+                self.marker_pose = geometry_msgs.msg.PoseStamped()
+                self.marker_pose.header.frame_id = "world"
+                self.marker_pose.pose.orientation.w=1
+                self.marker_pose.pose.position.x= 0.067818*i + self.x3 - 0.067818
+                self.marker_pose.pose.position.y=0.067818*j + self.y3 - 0.06718
+                self.marker_pose.pose.position.z=self.h2 + self.h13/2
+                self.marker_name = "cap"+str(i)+str(j)
+                self.scene.add_cylinder(self.marker_name,self.marker_pose,height=self.h13,radius=self.r)
+                pass
+            pass
+
+
 
         pass
 
