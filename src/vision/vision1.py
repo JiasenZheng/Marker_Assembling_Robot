@@ -23,12 +23,9 @@ def detect_contour(file_name = "image.png",grid_size = (1,3),pixel_size = [475,1
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
             c = [cx,cy]
-            # cv.circle(img0, c, 3 , (0,0,0))
             c = np.subtract(c,starting_pixel)
             gx = int(c[0]//x_interval)
             gy = int(c[1]//y_interval)
-            # print(cy,cx)
-            # print(img0[cy,cx])
             grid[gy,gx] = hsv[cy,cx]
             cs.append(c)
     cv.rectangle(img0,starting_pixel,np.add(starting_pixel,pixel_size),(0,0,255),3)
@@ -36,9 +33,8 @@ def detect_contour(file_name = "image.png",grid_size = (1,3),pixel_size = [475,1
     figure = plt.figure()
     subplot1 = figure.add_subplot(1,2,1)
     subplot2 = figure.add_subplot(1,2,2)
-
     subplot1.imshow(cv.cvtColor(mask, cv.COLOR_BGR2RGB))
-    subplot2.imshow(hsv)
+    subplot2.imshow(cv.cvtColor(img0, cv.COLOR_BGR2RGB))
     plt.show()
 
     return cs, grid
