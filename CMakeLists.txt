@@ -10,6 +10,7 @@ project(group4)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
 rospy
+roslib
 smach
 std_msgs
 message_generation
