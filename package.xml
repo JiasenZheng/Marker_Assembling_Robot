@@ -72,9 +72,13 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>smach</build_depend>
+  <build_depend>franka_gripper</build_depend>
+
+  <build_export_depend>franka_gripper</build_export_depend>
 
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>panda_moveit_config</exec_depend>
+  <exec_depend>franka_gazebo</exec_depend>
 
 
   <build_export_depend>geometry_msgs</build_export_depend>

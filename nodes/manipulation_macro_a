@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+
+
+import moveit_commander
+import moveit_msgs.msg 
+
+import rospy
+
+from group4.srv import GotoMarker, DeltaMove, GetPose
+
+
+
+
+class ManipulationMacroA:
+    def __init__(self):
+        
+        self.above_marker_x_0 = rospy.get_param('/x2')
+        self.above_marker_y_0 = rospy.get_param('/y2')
+
+        #self.pitch_2_x = rospy.get_param('/pitch_2_x')
+        #self.pitch_2_y = rospy.get_param('/pitch_2_y')
+
+        self.above_marker_x = self.above_marker_x_0 #+  self.pitch_2_x
+        self.above_marker_y = self.above_marker_y_0 #+  self.pitch_2_y
+
+
+
+
+        self.above_cap_x_0 = rospy.get_param('/x3')
+        self.above_cap_y_0 = rospy.get_param('/y3')
+
+        self.pitch_3_x = rospy.get_param('/pitch_3_x')
+        self.pitch_3_y = rospy.get_param('/pitch_3_y')
+
+        self.above_cap_x = self.above_cap_x_0 +  self.pitch_3_x
+        self.above_cap_y = self.above_cap_y_0 +  self.pitch_3_y
+
+
+
+        self.robot = moveit_commander.RobotCommander()
+        self.arm_group_name = "panda_arm"
+        self.gripper_group_name = "hand"
+        self.arm = moveit_commander.MoveGroupCommander(self.arm_group_name)
+        self.gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name)
+
+        self.delta_move = rospy.ServiceProxy('/delta_move',DeltaMove)
+        self.get_arm_pose = rospy.ServiceProxy('/get_arm_pose',GetPose)
+        
+        self.go_to_ready = rospy.Service("/go_to_marker", GotoMarker, self.handle_marker)
+
+
+    def handle_marker(self, req):
+
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
+
+
+        current = self.get_arm_pose()
+
+        print('current.pose.pose.position.x ', current.pose.pose.position.x)
+
+        print('current.pose.pose.position.y ' , current.pose.pose.position.y)
+
+        print('self.above_marker_x' , self.above_marker_x ) 
+
+        print('self.above_marker_y' , self.above_marker_y)  
+
+        #x = req.point.x
+        #y = req.point.y
+
+
+        dx = - current.pose.pose.position.x + self.above_marker_x 
+        dy = - current.pose.pose.position.y + self.above_marker_y 
+
+        
+
+
+        self.delta_move(0.0,dx)
+        print('dx ' , dx)
+
+        self.delta_move(1.0,dy)
+        print('dy ' , dy)
+
+
+        return "Done"
+
+
+
+
+
+
+
+def main():
+    """
+    Main function
+    """
+    rospy.init_node('manipulation_macro_a')
+    macro_a = ManipulationMacroA()
+    rospy.spin()
+
+if __name__ == '__main__':
+    main()

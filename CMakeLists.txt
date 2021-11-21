@@ -74,6 +74,7 @@ add_service_files(
   GetStringList.srv
   GetFloatList.srv
   Grasp.srv
+  GotoMarker.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -124,7 +125,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES final-project-group-4-inc
- CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime
+ CATKIN_DEPENDS franka_gripper rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -183,6 +184,7 @@ catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
+nodes/manipulation_macro_a
 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

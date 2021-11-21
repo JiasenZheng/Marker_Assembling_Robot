@@ -2,7 +2,9 @@
 
 # from os import wait
 from os import wait
+
 import rospy
+
 import actionlib
 import sys
 import moveit_commander
@@ -14,13 +16,13 @@ from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \
     StopAction, GraspActionGoal, MoveActionGoal, HomingActionGoal, \
         StopActionGoal, MoveGoal, StopGoal, GraspGoal, HomingGoal, GraspEpsilon
 from franka_msgs.msg import ErrorRecoveryActionGoal
-from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, DeltaMove
+from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, GetFloatListResponse, DeltaMove
 from numpy import pi
 import numpy as np
 
 
 
-""""
+"""
 
 """
 
@@ -41,6 +43,13 @@ class ManipulationCapNode:
         self.delta_move_service = rospy.Service("delta_move", DeltaMove, self.handle_delta_move)
         self.to_standoff_service = rospy.Service("to_standoff", E, self.handle_to_standoff)
 
+
+        ## Querying the robot state
+        self.get_arm_pose = rospy.Service("get_arm_pose", GetPose, self.handle_get_arm_pose)
+        self.get_arm_joints = rospy.Service("get_arm_joints", GetFloatList, self.handle_get_arm_joints)
+        self.get_arm_rpy = rospy.Service("get_arm_rpy", GetFloatList, self.handle_get_arm_rpy)
+        self.get_current_gripper_state = rospy.Service("get_gripper_joints", GetFloatList, self.handle_get_gripper_joints)
+
         ## Setting up Services to actuate gripper
         ## For grasp action dialog: rosrun actionlib_tools axclient.py /franka_gripper/grasp
         ## For move action dialog: rosrun actionlib_tools axclient.py /franka_gripper/move
@@ -60,11 +69,6 @@ class ManipulationCapNode:
         ## Error Recovery
         self.error_recovery_service = rospy.Service("error_recovery", E, self.handle_error_recovery)
         
-        ## Querying the robot state
-        self.get_arm_pose = rospy.Service("get_arm_pose", GetPose, self.handle_get_arm_pose)
-        self.get_arm_joints = rospy.Service("get_arm_joints", GetFloatList, self.handle_get_arm_joints)
-        self.get_arm_rpy = rospy.Service("get_arm_rpy", GetFloatList, self.handle_get_arm_rpy)
-        self.get_current_gripper_state = rospy.Service("get_gripper_joints", GetFloatList, self.handle_get_gripper_joints)
 
         ## gripping cap parameter
         ## For grasp action dialog: rosrun actionlib_tools axclient.py /franka_gripper/grasp
@@ -150,11 +154,11 @@ class ManipulationCapNode:
         current_joints = self.arm.get_current_joint_values()
         rospy.loginfo(type(current_joints))
         rospy.loginfo(current_joints)
-        return list(current_joints)
+        return GetFloatListResponse(list(current_joints))
 
     def handle_get_arm_rpy(self, req):
         current_rpy = self.arm.get_current_rpy()
-        return list(current_rpy)
+        return GetFloatListResponse(list(current_rpy))
 
     def handle_get_gripper_joints(self, req):
         current_joints = self.gripper.get_current_joint_values()
