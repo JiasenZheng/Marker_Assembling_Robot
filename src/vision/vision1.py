@@ -2,9 +2,9 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 
-def detect_contour(file_name = "image.png",grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200]):
+def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200]):
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
-    img0 = cv.imread(file_name)
+    # img0 = cv.imread(file_name)
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
@@ -30,16 +30,17 @@ def detect_contour(file_name = "image.png",grid_size = (1,3),pixel_size = [475,1
             cs.append(c)
     cv.rectangle(img0,starting_pixel,np.add(starting_pixel,pixel_size),(0,0,255),3)
 
-    figure = plt.figure()
-    subplot1 = figure.add_subplot(1,2,1)
-    subplot2 = figure.add_subplot(1,2,2)
-    subplot1.imshow(cv.cvtColor(mask, cv.COLOR_BGR2RGB))
-    subplot2.imshow(cv.cvtColor(img0, cv.COLOR_BGR2RGB))
-    plt.show()
+    # figure = plt.figure()
+    # subplot1 = figure.add_subplot(1,2,1)
+    # subplot2 = figure.add_subplot(1,2,2)
+    # subplot1.imshow(cv.cvtColor(mask, cv.COLOR_BGR2RGB))
+    # subplot2.imshow(cv.cvtColor(img0, cv.COLOR_BGR2RGB))
+    # plt.show()
 
-    return cs, grid
+    return img0, grid
 
 
 if __name__ == "__main__":
-    cs,grid = detect_contour(file_name = "image.png")
+    img0 = cv.imread("src/vision/image.png")
+    img0,grid = detect_contour(img0)
     print(grid)
