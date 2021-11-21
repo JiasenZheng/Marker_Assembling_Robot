@@ -2,6 +2,9 @@
 import rospy
 
 
+
+import rospy
+
 import actionlib
 import sys
 import moveit_commander

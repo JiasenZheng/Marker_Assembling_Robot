@@ -74,6 +74,7 @@ add_service_files(
   GetStringList.srv
   GetFloatList.srv
   Grasp.srv
+  GotoMarker.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -183,6 +184,7 @@ catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander nodes/smach_
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
+nodes/manipulation_macro_a
 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
