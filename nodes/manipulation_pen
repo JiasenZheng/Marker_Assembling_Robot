@@ -1,5 +1,6 @@
-import rospy
 #! /usr/bin/env python
+import rospy
+
 
 import actionlib
 import sys
