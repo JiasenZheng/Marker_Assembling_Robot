@@ -183,6 +183,7 @@ catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander nodes/smach_
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
+nodes/debug_manipulation
 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

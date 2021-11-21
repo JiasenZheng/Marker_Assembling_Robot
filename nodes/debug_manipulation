@@ -1,0 +1,69 @@
+#! /usr/bin/env/ python
+
+import numpy as np
+import rospy
+from std_srvs.srv import Trigger
+from geometry_msgs.msg import WrenchStamped
+
+class DebugNode:
+    def __init__(self):
+        self.get_max_F_ext = rospy.Service("getMax_F_ext", Trigger, self.handle_getMax_F_ext)
+        self.stop_recording_F_exts = rospy.Service("stop_recording_F_ext", Trigger, self.handle_stop_recording_F_exts)
+        self.F_ext_sub = rospy.Subscriber("/franka_state_controller/F_ext", WrenchStamped, self.max_F_ext_callback)
+
+        self.recording_F_exts = False
+        self.max_fx = 0
+        self.max_fy = 0
+        self.max_fz = 0
+        self.max_tx = 0
+        self.max_ty = 0
+        self.max_tz = 0
+        
+        ## For Later
+        
+        # self.max_f = 0
+        # self.max_t = 0
+        # self.max_F_ext = 0
+
+
+    def handle_getMax_F_ext(self, req):
+        self.max_fx = 0
+        self.max_fy = 0
+        self.max_fz = 0
+        self.max_tx = 0
+        self.max_ty = 0
+        self.max_tz = 0
+        self.recording_F_exts = True
+
+    def handle_stop_recording_F_exts(self, req):
+        self.recording_F_exts = False
+        result = f"Elementwise Max Force_x, _y, _z, Torque_x, _y, _z: \
+            {self.max_fx, self.max_fy, self.max_fz, self.max_tx, self.max_ty, self.max_tz}"
+        rospy.loginfo(result)
+        return True, result 
+    
+    def max_F_ext_callback(self, data):
+        if self.recording_F_exts:
+            self.max_fx = max(abs(data.wrench.force.x), self.max_fx)
+            self.max_fy = max(abs(data.wrench.force.y), self.max_fy)
+            self.max_fz = max(abs(data.wrench.force.z), self.max_fz)
+
+            self.max_tx = max(abs(data.wrench.torque.x), self.max_tx)
+            self.max_ty = max(abs(data.wrench.torque.y), self.max_ty)
+            self.max_tz = max(abs(data.wrench.torque.z), self.max_tz)
+
+            ## For Later
+
+            # tau = np.array([data.wrench.torque.x, data.wrench.torque.y, data.wrench.torque.z])
+            # force = np.array([data.wrench.force.x, data.wrench.force.y, data.wrench.force.z])
+            # self.max_t = max(np.linalg.norm(tau), self.max_t)
+            # self.max_f = max(np.linalg.norm(force), self.max_f)
+
+        
+
+
+
+        
+
+
+    
