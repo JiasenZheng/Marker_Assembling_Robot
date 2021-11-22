@@ -124,7 +124,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES final-project-group-4-inc
- CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime
+ CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime franka_gripper
 #  DEPENDS system_lib
 )
 
@@ -178,12 +178,14 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander nodes/smach_viewer
-#   scripts/my_python_script
-nodes/manipulation_cap
-nodes/plan_scene
-nodes/manipulation_pen
-
+catkin_install_python(PROGRAMS 
+  nodes/smach_viewer  
+  nodes/TaskMaster 
+  nodes/TaskCommander
+  nodes/manipulation_cap
+  nodes/bridge
+  nodes/plan_scene
+  nodes/manipulation_pen
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
