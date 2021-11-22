@@ -67,6 +67,8 @@
   <exec_depend>realsense2_camera</exec_depend>
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>panda_moveit_config</exec_depend>
+  
+
 
   <build_depend>geometry_msgs</build_depend>
   <build_depend>smach</build_depend>
@@ -79,6 +81,13 @@
   <build_depend>smach</build_depend>
   <build_depend>franka_gripper</build_depend>
  
+
+  <build_export_depend>franka_gripper</build_export_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>panda_moveit_config</exec_depend>
+  <exec_depend>franka_gazebo</exec_depend>
+
 
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>smach</build_export_depend>
