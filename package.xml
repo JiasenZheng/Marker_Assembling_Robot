@@ -61,8 +61,7 @@
   <exec_depend>joint_state_publisher_gui</exec_depend>
   <exec_depend>rviz</exec_depend>
   <exec_depend>smach</exec_depend>
-  <depend>franka_gripper</depend>
-  <depend>franka_gazebo</depend>
+  
 
 
   <build_depend>geometry_msgs</build_depend>
