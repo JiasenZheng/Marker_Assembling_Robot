@@ -176,10 +176,11 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander
-#   scripts/my_python_script
-nodes/manipulation_cap
-nodes/bridge
+catkin_install_python(PROGRAMS 
+  nodes/TaskMaster 
+  nodes/TaskCommander
+  nodes/manipulation_cap
+  nodes/bridge
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
