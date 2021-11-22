@@ -75,6 +75,7 @@ add_service_files(
   GetFloatList.srv
   Grasp.srv
   GotoMarker.srv
+  CollisionSet.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -185,6 +186,8 @@ nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
 nodes/manipulation_macro_a
+nodes/limit_set
+
 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
