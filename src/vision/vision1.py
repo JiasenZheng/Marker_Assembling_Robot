@@ -40,7 +40,7 @@ def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel
     return img0, grid
 
 
-if __name__ == "__main__":
-    img0 = cv.imread("src/vision/image.png")
-    img0,grid = detect_contour(img0)
-    print(grid)
+# if __name__ == "__main__":
+#     img0 = cv.imread("src/vision/image.png")
+#     img0,grid = detect_contour(img0)
+#     print(grid)

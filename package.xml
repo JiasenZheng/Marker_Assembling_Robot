@@ -63,6 +63,7 @@
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>franka_gazebo</exec_depend>
   <exec_depend>panda_moveit_config</exec_depend>
+  <exec_depend>realsense2_camera</exec_depend>
 
   <build_depend>geometry_msgs</build_depend>
   <build_depend>moveit_msgs</build_depend>
