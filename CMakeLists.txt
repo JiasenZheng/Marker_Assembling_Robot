@@ -54,11 +54,13 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
+add_message_files(
+  FILES
+  MaxWrenches.msg
+
 #   Message1.msg
 #   Message2.msg
-# )
+)
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -76,6 +78,7 @@ add_service_files(
   Grasp.srv
   GotoMarker.srv
   CollisionSet.srv
+  GetMaxWrenches.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -126,11 +129,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES final-project-group-4-inc
-<<<<<<< HEAD
  CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime franka_gripper
-=======
- CATKIN_DEPENDS franka_gripper rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime
->>>>>>> 8532036e56e1980c2b558b2d38a45827bd383430
 #  DEPENDS system_lib
 )
 
@@ -184,28 +183,27 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
+# catkin_install_python(PROGRAMS 
+#   nodes/smach_viewer  
+#   nodes/TaskMaster 
+#   nodes/TaskCommander
+#   nodes/manipulation_cap
+#   nodes/bridge
+#   nodes/plan_scene
+#   nodes/manipulation_pen)
+
 catkin_install_python(PROGRAMS 
-  nodes/smach_viewer  
-  nodes/TaskMaster 
-  nodes/TaskCommander
-  nodes/manipulation_cap
-  nodes/bridge
-  nodes/plan_scene
-  nodes/manipulation_pen
-catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander nodes/smach_viewer
-#   scripts/my_python_script
+nodes/TaskMaster 
+nodes/TaskCommander 
+nodes/smach_viewer
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
-<<<<<<< HEAD
 nodes/debug_manipulation
-=======
 nodes/manipulation_macro_a
 nodes/limit_set
-
->>>>>>> WIP
-
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+nodes/bridge
+DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ## Mark executables for installation
