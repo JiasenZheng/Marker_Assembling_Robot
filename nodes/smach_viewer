@@ -94,16 +94,46 @@ import xdot_k as xdot
 ##
 import smach
 import smach_ros
+import roslib
+
+
 
 ### Helper Functions
+
+def car(x):
+    return x[0]
+
+def cdr(x):
+    try:
+        return x[1:]
+    except IndexError:
+        return None
+
+# def unNestTup(tup):
+#     print(tup)
+#     str = ''
+#     lis = list(tup)
+#     if type(car(tup)) == tuple:
+#         str = str.join([unNestTup(car(tup)),car(cdr(lis))])
+#         str = str.join(cdr(lis))
+#         print(str)
+#     else: str = str.join(lis)
+#     print(str)
+#     return str
+
+def unPack(tup):
+    a, b, c = tup[0]
+    return (a, b, c, tup[1])
+
+
 def graph_attr_string(attrs):
     """Generate an xdot graph attribute string."""
-    attrs_strs = ['"'+str(k)+'"="'+str(v)+'"' for k,v in attrs.iteritems()]
+    attrs_strs = ['"'+str(k)+'"="'+str(v)+'"' for k,v in attrs.items()]
     return ';\n'.join(attrs_strs)+';\n'
 
 def attr_string(attrs):
     """Generate an xdot node attribute string."""
-    attrs_strs = ['"'+str(k)+'"="'+str(v)+'"' for k,v in attrs.iteritems()]
+    attrs_strs = ['"'+str(k)+'"="'+str(v)+'"' for k,v in attrs.items()]
     return ' ['+(', '.join(attrs_strs))+']'
 
 def get_parent_path(path):
@@ -197,15 +227,19 @@ class ContainerNode():
 
         # Unpack the user data
         while not rospy.is_shutdown():
+            new_msg = pickle.dumps(msg.local_data, 0)
             try:
-                self._local_data._data = pickle.loads(msg.local_data)
+                print(type(msg.local_data))
+                print(type(new_msg))   
+                # self._local_data._data = pickle.loads(msg.local_data)
+                self._local_data._data = pickle.loads(new_msg)
                 break
             except ImportError as ie:
                 # This will only happen once for each package
                 modulename = ie.args[0][16:]
                 packagename = modulename[0:modulename.find('.')]
                 roslib.load_manifest(packagename)
-                self._local_data._data = pickle.loads(msg.local_data)
+                self._local_data._data = pickle.loads(new_msg)
 
         # Store the info string
         self._info = msg.info
@@ -311,7 +345,7 @@ class ContainerNode():
                     self._outcomes_to)
 
             # Add edge from container label to initial state
-            internal_edges += [('','__proxy__',initial_child) for initial_child in self._initial_states]
+            internal_edges = [('','__proxy__',initial_child) for initial_child in zip(internal_edges,self._initial_states)]
 
             has_explicit_transitions = []
             for (outcome_label,from_label,to_label) in internal_edges:
@@ -320,8 +354,10 @@ class ContainerNode():
 
             # Draw internal edges
             for (outcome_label,from_label,to_label) in internal_edges:
-
+                print(self._path)
                 from_path = '/'.join([self._path, from_label])
+                
+                # from_path = '/'+self._path+from_label
 
                 if show_all \
                         or to_label != 'None'\
@@ -331,8 +367,11 @@ class ContainerNode():
                     # Set the implicit target of this outcome
                     if to_label == 'None':
                         to_label = outcome_label
-
-                    to_path = '/'.join([self._path, to_label])
+                    print(self._path)
+                    print(to_label)
+                    to_path = '/'.join([self._path, *unPack(to_label)])
+                    
+                    # to_path = '/'+self._path+to_label
 
                     edge_attrs = {
                             'URL':':'.join([from_path,outcome_label,to_path]),
@@ -561,9 +600,14 @@ class SmachViewerFrame(wx.Frame):
         toolbar.AddControl(toggle_auto_focus)
 
         toolbar.AddControl(wx.StaticText(toolbar,-1,"    "))
-        toolbar.AddLabelTool(wx.ID_HELP, 'Help',
+        # toolbar.AddLabelTool(wx.ID_HELP, 'Help',
+        #         wx.ArtProvider.GetBitmap(wx.ART_HELP,wx.ART_OTHER,(16,16)) )
+        # toolbar.AddLabelTool(wx.ID_SAVE, 'Save',
+        #         wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE,wx.ART_OTHER,(16,16)) )
+        # toolbar.Realize()
+        toolbar.AddTool(wx.ID_HELP, 'Help',
                 wx.ArtProvider.GetBitmap(wx.ART_HELP,wx.ART_OTHER,(16,16)) )
-        toolbar.AddLabelTool(wx.ID_SAVE, 'Save',
+        toolbar.AddTool(wx.ID_SAVE, 'Save',
                 wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE,wx.ART_OTHER,(16,16)) )
         toolbar.Realize()
 
@@ -852,7 +896,7 @@ class SmachViewerFrame(wx.Frame):
         # Get the path to the updating conainer
         path = msg.path
         rospy.logdebug("STATUS MSG: "+path)
-
+        # new_msg = msg.encode("ascii")
         # Check if this is a known container
         if path in self._containers:
             # Get the container and check if the status update requires regeneration
@@ -915,7 +959,7 @@ class SmachViewerFrame(wx.Frame):
 
                     # Generate the rest of the graph
                     # TODO: Only re-generate dotcode for containers that have changed
-                    for path,tc in containers_to_update.iteritems():
+                    for path,tc in containers_to_update.items():
                         dotstr += tc.get_dotcode(
                                 self._selected_paths,[],
                                 0,self._max_depth,
@@ -963,7 +1007,9 @@ class SmachViewerFrame(wx.Frame):
                 self._update_cond.wait()
                 self.tree.DeleteAllItems()
                 self._tree_nodes = {}
-                for path,tc in self._top_containers.iteritems():
+                # for path,tc in self._top_containers.iteritems():
+                #     self.add_to_tree(path, None)
+                for path,tc in self._top_containers.items():
                     self.add_to_tree(path, None)
 
     def add_to_tree(self, path, parent):

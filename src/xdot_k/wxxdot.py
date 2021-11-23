@@ -50,13 +50,17 @@ class WxDragAction(object):
     self.dot_widget = dot_widget
 
   def on_button_press(self, event):
-    x,y = event.GetPositionTuple()
+    # x,y = event.GetPositionTuple()
+    state = wx.GetMouseState()
+    x, y = state.GetX(), state.GetY()
     self.startmousex = self.prevmousex = x
     self.startmousey = self.prevmousey = y
     self.start()
 
   def on_motion_notify(self, event):
-    x,y = event.GetPositionTuple()
+    # x,y = event.GetPositionTuple()
+    state = wx.GetMouseState()
+    x, y = state.GetX(), state.GetY()
     deltax = self.prevmousex - x
     deltay = self.prevmousey - y
     self.drag(deltax, deltay)
@@ -64,7 +68,9 @@ class WxDragAction(object):
     self.prevmousey = y
 
   def on_button_release(self, event):
-    x,y = event.GetPositionTuple()
+    # x,y = event.GetPositionTuple()
+    state = wx.GetMouseState()
+    x, y = state.GetX(), state.GetY()
     self.stopmousex = x
     self.stopmousey = y
     self.stop()
@@ -273,7 +279,7 @@ class WxDotWindow(wx.Panel):
 
   ### Cursor manipulation
   def set_cursor(self, cursor_type):
-    self.cursor = wx.StockCursor(cursor_type)
+    self.cursor = wx.Cursor(cursor_type)
     self.SetCursor(self.cursor)
 
   ### Zooming methods
@@ -365,8 +371,10 @@ class WxDotWindow(wx.Panel):
     return WxNullAction(self)
 
   def OnMouse(self, event):
-    x,y = event.GetPositionTuple()
-
+    # x,y = event.GetPositionTuple()
+    # x, y = event.GetLogicalPosition(wx.DC)
+    state = wx.GetMouseState()
+    x, y = state.GetX(), state.GetY()
     item = None
 
     # Get the item
@@ -438,8 +446,8 @@ class WxDotWindow(wx.Panel):
     self.filter = filter
 
   def set_dotcode(self, dotcode, filename='<stdin>'):
-    if isinstance(dotcode, unicode):
-      dotcode = dotcode.encode('utf8')
+    # if not isinstance(dotcode, bytes):
+    #   dotcode = dotcode.encode('utf8')
     p = subprocess.Popen(
       [self.filter, '-Txdot'],
       stdin=subprocess.PIPE,

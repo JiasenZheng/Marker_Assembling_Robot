@@ -56,12 +56,12 @@ class Move_Marker(smach.State):
     
     def execute(self, userdata):
         rospy.loginfo('Executing state MOVE_MARKER')
-        if userdata.at_input == "input":
-            userdata.at_output = "assymbly"
+        if userdata.at_input == 0:
+            userdata.at_output = 1
             return 'To_Assymbly'
         else:
-            if userdata.at == "assymbly":
-                userdata.at_output = "input"
+            if userdata.at == 1:
+                userdata.at_output = 0
                 return 'To_Input'
             else:
                 return 'ignore'
@@ -104,7 +104,9 @@ def main():
     #Create state machine
     sm = smach.StateMachine(outcomes = ['Finished'])
     sm.userdata.item = 2
-    sm.userdata.at = "input"
+    #input: 0
+    #Assymbly: 1
+    sm.userdata.at = 0
 
 
     #Open the container
