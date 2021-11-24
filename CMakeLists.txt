@@ -72,6 +72,7 @@ add_service_files(
   GetPose.srv
   GetStringList.srv
   GetFloatList.srv
+  ImageCapture.srv
 )
 
 ## Generate actions in the 'action' folder
