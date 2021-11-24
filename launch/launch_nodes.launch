@@ -1,0 +1,6 @@
+<launch>
+    <!-- <node name="manipulation" pkg="group4" type="manipulation_cap" output="screen" ns="/group4/manipulation" /> -->
+    <node name="manipulation" pkg="group4" type="manipulation_cap" output="screen" />
+    <node name="debug" pkg="group4" type="debug_manipulation" output="screen" />
+    <!-- <node name="debug" pkg="group4" type="debug_manipulation" output="screen" ns="/group4/debug"/> -->
+</launch>

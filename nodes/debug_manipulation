@@ -36,16 +36,20 @@ class DebugNode:
         self.max_t = 0
 
     def handle_getMax_F_ext(self, req):
-        self.max_fx = 0
-        self.max_fy = 0
-        self.max_fz = 0
-        self.max_tx = 0
-        self.max_ty = 0
-        self.max_tz = 0
+        # self.max_fx = 0
+        # self.max_fy = 0
+        # self.max_fz = 0
+        # self.max_tx = 0
+        # self.max_ty = 0
+        # self.max_tz = 0
+        # self.max_f = 0
+        # self.max_t = 0
         self.recording_F_exts = True
+        return self.recording_F_exts, "Recording external Forces"
 
     def handle_stop_recording_F_exts(self, req):
         self.recording_F_exts = False
+        rospy.loginfo("Stopped recording external forces")
         result = MaxWrenches()
         result.maxForce = self.max_f
         result.maxForceX = self.max_fx
@@ -55,13 +59,21 @@ class DebugNode:
         result.maxTorqueX = self.max_tx
         result.maxTorqueY = self.max_ty
         result.maxTorqueZ = self.max_tz
+        self.max_fx = 0
+        self.max_fy = 0
+        self.max_fz = 0
+        self.max_tx = 0
+        self.max_ty = 0
+        self.max_tz = 0
+        self.max_f = 0
+        self.max_t = 0
         rospy.loginfo(result)
         # if result:
         #     success = True
         # else:
         #     success = False
         self.max_F_ext_pub.publish(result)
-        return True, result 
+        return result 
     
     def max_F_ext_callback(self, data):
         if self.recording_F_exts:
