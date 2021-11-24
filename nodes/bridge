@@ -7,8 +7,8 @@
 import rospy
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
-import cv2
 import vision.vision1 as v1
+import cv2
 
 class Processor(object):
     """ Process the images """
@@ -27,9 +27,9 @@ class Processor(object):
         cv_image = self._bridge.imgmsg_to_cv2(data, "bgr8")
 
         # manipulate with open cv
-        # low_res = cv2.blur(cv_image, (50, 50))
-        image_contour,grid = v1.detect_contour(cv_image,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200])
-        
+        # image_contour = cv2.blur(cv_image, (50, 50))
+        # image_contour,grid = v1.detect_contour(cv_image,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200])
+        image_contour = v1.detect(cv_image)
         # convert to ROS
         msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
 
