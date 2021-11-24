@@ -28,7 +28,8 @@ class LocalManipulationNode():
         self.get_current_pose = rospy.ServiceProxy("get_arm_pose", GetPose)
 
         ## The default orientation for all moves, so as to remain vertical in all interaction posiitoins
-        self.rpy = [0, 0, np.pi/4] ## will have to change/check the z rotation because of franka's offset
+        # self.rpy = [np.pi, 0.0277365, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
+        self.rpy = [np.pi, 0, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
         self.q = transformations.quaternion_from_euler(self.rpy[0], self.rpy[1], self.rpy[1] )
         rospy.loginfo("self.rpy")
         rospy.loginfo(self.rpy)
@@ -45,9 +46,11 @@ class LocalManipulationNode():
         # self.assemblyZStandoff = rospy.get_param("/z1_standoff")
         # self.assemblyZPress = rospy.get_param("/z1_press")
         # self.assemblyZPlace = rospy.get_param("/z1_place")
-        self.assemblyZStandoff = 0.26
-        self.assemblyZPress = 0.23
-        self.assemblyZPlace = 0.2
+        # self.assemblyX = 
+        # self.assemblyY = 
+        self.assemblyZStandoff = 0.27 #0.26
+        self.assemblyZPress = 0.25
+        self.assemblyZPlace = 0.222945 #844932731  #0.2
 
         ## Marker Tray Parameters
 
@@ -57,10 +60,10 @@ class LocalManipulationNode():
         self.markersyYPitch = rospy.get_param("/pitch_2_y")
         # self.markersZStandoff = rospy.get_param("/z2_standoff")
         # self.markersyZPick = rospy.get_param("/z2_pick")
-        self.markersZStandoff = 0.26
-        self.markersZPick = 0.2
+        self.markersZStandoff = 0.27
+        self.markersZPick = 0.19962
 
-        ## Marker Tray Parameters
+        ## Cap Tray Parameters
 
         self.capsX = rospy.get_param("/x3")
         self.capsY = rospy.get_param("/y3")
@@ -68,8 +71,8 @@ class LocalManipulationNode():
         self.capsyYPitch = rospy.get_param("/pitch_3_y")
         # self.capsZStandoff = rospy.get_param("/z3_standoff")
         # self.capsyZPick = rospy.get_param("/z3_pick")
-        self.capsZStandoff = 0.2
-        self.capsZPick = 0.17
+        self.capsZStandoff = 0.27
+        self.capsZPick = 0.124
 
 
         ## Setting up TrayPositions
@@ -99,7 +102,8 @@ class LocalManipulationNode():
             xyz = self.markersTray.get_location(req.location, req.heightLevel)
         elif req.trayNumber == 3: ## caps
             xyz = self.capsTray.get_location(req.location, req.heightLevel)
-        rospy.loginfo("xyz: ", xyz)
+        rospy.loginfo("xyz: ")
+        rospy.loginfo(xyz)
 
         ## Build up the pose representations for poseMove and for comparison
         xyzPoint = Point(xyz[0], xyz[1], xyz[2])
@@ -112,14 +116,16 @@ class LocalManipulationNode():
 
         ## Verify Completed move
         currentPose = self.get_current_pose().pose
-        if self.isPoseClose(targetPose, currentPose):
+        rospy.loginfo("currentPose.pose:")
+        rospy.loginfo(currentPose.pose)
+        if self.isPoseClose(targetPose, currentPose.pose):
             success = True
             error_msg = f"Final pose matches the target pose {targetPose}"
         else:
-            error_msg = f"[ERROR]: Final pose {currentPose} does not match the target pose {targetPose}"
+            error_msg = f"[ERROR]: Final pose {currentPose.pose} does not match the target pose {targetPose}"
             success = False
 
-        return success, currentPose, error_msg
+        return success, currentPose.pose, error_msg
         
 
     ## LATER IF NECESSARY
@@ -133,12 +139,12 @@ class LocalManipulationNode():
     def isPoseClose(self, referencePose, currentPose):
         ref = self.poseToArray(referencePose)
         cur = self.poseToArray(currentPose)
-        return np.isclose(ref, cur, 0.0015)  ## might need to tweak the tolerance
+        return np.allclose(ref, cur, 0.015)  ## might need to tweak the tolerance
 
     def poseToArray(self, pose):
-        a1 = pose.point.x
-        a2 = pose.point.y
-        a3 = pose.point.z
+        a1 = pose.position.x
+        a2 = pose.position.y
+        a3 = pose.position.z
         a4 = pose.orientation.x
         a5 = pose.orientation.y
         a6 = pose.orientation.z

@@ -6,6 +6,9 @@
 <launch>
 
     <arg name="use_moveit_sim" default="false"/>
+
+    <rosparam command="load" file="$(find group4)/config/scene.yaml"/>
+
     <!-- If needed, broadcast static tf for robot root -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_1" args="0 0 0 0 0 0 world panda_link0" />
 
@@ -22,7 +25,17 @@
         <include file="$(find panda_moveit_config)/launch/demo.launch"/>
     </group>
 
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
+
     <!-- group4 nodes to run -->
     <node name="manipulation" pkg="group4" type="manipulation_cap" output="screen"/>
     <node name="debug" pkg="group4" type="debug_manipulation" output="screen" />
+    <node name="local_manipulation" pkg="group4" type="manipulation_local" output="screen"/>
+    <node name="manipulation_macro" pkg="group4" type="manipulation_macro_a" output="screen" />
+    <node name="limit_set" pkg="group4" type="limit_set" output="screen" />
+    <!-- <node name="" pkg="" type="bridge" output="screen" /> -->
+    <node name="" pkg="" type="" output="screen" />
+    <node name="" pkg="" type="" output="screen" />
+
+    <node pkg = "group4" name="bridge" type="bridge"/>
 </launch>
