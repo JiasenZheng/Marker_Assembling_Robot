@@ -1,0 +1,6 @@
+int32 location ## should be 0-8 for the 3 x 3 tray, row-major order
+int32 heightLevel ## 0 for pick/place height, 1 for standoff height
+---
+bool success
+geometry_msgs/Pose pose
+string error_msg
