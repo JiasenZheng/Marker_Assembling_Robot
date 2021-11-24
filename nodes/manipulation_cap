@@ -32,11 +32,9 @@ class ManipulationCapNode:
 
         ## Setting up for moveit "arm" and "hand" control
         self.robot = moveit_commander.RobotCommander()
-        # rospy.sleep(Duration(10))
         self.arm_group_name = "panda_arm"
         self.gripper_group_name = "hand"
-        # self.arm = moveit_commander.MoveGroupCommander(self.arm_group_name)
-        self.arm = moveit_commander.MoveGroupCommander("panda_arm")
+        self.arm = moveit_commander.MoveGroupCommander(self.arm_group_name)
         self.gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name)
         
         ## Setting up Services to move the arm
