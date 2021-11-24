@@ -78,7 +78,7 @@ add_service_files(
   GetStringList.srv
   GetFloatList.srv
   Grasp.srv
-  GotoMarker.srv
+  GotoPos.srv
   CollisionSet.srv
   GetMaxWrenches.srv
 )
