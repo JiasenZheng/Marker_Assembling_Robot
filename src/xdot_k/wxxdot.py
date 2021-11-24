@@ -24,6 +24,8 @@ from xdot_k.xdot import *
 from xdot_k.xdot_qt import *
 
 
+
+
 __all__ = ['WxDotWindow', 'WxDotFrame']
 
 # We need to get the wx version with built-in cairo support
@@ -157,6 +159,8 @@ class WxDotWindow(wx.Panel):
     self.graph = Graph()
     self.openfilename = None
 
+    self.painter = QPainter()
+
     self.x, self.y = 0.0, 0.0
     self.zoom_ratio = 1.0
     self.zoom_to_fit_on_resize = False
@@ -191,31 +195,32 @@ class WxDotWindow(wx.Panel):
 
   def OnPaint(self, event):
     """Redraw the graph."""
-    dc = wx.PaintDC(self)
+    # dc = wx.PaintDC(self)
 
-    #print dc
-    ctx = wxcairo.ContextFromDC(dc)
-    #ctx = pangocairo.CairoContext(ctx)
-
+    # #print dc
+    # ctx = wxcairo.ContextFromDC(dc)
+    # ctx = pangocairo.CairoContext(ctx)
+    ctx = self.painter
     #print "DRAW"
 
     # Get widget size
     width, height = self.GetSize()
     #width,height = self.dc.GetSizeTuple()
 
-    ctx.rectangle(0,0,width,height)
-    ctx.clip()
+    ctx.drawRect(QRect(0,0,width,height))
+    ctx.setClipping(True)
 
-    ctx.set_source_rgba(1.0, 1.0, 1.0, 1.0)
-    ctx.paint()
+    # ctx.set_source_rgba(1.0, 1.0, 1.0, 1.0)
+    # ctx.paint()
 
     ctx.save()
     ctx.translate(0.5*width, 0.5*height)
 
     ctx.scale(self.zoom_ratio, self.zoom_ratio)
     ctx.translate(-self.x, -self.y)
+    # ctx.begin()
     self.graph.draw(ctx, highlight_items=self.highlight)
-    ctx.restore()
+    # ctx.restore()
 
     self.drag_action.draw(ctx)
 
@@ -459,12 +464,12 @@ class WxDotWindow(wx.Panel):
     xdotcode, error = p.communicate(dotcode)
     if p.returncode != 0:
       print("ERROR PARSING DOT CODE {}".format(error))
-      dialog = Gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
-                     message_format=error,
-                     buttons=gtk.BUTTONS_OK)
-      dialog.set_title('Dot Viewer')
-      dialog.run()
-      dialog.destroy()
+      # dialog = Gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
+      #                message_format=error,
+      #                buttons=gtk.BUTTONS_OK)
+      # dialog.set_title('Dot Viewer')
+      # dialog.run()
+      # dialog.destroy()
       return False
     try:
       self.set_xdotcode(xdotcode)
@@ -480,12 +485,12 @@ class WxDotWindow(wx.Panel):
 
     except ParseError as ex:
       print("ERROR PARSING XDOT CODE")
-      dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
-                     message_format=str(ex),
-                     buttons=gtk.BUTTONS_OK)
-      dialog.set_title('Dot Viewer')
-      dialog.run()
-      dialog.destroy()
+      # dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
+      #                message_format=str(ex),
+      #                buttons=gtk.BUTTONS_OK)
+      # dialog.set_title('Dot Viewer')
+      # dialog.run()
+      # dialog.destroy()
       return False
     else:
       self.openfilename = filename
@@ -502,7 +507,7 @@ class WxDotWindow(wx.Panel):
   def reload(self):
     if self.openfilename is not None:
       try:
-        fp = file(self.openfilename, 'rt')
+        fp = open(self.openfilename, 'rt')
         self.set_dotcode(fp.read(), self.openfilename)
         fp.close()
       except IOError:
@@ -582,7 +587,7 @@ Refresh: R",
 
   def open_file(self, filename):
     try:
-      fp = file(filename, 'rt')
+      fp = open(filename, 'rt')
       self.set_dotcode(fp.read(), filename)
       fp.close()
     except IOError as ex:

@@ -109,18 +109,6 @@ def cdr(x):
     except IndexError:
         return None
 
-# def unNestTup(tup):
-#     print(tup)
-#     str = ''
-#     lis = list(tup)
-#     if type(car(tup)) == tuple:
-#         str = str.join([unNestTup(car(tup)),car(cdr(lis))])
-#         str = str.join(cdr(lis))
-#         print(str)
-#     else: str = str.join(lis)
-#     print(str)
-#     return str
-
 def unPack(tup):
     a, b, c = tup[0]
     return (a, b, c, tup[1])
@@ -228,9 +216,7 @@ class ContainerNode():
         # Unpack the user data
         while not rospy.is_shutdown():
             new_msg = pickle.dumps(msg.local_data, 0)
-            try:
-                print(type(msg.local_data))
-                print(type(new_msg))   
+            try: 
                 # self._local_data._data = pickle.loads(msg.local_data)
                 self._local_data._data = pickle.loads(new_msg)
                 break
@@ -354,7 +340,6 @@ class ContainerNode():
 
             # Draw internal edges
             for (outcome_label,from_label,to_label) in internal_edges:
-                print(self._path)
                 from_path = '/'.join([self._path, from_label])
                 
                 # from_path = '/'+self._path+from_label
@@ -367,8 +352,6 @@ class ContainerNode():
                     # Set the implicit target of this outcome
                     if to_label == 'None':
                         to_label = outcome_label
-                    print(self._path)
-                    print(to_label)
                     to_path = '/'.join([self._path, *unPack(to_label)])
                     
                     # to_path = '/'+self._path+to_label
@@ -976,7 +959,7 @@ class SmachViewerFrame(wx.Frame):
                     self._structure_changed = False
 
                 # Update the styles for the graph if there are any updates
-                for path,tc in containers_to_update.iteritems():
+                for path,tc in containers_to_update.items():
                     tc.set_styles(
                             self._selected_paths,
                             0,self._max_depth,

@@ -31,9 +31,10 @@ import colorsys
 import time
 import re
 
+from copy import deepcopy
 
 from PySide6.QtWidgets import *
-#from PySide.QtCore import *
+from PySide6.QtCore import *
 from PySide6.QtGui import *
 try:
     from PyQt4 import *
@@ -55,6 +56,9 @@ except:
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-- Drawing Classes --#
 
+space = 4
+dashes = [1, space, 3, space, 9, space, 27, space, 9, space]
+
 class Pen:
     """Store pen attributes."""
 
@@ -69,7 +73,7 @@ class Pen:
 
     def copy(self):
         """Create a copy of this pen."""
-        pen = Pen()
+        pen = QPen()
         pen.__dict__ = self.__dict__.copy()
         return pen
 
@@ -104,7 +108,7 @@ class TextShape(Shape):
 
     def __init__(self, pen, x, y, j, w, t):
         Shape.__init__(self)
-        self.pen = pen.copy()
+        self.pen = pen
         self.x = x
         self.y = y
         self.j = j  #AB allignment? JRB: height.
@@ -133,7 +137,7 @@ class EllipseShape(Shape):
     """Used to draw an ellipse shape with a QPainter"""
     def __init__(self, pen, x0, y0, w, h, filled=False):
         Shape.__init__(self)
-        self.pen = pen.copy()
+        self.pen = pen
         self.x0 = x0
         self.y0 = y0
         self.w = w
@@ -147,7 +151,7 @@ class EllipseShape(Shape):
             painter.setPen(QColor.fromRgbF(*pen.fillcolor))
             painter.setBrush(QColor.fromRgbF(*pen.fillcolor))
         else:
-            painter.setPen(QPen(QBrush(QColor.fromRgbF(*pen.color)), pen.linewidth, pen.dash))
+            painter.setPen(QPen(QBrush(QColor.fromRgbF(*pen.color)), pen.setWidth(2), pen.setDashPattern(dashes)))
             painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(self.x0 - self.w, self.y0 - self.h,  self.w * 2,  self.h * 2)
         painter.restore()
@@ -157,7 +161,7 @@ class PolygonShape(Shape):
 
     def __init__(self, pen, points, filled=False):
         Shape.__init__(self)
-        self.pen = pen.copy()
+        self.pen = pen
         self.points = points
         self.filled = filled
 
@@ -165,18 +169,20 @@ class PolygonShape(Shape):
 
         polygon_points = QPolygonF()
         for x, y in self.points:
-            polygon_points.append (QPointF(x, y))
+            polygon_points.append(QPointF(x, y))
 
         pen = self.select_pen(highlight)
         painter.save()
         if self.filled:
             painter.setPen(QColor.fromRgbF(*pen.fillcolor))
+            #Needs to be a QPainter object so something is happening.
             painter.setBrush(QColor.fromRgbF(*pen.fillcolor))
         else:
-            painter.setPen(QPen(QBrush(QColor.fromRgbF(*pen.color)), pen.linewidth,
-                                            pen.dash, Qt.SquareCap, Qt.MiterJoin))
-            painter.setBrush(Qt.NoBrush)
-
+            painter.setPen(QPen())
+            # (QBrush(QColor.fromRgbF(*pen.color)), pen.setWidth(2),
+            #                                 pen.setDashPattern(dashes), Qt.SquareCap, Qt.MiterJoin))
+        #     painter.setBrush(Qt.NoBrush)
+        # painter.begin(pen)
         painter.drawPolygon(polygon_points)
         painter.restore()
 
@@ -185,13 +191,13 @@ class LineShape(Shape):
 
     def __init__(self, pen, points):
         Shape.__init__(self)
-        self.pen = pen.copy()
+        self.pen = pen
         self.points = points
 
     def draw(self, painter, highlight=False):
         pen = self.select_pen(highlight)
-        painter.setPen(QPen(QBrush(QColor.fromRgbF(*pen.color)), pen.linewidth,
-                                            pen.dash, Qt.SquareCap, Qt.MiterJoin))
+        painter.setPen(QPen(QBrush(QColor.fromRgbF(*pen.color)), pen.setWidth(2),
+                                            pen.setDashPattern(dashes), Qt.SquareCap, Qt.MiterJoin))
 
         x0, y0 = self.points[0]
         for x1, y1 in self.points[1:]:
@@ -204,14 +210,14 @@ class BezierShape(Shape):
 
     def __init__(self, pen, points, filled=False):
         Shape.__init__(self)
-        self.pen = pen.copy()
+        self.pen = pen
         self.points = points
         self.filled = filled
 
     def draw(self, painter, highlight=False):
         painter_path = QPainterPath()
         painter_path.moveTo(QPointF(*self.points[0]))
-        for i in xrange(1, len(self.points), 3):
+        for i in range(1, len(self.points), 3):
             painter_path.cubicTo(
                 QPointF(*self.points[i]),
                 QPointF(*self.points[i + 1]),
@@ -229,8 +235,10 @@ class BezierShape(Shape):
         else:
             painter.setBrush(Qt.NoBrush)
 
-        qpen.setStyle(pen.dash)
-        qpen.setWidth(pen.linewidth)
+        qpen.setStyle(Qt.DashLine)
+        pen.setWidth(2)
+        pen.setDashPattern(dashes)
+        qpen.setWidth(2)
         qpen.setColor(QColor.fromRgbF(*pen.color))
         painter.setPen(qpen)
         painter.drawPath(painter_path)
@@ -369,6 +377,7 @@ class Graph(Shape):
         if highlight_items is None:
             highlight_items = ()
         for shape in self.shapes:
+            # print(cr)
             shape.draw(cr)
         for edge in self.edges:
             edge.draw(cr, highlight=(edge in highlight_items))
@@ -406,7 +415,7 @@ class XDotAttrParser:
         self.buf = self.unescape(buf)
         self.pos = 0
 
-        self.pen = Pen()
+        self.pen = QPen()
         self.shapes = []
 
     def __nonzero__(self):
@@ -580,15 +589,17 @@ class XDotAttrParser:
             self.pen.color = color
 
     def handle_linewidth(self, linewidth):
-        self.pen.linewidth = linewidth
+        self.pen.setWidth(linewidth)
 
     def handle_linestyle(self, style):
         if style == "solid":
-#            self.pen.dash = ()
-            self.pen.dash = Qt.SolidLine
+#            self.pen.setDashPattern(Qt.Dashline) = ()
+
+            self.pen.setStyle(Qt.SolidLine)
         elif style == "dashed":
-#            self.pen.dash = (6, )       # 6pt on, 6pt off
-            self.pen.dash = Qt.DashLine
+            self.pen.setStyle(Qt.DashLine)
+#            self.pen.setDashPattern(Qt.Dashline) = (6, )       # 6pt on, 6pt off
+            self.pen.setDashPattern(dashes)
 
     def handle_font(self, size, name):
         self.pen.fontsize = size
@@ -1104,7 +1115,13 @@ class XDotParser(DotParser):
         for k,shapes in self.subgraph_shapes.iteritems():
           self.shapes += shapes
         """
-
+        # print(self.width)
+        # print(self.height)
+        # print(self.shapes)
+        # print(self.nodes)
+        # print(self.edges)
+        # print(self.subgraph_shapes)
+        # time.sleep(100000000)
         return Graph(self.width, self.height, self.shapes, self.nodes, self.edges, self.subgraph_shapes)
 
     def parse_node_pos(self, pos):
@@ -1393,8 +1410,6 @@ class DotWidget(QWidget):
         self.filter = filter
 
     def set_dotcode(self, dotcode, filename='<stdin>',center=True):
-        if isinstance(dotcode, unicode):
-            dotcode = dotcode.encode('utf8')
         p = subprocess.Popen(
             [self.filter, '-Txdot'],
             stdin=subprocess.PIPE,
@@ -1439,6 +1454,8 @@ class DotWidget(QWidget):
 
     def set_xdotcode(self, xdotcode, center=True):
         #print xdotcode
+        print(f"here is the type for the xdotcode: {type(xdotcode)}")
+        time.sleep(10000000)
         parser = XDotParser(xdotcode)
         self.graph = parser.parse()
         self.zoom_image(self.zoom_ratio, center=center)
@@ -1645,7 +1662,7 @@ class DotWidget(QWidget):
             x, y = event.x(), event.y()
             url = self.get_url(x, y)
             if url is not None:
-                self.emit(SIGNAL("clicked"), unicode(url.url), event)
+                self.emit(SIGNAL("clicked"), url.url.encode(), event)
             else:
                 self.emit(SIGNAL("clicked"), 'none', event)
                 jump = self.get_jump(x, y)
@@ -1658,7 +1675,7 @@ class DotWidget(QWidget):
             x, y = event.x(), event.y()
             url = self.get_url(x, y)
             if url is not None:
-                self.emit(SIGNAL("right_clicked"), unicode(url.url), event)
+                self.emit(SIGNAL("right_clicked"), url.url.encode(), event)
             else:
                 self.emit(SIGNAL("right_clicked"), 'none', event)
                 jump = self.get_jump(x, y)
@@ -1821,11 +1838,11 @@ class DotWindow(QMainWindow):
         if filename is None:
             action = self.sender()
             if isinstance(action, QAction):
-                filename = unicode(action.data().toString())
+                filename = action.data().toString().encode()
             else:
                 return
         try:
-            fp = file(filename, 'rt')
+            fp = open(filename, 'rt')
             self.set_dotcode(fp.read(), filename)
             fp.close()
             self.add_recent_file(filename)
@@ -1836,9 +1853,9 @@ class DotWindow(QMainWindow):
         dir = os.path.dirname(self.filename) \
                 if self.filename is not None else "."
         formats = ["*.dot"]
-        filename = unicode(QFileDialog.getOpenFileName(self,
+        filename = QFileDialog.getOpenFileName(self,
                             "Open dot File", dir,
-                            "Dot files (%s)" % " ".join(formats)))
+                            "Dot files (%s)" % " ".join(formats))
         if filename:
             self.open_file(filename)
 
@@ -1848,7 +1865,7 @@ class DotWindow(QMainWindow):
     def update_file_menu(self):
         self.file_menu.clear()
         self.add_actions(self.file_menu, self.file_menu_actions[:-1])
-        current = QString(self.filename) \
+        current = QDataStream.QDataStream.QString(self.filename) \
                 if self.filename is not None else None
         recent_files = []
         for fname in self.recent_files:
@@ -1868,13 +1885,13 @@ class DotWindow(QMainWindow):
         if filename is None:
             return
         if not self.recent_files.contains(filename):
-            self.recent_files.prepend(QString(filename))
+            self.recent_files.prepend(QDataStream.QString(filename))
             while self.recent_files.count() > 14:
                 self.recent_files.takeLast()
 
 def closeEvent(self, event):
         settings = QSettings()
-        filename = QVariant(QString(self.filename)) if self.filename is not None else QVariant()
+        filename = QVariant(QDataStream.QString(self.filename)) if self.filename is not None else QVariant()
         settings.setValue("LastFile", filename)
         recent_files = QVariant(self.recent_files) if self.recent_files else QVariant()
         settings.setValue("RecentFiles", recent_files)
@@ -1907,7 +1924,6 @@ def main():
         parser.error('incorrect number of arguments')
 
     app = QApplication(sys.argv)
-    print(type(app))
     app.setOrganizationName("RobotNV")
     app.setOrganizationDomain("robotNV.com")
     app.setApplicationName("Dot Viewer")
