@@ -10,6 +10,7 @@ import sys
 import moveit_commander
 import moveit_msgs.msg 
 from geometry_msgs.msg import Pose
+from rospy.rostime import Duration
 from std_srvs.srv import Trigger, EmptyResponse, Empty as E
 from std_msgs.msg import Empty
 from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \

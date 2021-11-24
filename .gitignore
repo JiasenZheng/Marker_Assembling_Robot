@@ -1,6 +1,6 @@
+__pycache__
+*.vscode
+*.pyd
+*.pyc
 .vscode
 taskmaster.launch
-__pycache__/
-*.pyc
- 
-src/*/__pycache__
