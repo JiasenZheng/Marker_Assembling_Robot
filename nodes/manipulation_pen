@@ -1,13 +1,4 @@
-<<<<<<< HEAD
 #! /usr/bin/env python3
-=======
-#! /usr/bin/env python
-import rospy
-
-
-
-import rospy
->>>>>>> 8532036e56e1980c2b558b2d38a45827bd383430
 
 import rospy
 import actionlib
