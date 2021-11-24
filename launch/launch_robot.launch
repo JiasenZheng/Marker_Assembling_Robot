@@ -33,9 +33,7 @@
     <node name="local_manipulation" pkg="group4" type="manipulation_local" output="screen"/>
     <node name="manipulation_macro" pkg="group4" type="manipulation_macro_a" output="screen" />
     <node name="limit_set" pkg="group4" type="limit_set" output="screen" />
-    <!-- <node name="" pkg="" type="bridge" output="screen" /> -->
-    <node name="" pkg="" type="" output="screen" />
-    <node name="" pkg="" type="" output="screen" />
+
 
     <node pkg = "group4" name="bridge" type="bridge"/>
 </launch>
