@@ -43,27 +43,33 @@ class LocalManipulationNode():
 
         ## Assembly Tray Parameters
 
-        self.assemblyX = rospy.get_param("/x1")
-        self.assemblyY = rospy.get_param("/y1")
-        self.assemblyXPitch = rospy.get_param("/pitch_1_x")
-        self.assemblyYPitch = rospy.get_param("/pitch_1_y")
+        # self.assemblyX = rospy.get_param("/x1")
+        # self.assemblyY = rospy.get_param("/y1")
+        # self.assemblyXPitch = rospy.get_param("/pitch_1_x")
+        # self.assemblyYPitch = rospy.get_param("/pitch_1_y")
         # self.assemblyZStandoff = rospy.get_param("/z1_standoff")
         # self.assemblyZPress = rospy.get_param("/z1_press")
         # self.assemblyZPlace = rospy.get_param("/z1_place")
-        # self.assemblyX = 
-        # self.assemblyY = 
+        self.assemblyX = 0.4818641
+        self.assemblyY = 0.000193013
+        self.assemblyXPitch = 0.0508
+        self.assemblyYPitch = 0.0762
         self.assemblyZStandoff = 0.27 #0.26
         self.assemblyZPress = 0.25
         self.assemblyZPlace = 0.222945 #844932731  #0.2
 
         ## Marker Tray Parameters
 
-        self.markersX = rospy.get_param("/x2")
-        self.markersY = rospy.get_param("/y2")
+        # self.markersX = rospy.get_param("/x2")
+        # self.markersY = rospy.get_param("/y2")
         self.markersXPitch = rospy.get_param("/pitch_2_x")
         self.markersyYPitch = rospy.get_param("/pitch_2_y")
         # self.markersZStandoff = rospy.get_param("/z2_standoff")
         # self.markersyZPick = rospy.get_param("/z2_pick")
+        self.markersXPitch = 0.0508
+        self.markersyYPitch =0.0762
+        self.markersX = 0.343498
+        self.markersY = -0.199562
         self.markersZStandoff = 0.27
         self.markersZPick = 0.19962
 
@@ -75,6 +81,10 @@ class LocalManipulationNode():
         self.capsyYPitch = rospy.get_param("/pitch_3_y")
         # self.capsZStandoff = rospy.get_param("/z3_standoff")
         # self.capsyZPick = rospy.get_param("/z3_pick")
+        self.capsX = 0.3451085
+        self.capsY = 0.213730
+        self.capsXPitch = 0.0508
+        self.capsyYPitch = 0.0635
         self.capsZStandoff = 0.27
         self.capsZPick = 0.124
 
@@ -159,4 +169,39 @@ if __name__ == "__main__":
     rospy.init_node("local_manipulation")
     node = LocalManipulationNode()
     rospy.spin()
+
+
+# SAVED POSE FOR PICTURED DEMO
+#   pose: 
+#     position: 
+#       x: 0.4862770240147619
+#       y: 0.0011834753599661197
+#       z: 0.2628842768456551
+#     orientation: 
+#       x: 0.925012409379751
+#       y: -0.3799160576953355
+#       z: -0.0028783647203887716
+#       w: 0.0027471103433906376
+
+
+## tray 1 loc 8 hL0
+# pose: 
+#   header: 
+#     seq: 0
+#     stamp: 
+#       secs: 1637811024
+#       nsecs: 886617660
+#     frame_id: "panda_link0"
+#   pose: 
+#     position: 
+#       x: 0.5305835695748329
+#       y: 0.07681841928818005
+#       z: 0.22017864091247175
+#     orientation: 
+#       x: -0.923290353056612
+#       y: 0.3839470221322925
+#       z: -0.009351918646839614
+#       w: 0.005670076363189204
+# rpy
+# [-3.123939345305955, -0.01294017778980388, -0.7882980310115272]
 
