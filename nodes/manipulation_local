@@ -29,7 +29,11 @@ class LocalManipulationNode():
 
         ## The default orientation for all moves, so as to remain vertical in all interaction posiitoins
         # self.rpy = [np.pi, 0.0277365, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
-        self.rpy = [np.pi, 0, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
+        self.rpy = [np.pi, -0.0212150281, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
+
+        #   x: 3.14260370
+        #   y: -0.0212150281
+        #   z: -0.78448429
         self.q = transformations.quaternion_from_euler(self.rpy[0], self.rpy[1], self.rpy[1] )
         rospy.loginfo("self.rpy")
         rospy.loginfo(self.rpy)
