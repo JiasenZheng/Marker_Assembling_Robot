@@ -9,16 +9,17 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 import cv2
 import vision.vision1 as v1
+from group4.srv import ImageCapture
 
 
 class Bridge:
 
     def __init__(self):
-        self.take_image = rospy.Service('ImageCapture', ImageCapture, self.capture_callback)
+        self.take_image = rospy.Service('capture', ImageCapture, self.capture_callback)
         
         self.bridge = CvBridge()
         self._pub = rospy.Publisher("image_processed", Image, queue_size = 10)
-        self.rospy.init_node("vision_bridge")
+        rospy.init_node("vision_bridge")
 
     def callback(self,data):
 
@@ -29,9 +30,20 @@ class Bridge:
         current_frame = self.bridge.imgmsg_to_cv2(data)
         
         # Display image
-        cv2.imshow("camera", current_frame)
+        # cv2.imshow("camera", current_frame)
         
-        cv2.waitKey(1)
+        # cv2.waitKey(1)
+
+        cam = cv2.VideoCapture(2)
+
+        current_frame = cam.read()[1]
+
+        cv2.imshow("image", current_frame)
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
 
 
         # manipulate with open cv
@@ -45,9 +57,14 @@ class Bridge:
         self._pub.publish(msg)
 
     def capture_callback(self, req):
-        image_subscriber = rospy.Subscriber("/camera/color/image_raw", Image, self.callback)
+        rospy.loginfo("service is working")
+        
+        if req.a == True:
 
+            image_subscriber = rospy.Subscriber("/camera/color/image_raw", Image, self.callback)
 
+        return 1
+        
         
 if __name__ == "__main__":
     b = Bridge()
