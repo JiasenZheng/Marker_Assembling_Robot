@@ -16,8 +16,8 @@ class TrayPositions:
         locations = np.zeros(self.shape)
         for row in range(self.shape[0]):
             for col in range(self.shape[1]):
-                locX = (col - centerLocX) * self.pitchX + self.centerX
-                locY = (row - centerLocY) * self.pitchY + self.centerY
+                locX = (row - centerLocX) * self.pitchX + self.centerX
+                locY = (col - centerLocY) * self.pitchY + self.centerY
                 locations[row, col] = np.array([locX, locY])
         locs = locations.reshape((self.shape[0]*self.shape[1], 2))
         return locs

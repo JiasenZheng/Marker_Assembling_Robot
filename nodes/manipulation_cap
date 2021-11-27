@@ -76,7 +76,7 @@ class ManipulationCapNode:
         ## For grasp action dialog: rosrun actionlib_tools axclient.py /franka_gripper/grasp
         ## For move action dialog: rosrun actionlib_tools axclient.py /franka_gripper/move
         self.cap_grip = GraspGoal(width=0.01840, epsilon=GraspEpsilon(0.01, 0.02), speed=0.5, force=5)
-        self.cap_releaase = MoveGoal(width=0.03, speed=0.5)
+        self.cap_release = MoveGoal(width=0.03, speed=0.5)
         self.grip_cap_service = rospy.Service("grip_cap", Trigger, self.grip_cap)
         self.release_cap_service = rospy.Service("release_cap", Trigger, self.release_cap)
 
@@ -173,7 +173,7 @@ class ManipulationCapNode:
         return result.success, "Done"
 
     def release_cap(self, req):
-        self.gripper_move_client.send_goal(self.cap_releaase)
+        self.gripper_move_client.send_goal(self.cap_release)
         self.gripper_move_client.wait_for_result()
         result = self.gripper_move_client.get_result()
         return result.success, "Done"

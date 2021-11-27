@@ -1,24 +1,25 @@
-len: 0.2032
+len: 0.2032 ## tray sizes of the marker and assembly, rough
 wid: 0.1778
 
-h1:  0.051 
-h2: 0.01
+h1:  0.051 ## height of the marker and assembly 
+h2: 0.01 ## height of cap tray, estimate
 
-o1: 0.0
-o2: 0.0
-o3: 0.0
+o1: 0.0  
+o2: 0.0 
+o3: 0.0 
 
-x1: 0.478
-x2: 0.339
-x3: 0.339
-
+x1: 0.478 ## ASSEMBLY center location
 y1: 0.0
+
+x2: 0.339 ## MARKERS center location
 y2: -0.196
+
+x3: 0.339 ## CAPS center location
 y3: 0.21
 
-r: 0.0095
+r: 0.0095 ## estimate of marker radius
 
-h11: 0.019
+h11: 0.019 ## estimates for cylinder heights
 h12: 0.019
 h13: 0.01
 

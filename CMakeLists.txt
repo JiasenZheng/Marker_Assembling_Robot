@@ -71,6 +71,8 @@ add_service_files(
   GripperClose.srv
   PoseMove.srv
   DeltaMove.srv
+  LocationMove.srv
+  TrayLocationMove.srv
   GetState.srv
   GetPose.srv
   GetStringList.srv
@@ -201,6 +203,7 @@ nodes/plan_scene
 nodes/manipulation_pen
 nodes/debug_manipulation
 nodes/manipulation_macro_a
+nodes/manipulation_local
 nodes/limit_set
 nodes/bridge
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
