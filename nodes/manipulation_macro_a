@@ -5,62 +5,91 @@ import moveit_msgs.msg
 from geometry_msgs.msg import Pose
 from math import pi
 
-
 import rospy
 
-from group4.srv import GotoPos, DeltaMove, GetPose, CollisionSet, PoseMove
+from group4.srv import GotoPos, DeltaMove, GetPose, PoseMove
 
+"""
+The manipulation_macro_a node provides services to go to the 3 above tray locations, along with a backup disposal location
+
+Services:
+    /go_to_marker of type GotoPos uses Moveit to go to the above marker location
+    /go_to_cap of type GotoPos uses Moveit to go to the above cap location
+    /go_to_master of type GotoPos uses Moveit to go to the above master assembly location
+
+
+Parameters:
+    x1: master x location
+    y1: master y location
+
+    x2: marker x location
+    y2: marker y location
+
+    x3: cap x location
+    y3: cap y location
+
+"""
+
+
+
+
+#Threshold to move linearly upwars to before lateral movement
 z_thresh = 0.2
 
+
+
+#Camera translation transformation numbers
 cam_x = 0.0504
 cam_y = 0.0315
-cam_z = -0.054 #This value needs to be updated
 
-cam_height = 0.26
+
+#Camera height above 3 locations
+cam_height_cap = 0.21
+cam_height_master = 0.45
+cam_height_marker = 0.36
 
 
 class ManipulationMacroA:
 
     def __init__(self):
         
+
+        #Define X and Y camera locations for marker, master, and cap locations
+
         self.above_marker_x_0 = rospy.get_param('/x2')
         self.above_marker_y_0 = rospy.get_param('/y2')
 
-        #self.pitch_2_x = rospy.get_param('/pitch_2_x')
-        #self.pitch_2_y = rospy.get_param('/pitch_2_y')
-
-        self.above_marker_x = self.above_marker_x_0 #+  self.pitch_2_x
-        self.above_marker_y = self.above_marker_y_0 #+  self.pitch_2_y
-
+        self.above_marker_x = self.above_marker_x_0
+        self.above_marker_y = self.above_marker_y_0
 
         self.above_cap_x_0 = rospy.get_param('/x3')
         self.above_cap_y_0 = rospy.get_param('/y3')
 
-#        self.pitch_3_x = rospy.get_param('/pitch_3_x')
-#        self.pitch_3_y = rospy.get_param('/pitch_3_y')
-
-        self.above_cap_x = self.above_cap_x_0 #+  self.pitch_3_x
-        self.above_cap_y = self.above_cap_y_0 #+  self.pitch_3_y
-
-
+        self.above_cap_x = self.above_cap_x_0
+        self.above_cap_y = self.above_cap_y_0
 
         self.above_master_x_0 = rospy.get_param('/x1')
         self.above_master_y_0 = rospy.get_param('/y1')
 
-        self.above_master_x = self.above_master_x_0 #+  self.pitch_3_x
-        self.above_master_y = self.above_master_y_0 #+  self.pitch_3_y
+        self.above_master_x = self.above_master_x_0
+        self.above_master_y = self.above_master_y_0
 
 
+
+        #Define MoveIt groups
         self.robot = moveit_commander.RobotCommander()
         self.arm_group_name = "panda_arm"
         self.gripper_group_name = "hand"
         self.arm = moveit_commander.MoveGroupCommander(self.arm_group_name)
         self.gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name)
 
+        #Import supporting services
         self.delta_move = rospy.ServiceProxy('/delta_move',DeltaMove)
         self.get_arm_pose = rospy.ServiceProxy('/get_arm_pose',GetPose)
         self.pose_move = rospy.ServiceProxy('/pose_move', PoseMove)
 
+
+        #Define main services
         self.go_to_marker = rospy.Service("/go_to_marker", GotoPos, self.handle_marker)
         self.go_to_cap = rospy.Service("/go_to_cap", GotoPos, self.handle_cap)
         self.go_to_master = rospy.Service("/go_to_master", GotoPos, self.handle_master)
@@ -68,6 +97,14 @@ class ManipulationMacroA:
 
 
     def handle_marker(self, req):
+        """
+        handle_marker moves the robot arm to above the marker location
+        Args:
+            None
+        Return:
+            string
+        """
+        #Check and move in z if close to obstacles
 
         current = self.get_arm_pose()
 
@@ -86,11 +123,14 @@ class ManipulationMacroA:
         print('self.above_marker_x' , self.above_marker_x ) 
         print('self.above_marker_y' , self.above_marker_y)  
 
+
+        #Define XYZ linear maneuvers for above marker locations
         dx = - current.pose.pose.position.x + self.above_marker_x - cam_x
         dy = - current.pose.pose.position.y + self.above_marker_y - cam_y
-        dz = cam_height - current.pose.pose.position.z  - cam_z
+        dz = cam_height_marker - current.pose.pose.position.z
 
 
+        #Actuate maneuvers
         self.delta_move(0.0,dx)
         print('dx ' , dx)
 
@@ -100,9 +140,15 @@ class ManipulationMacroA:
         self.delta_move(2.0,dz)
         print('dz ' , dz)
 
+
+
+        #Check if the appopriate locations was reached, and return a "Done" or failed
         current = self.get_arm_pose()
 
-        if (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) < 0.01 and (abs(current.pose.pose.position.y) - (abs(self.above_marker_y) - cam_y)) < 0.01:
+        print('(abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)))
+        print('(abs(current.pose.pose.position.y) - (abs(self.above_marker_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_marker_y - cam_y))))
+
+        if (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) < 0.01 and (abs(current.pose.pose.position.y) - (abs(self.above_marker_y - cam_y))) < 0.01:
             return "Done"
 
         else:
@@ -110,14 +156,21 @@ class ManipulationMacroA:
 
 
     def handle_cap(self, req):
-
+        """
+        handle_cap moves the robot arm to above the cap location
+        Args:
+            None
+        Return:
+            string
+        """
+        #Check current position for collisions, shift upwards if too low
         current = self.get_arm_pose()
 
         if current.pose.pose.position.z<z_thresh:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
-        
+        #Go to home
         self.arm.set_named_target("ready")
         self.arm.go(wait=True)
 
@@ -128,11 +181,13 @@ class ManipulationMacroA:
         print('self.above_cap_x' , self.above_cap_x ) 
         print('self.above_cap_y' , self.above_cap_y)  
 
+
+        #Calculate XYZ Cartesian shift movements
         dx = - current.pose.pose.position.x + self.above_cap_x - cam_x
         dy = - current.pose.pose.position.y + self.above_cap_y - cam_y
-        dz = cam_height - current.pose.pose.position.z  - cam_z
+        dz = cam_height_cap - current.pose.pose.position.z
 
-
+        #Actuate maneuver
         self.delta_move(0.0,dx)
         print('dx ' , dx)
 
@@ -142,6 +197,8 @@ class ManipulationMacroA:
         self.delta_move(2.0,dz)
         print('dz ' , dz)
 
+
+        #Check final position to see if it completed proprely        
         current = self.get_arm_pose()
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)))
@@ -156,14 +213,21 @@ class ManipulationMacroA:
 
 
     def handle_master(self, req):
-
+        """
+        handle_master moves the robot arm to above the master location
+        Args:
+            None
+        Return:
+            string
+        """
+        #Check current position, shift upwards if too low
         current = self.get_arm_pose()
 
         if current.pose.pose.position.z<z_thresh:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
-        
+        #Go to home
         self.arm.set_named_target("ready")
         self.arm.go(wait=True)
 
@@ -174,11 +238,13 @@ class ManipulationMacroA:
         print('self.above_masterx' , self.above_master_x ) 
         print('self.above_master_y' , self.above_master_y)  
 
+
+        #Calculate positions
         dx = - current.pose.pose.position.x + self.above_master_x - cam_x
         dy = - current.pose.pose.position.y + self.above_master_y - cam_y
-        dz = cam_height - current.pose.pose.position.z  - cam_z
+        dz = cam_height_master - current.pose.pose.position.z
 
-
+        #Actuate maneuvers
         self.delta_move(0.0,dx)
         print('dx ' , dx)
 
@@ -188,6 +254,7 @@ class ManipulationMacroA:
         self.delta_move(2.0,dz)
         print('dz ' , dz)
 
+        #Check final position for completion status
         current = self.get_arm_pose()
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)))
@@ -203,22 +270,21 @@ class ManipulationMacroA:
 
 
     def handle_disposal(self, req):
-
+        """
+        handle_disposal moves the robot arm to above the disposal location
+        Args:
+            None
+        Return:
+            string
+        """
+        #Check the z height before moving to avoid collisions
         current = self.get_arm_pose()
 
         if current.pose.pose.position.z<z_thresh:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
-        self.disposal = Pose()
-        
-        self.disposalx = -0.1
-        self.disposaly = -0.1
-        self.disposalz = 0.3
-
-        self.disposalrx = pi
-        self.disposalry = 0
-        self.disposalrz = -pi/4
+        #Define disposal location, and go to it
 
         pose = [0.0, -0.4, 0.6, pi, 0.0, -pi/4]
         self.arm.set_pose_target(pose)
@@ -229,32 +295,17 @@ class ManipulationMacroA:
         print('1  ', (abs(current.pose.pose.position.x) - 0.0))
         print('2 ' ,(abs(current.pose.pose.position.y) - (0.4)))
 
-
+        #Open gripper
         self.gripper.set_named_target("open")
         self.gripper.go(wait=True)
 
+
+        #Check location 
         if (abs(current.pose.pose.position.x) - 0.0) < 0.01 and (abs(current.pose.pose.position.y) - (0.4)) < 0.01:
             return "Done"
 
         else:
             return "Failed"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def main():
