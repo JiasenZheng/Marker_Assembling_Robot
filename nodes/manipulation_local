@@ -2,6 +2,7 @@
 
 import rospy
 import manipulation.trayPositions as tP
+from manipulation.verificationUtilities import *
 from group4.srv import TrayLocationMove, LocationMove, PoseMove, GetPose
 from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from tf_conversions import transformations
@@ -10,14 +11,11 @@ import numpy as np
 
 """
 Call a move to each tray location by specifying the tray number and location number and height level
-
-Or could break it out into respective tray services
 """
 
 class LocalManipulationNode():
     def __init__(self):
         self.go_to_trayLocation = rospy.Service("go_to_trayLocation", TrayLocationMove, self.handle_goToTrayLocation)
-
 
         ## LATER IF NECESSARY
         # self.go_to_Assemblylocation = rospy.Service("go_to_assemblylocation", LocationMove, self.handle_goToAssemblyLocation)
@@ -29,19 +27,15 @@ class LocalManipulationNode():
 
         ## The default orientation for all moves, so as to remain vertical in all interaction posiitoins
         # self.rpy = [np.pi, 0.0277365, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
-        self.rpy = [np.pi, -0.0212150281, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
+        self.default_rpy = [np.pi, -0.0212150281, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
 
         #   x: 3.14260370
         #   y: -0.0212150281
         #   z: -0.78448429
-        self.q = transformations.quaternion_from_euler(self.rpy[0], self.rpy[1], self.rpy[1] )
-        rospy.loginfo("self.rpy")
-        rospy.loginfo(self.rpy)
-        rospy.loginfo("self.q")
-        rospy.loginfo(self.q)
-        
+        self.default_q = transformations.quaternion_from_euler(self.default_rpy[0], self.default_rpy[1], self.default_rpy[2] )
 
-        ## Assembly Tray Parameters
+        ## Assembly Tray Parameters 
+        ## zlist: [markerPlaceDownZ, capPlaceDownZ, capPressZ, standoffZ ]
 
         # self.assemblyX = rospy.get_param("/x1")
         # self.assemblyY = rospy.get_param("/y1")
@@ -56,29 +50,33 @@ class LocalManipulationNode():
         self.assemblyYPitch = 0.0762
         self.assemblyZStandoff = 0.27 #0.26
         self.assemblyZPress = 0.25
-        self.assemblyZPlace = 0.222945 #844932731  #0.2
+        self.assemblyZCapPlace = 0.222945 #0.2
+        self.assemblyZMarkerPlace = 0.19962
+
 
         ## Marker Tray Parameters
+        ## zlist: [markerPickUpZ, standoffZ]
 
         # self.markersX = rospy.get_param("/x2")
         # self.markersY = rospy.get_param("/y2")
-        self.markersXPitch = rospy.get_param("/pitch_2_x")
-        self.markersyYPitch = rospy.get_param("/pitch_2_y")
+        # self.markersXPitch = rospy.get_param("/pitch_2_x")
+        # self.markersyYPitch = rospy.get_param("/pitch_2_y")
         # self.markersZStandoff = rospy.get_param("/z2_standoff")
         # self.markersyZPick = rospy.get_param("/z2_pick")
-        self.markersXPitch = 0.0508
-        self.markersyYPitch =0.0762
         self.markersX = 0.343498
         self.markersY = -0.199562
+        self.markersXPitch = 0.0508
+        self.markersyYPitch = 0.0762
         self.markersZStandoff = 0.27
         self.markersZPick = 0.19962
 
         ## Cap Tray Parameters
+        ## zlist: [capPickUpZ, standoffZ]
 
-        self.capsX = rospy.get_param("/x3")
-        self.capsY = rospy.get_param("/y3")
-        self.capsXPitch = rospy.get_param("/pitch_3_x")
-        self.capsyYPitch = rospy.get_param("/pitch_3_y")
+        # self.capsX = rospy.get_param("/x3")
+        # self.capsY = rospy.get_param("/y3")
+        # self.capsXPitch = rospy.get_param("/pitch_3_x")
+        # self.capsyYPitch = rospy.get_param("/pitch_3_y")
         # self.capsZStandoff = rospy.get_param("/z3_standoff")
         # self.capsyZPick = rospy.get_param("/z3_pick")
         self.capsX = 0.3451085
@@ -88,41 +86,59 @@ class LocalManipulationNode():
         self.capsZStandoff = 0.27
         self.capsZPick = 0.124
 
-
         ## Setting up TrayPositions
 
         self.assemblyTray = tP.TrayPositions(
                             self.assemblyX, self.assemblyY, 
                             self.assemblyXPitch, self.assemblyYPitch,
-                            self.assemblyZStandoff, self.assemblyZPlace)
+                            sorted([self.assemblyZMarkerPlace, self.assemblyZCapPlace, 
+                            self.assemblyZStandoff, self.assemblyZPress]))
 
         self.markersTray = tP.TrayPositions(
                             self.markersX, self.markersY, 
                             self.markersXPitch, self.markersyYPitch, 
-                            self.markersZStandoff, self.markersZPick)
+                            sorted([self.markersZStandoff, self.markersZPick]))
 
+        capsRPY = self.default_rpy.copy()
+        capsRPY[-1] = -capsRPY[-1]
         self.capsTray = tP.TrayPositions(
                             self.capsX, self.capsY, 
                             self.capsXPitch, self.capsyYPitch, 
-                            self.capsZStandoff, self.capsZPick)
-    
+                            sorted([self.capsZStandoff, self.capsZPick]), capsRPY)
+
+        ## Pose Matching tolerances
+
+        # self.matchPositionTol = rospy.get_param("/match_position_tolerance", 0.002)
+        # self.matchOrientationTol = rospy.get_param("/match_orientation_tolerance", 0.008802)
+        self.matchPosTol = 0.001
+        self.matchOrientTol = 0.001
 
     def handle_goToTrayLocation(self, req):
 
         ## xyz coords corresponding to specified tray, location and heightLevel
         if req.trayNumber == 1: ## assembly
             xyz = self.assemblyTray.get_location(req.location, req.heightLevel)
+            rpy = self.assemblyTray.get_rpy()
+
         elif req.trayNumber == 2:  ## markers
             xyz = self.markersTray.get_location(req.location, req.heightLevel)
+            rpy = self.markersTray.get_rpy()
+
         elif req.trayNumber == 3: ## caps
             xyz = self.capsTray.get_location(req.location, req.heightLevel)
-        rospy.loginfo("xyz: ")
-        rospy.loginfo(xyz)
+            rpy = self.capsTray.get_rpy()
 
-        ## Build up the pose representations for poseMove and for comparison
+        ## Build up the pose representations for poseMove and for TargetPose comparison
         xyzPoint = Point(xyz[0], xyz[1], xyz[2])
-        rpyOrientation = Vector3(self.rpy[0], self.rpy[1], self.rpy[2])
-        qOrientation = Quaternion(self.q[0], self.q[1], self.q[2], self.q[3])
+        if not rpy:
+            rpyOrientation = Vector3(self.default_rpy[0], self.default_rpy[1], self.default_rpy[2])
+            qOrientation = Quaternion(self.default_q[0], self.default_q[1], self.default_q[2], self.default_q[3])
+
+        else: 
+            rpyOrientation = Vector3(rpy[0], rpy[1], rpy[2])
+            q = transformations.quaternion_from_euler(rpy[0], rpy[1], rpy[2] )
+            qOrientation = Quaternion(q[0], q[1], q[2], q[3]) 
+
         targetPose = Pose(xyzPoint, qOrientation)
 
         ## Command robot to move
@@ -130,41 +146,10 @@ class LocalManipulationNode():
 
         ## Verify Completed move
         currentPose = self.get_current_pose().pose
-        rospy.loginfo("currentPose.pose:")
-        rospy.loginfo(currentPose.pose)
-        if self.isPoseClose(targetPose, currentPose.pose):
-            success = True
-            error_msg = f"Final pose matches the target pose {targetPose}"
-        else:
-            error_msg = f"[ERROR]: Final pose {currentPose.pose} does not match the target pose {targetPose}"
-            success = False
+        success, msg = isPoseClose(currentPose.pose, targetPose, self.matchPosTol, self.matchOrientTol)
 
-        return success, currentPose.pose, error_msg
+        return success, currentPose.pose, msg
         
-
-    ## LATER IF NECESSARY
-    # def handle_goToAssemblyLocation(self, req):
-    #     pass
-    # def handle_goToMarkersLocation(self, req):
-    #     pass
-    # def handle_goToCapsLocation(self, req):
-    #     pass
-
-    def isPoseClose(self, referencePose, currentPose):
-        ref = self.poseToArray(referencePose)
-        cur = self.poseToArray(currentPose)
-        return np.allclose(ref, cur, 0.015)  ## might need to tweak the tolerance
-
-    def poseToArray(self, pose):
-        a1 = pose.position.x
-        a2 = pose.position.y
-        a3 = pose.position.z
-        a4 = pose.orientation.x
-        a5 = pose.orientation.y
-        a6 = pose.orientation.z
-        a7 = pose.orientation.w
-        return np.array([a1, a2, a3, a4, a5, a6, a7])
-
 if __name__ == "__main__":
     rospy.init_node("local_manipulation")
     node = LocalManipulationNode()
