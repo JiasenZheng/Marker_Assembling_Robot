@@ -20,6 +20,8 @@ from franka_msgs.msg import ErrorRecoveryActionGoal
 from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, GetFloatListResponse, DeltaMove
 from numpy import pi
 import numpy as np
+from tf_conversions import transformations
+from manipulation.translationUtilities import *
 
 
 
@@ -39,6 +41,7 @@ class ManipulationCapNode:
         
         ## Setting up Services to move the arm
         self.pose_move_service= rospy.Service("pose_move", PoseMove, self.handle_pose_move)
+        self.cart_pose_move_service = rospy.Service("cartesian_pose_move", PoseMove, self.handle_cartesian_pose_move)
         self.joints_move_service = rospy.Service("joints_move", JointsMove , self.handle_joints_move)
         self.named_move_service = rospy.Service("named_move", NamedMove, self.handle_named_move)
         self.delta_move_service = rospy.Service("delta_move", DeltaMove, self.handle_delta_move)
@@ -90,6 +93,29 @@ class ManipulationCapNode:
         pose = [x, y, z, rot_x, rot_y, rot_z]
         self.arm.set_pose_target(pose)
         self.arm.go(wait=True)
+        return "Done"
+
+    def handle_cartesian_pose_move(self, req):
+        curPose = self.arm.get_current_pose()
+        curPose = curPose.pose
+        rospy.loginfo("curPose from cart_pose_move")
+        rospy.loginfo(curPose)
+        targetPose = Pose(req.point, rpyVec3ToQuaternion(req.orientation))
+        rospy.loginfo("targetPose from cart_pose_move")
+        rospy.loginfo(targetPose)
+        # waypoints = [curPose, targetPose]
+        waypoints = [ targetPose]
+        eef_step = 0.01
+        jump_threshold = 0.1
+        path, fraction = self.arm.compute_cartesian_path(waypoints, eef_step, 0.0)
+        rospy.loginfo('path')
+        rospy.loginfo(path)
+        if req.velocityLevel == 0:
+            currState = self.arm.get_current_state()
+            path = self.arm.retime_trajectory(currState, path, 0.05, 0.05)
+            rospy.loginfo('updated path')
+            rospy.loginfo(path)
+        self.arm.execute(path, wait=True)
         return "Done"
 
     def handle_joints_move(self, req):

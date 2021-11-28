@@ -23,6 +23,7 @@ class LocalManipulationNode():
         # self.go_to_Capslocation = rospy.Service("go_to_capslocation", LocationMove, self.handle_goToCapsLocation)
 
         self.move_to_pose = rospy.ServiceProxy("pose_move", PoseMove)
+        self.cartesian_move_to_pose = rospy.ServiceProxy("cartesian_pose_move", PoseMove)
         self.get_current_pose = rospy.ServiceProxy("get_arm_pose", GetPose)
 
         ## The default orientation for all moves, so as to remain vertical in all interaction posiitoins
@@ -52,6 +53,7 @@ class LocalManipulationNode():
         self.assemblyZPress = 0.25
         self.assemblyZCapPlace = 0.222945 #0.2
         self.assemblyZMarkerPlace = 0.19962
+        self.assemblyZClear = 0.35
 
 
         ## Marker Tray Parameters
@@ -69,6 +71,7 @@ class LocalManipulationNode():
         self.markersyYPitch = 0.0762
         self.markersZStandoff = 0.27
         self.markersZPick = 0.19962
+        self.markersZClear = 0.35
 
         ## Cap Tray Parameters
         ## zlist: [capPickUpZ, standoffZ]
@@ -85,6 +88,7 @@ class LocalManipulationNode():
         self.capsyYPitch = 0.0635
         self.capsZStandoff = 0.27
         self.capsZPick = 0.124
+        self.capsZClear = 0.35
 
         ## Setting up TrayPositions
 
@@ -92,19 +96,20 @@ class LocalManipulationNode():
                             self.assemblyX, self.assemblyY, 
                             self.assemblyXPitch, self.assemblyYPitch,
                             sorted([self.assemblyZMarkerPlace, self.assemblyZCapPlace, 
-                            self.assemblyZStandoff, self.assemblyZPress]))
+                            self.assemblyZStandoff, self.assemblyZPress, self.assemblyZClear]))
 
         self.markersTray = tP.TrayPositions(
                             self.markersX, self.markersY, 
                             self.markersXPitch, self.markersyYPitch, 
-                            sorted([self.markersZStandoff, self.markersZPick]))
+                            sorted([self.markersZStandoff, self.markersZPick, self.markersZClear]))
 
         capsRPY = self.default_rpy.copy()
         capsRPY[-1] = -capsRPY[-1]
         self.capsTray = tP.TrayPositions(
                             self.capsX, self.capsY, 
                             self.capsXPitch, self.capsyYPitch, 
-                            sorted([self.capsZStandoff, self.capsZPick]), capsRPY)
+                            sorted([self.capsZStandoff, self.capsZPick, self.capsZClear]), 
+                            capsRPY)
 
         ## Pose Matching tolerances
 
@@ -142,7 +147,8 @@ class LocalManipulationNode():
         targetPose = Pose(xyzPoint, qOrientation)
 
         ## Command robot to move
-        self.move_to_pose(xyzPoint, rpyOrientation)
+        # self.move_to_pose(xyzPoint, rpyOrientation)
+        self.cartesian_move_to_pose(xyzPoint, rpyOrientation, req.velocityLevel)
 
         ## Verify Completed move
         currentPose = self.get_current_pose().pose
