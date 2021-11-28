@@ -43,18 +43,16 @@ class ManipulationPress:
             bool success is the status of the service completion
             string error message is a string providing info on the status of completion of the service.
         """
-        complete = self.go_to_tray_loc(1,req.location,1)
+        complete = self.go_to_tray_loc(1,req.location,2,0)
         
 
-        if True:
+        if complete.success:
             
             self.gripper.set_named_target("close")
             self.gripper.go(wait=True)
 
-            dz = -0.01
+            dz = -0.005
             self.delta_move(2.0,dz)
-            self.delta_move(2.0,dz)
-            self.delta_move(2.0,dz/1.5)
 
             success = True
             error_msg = "Done"
