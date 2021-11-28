@@ -2,6 +2,10 @@ import numpy as np
 
 
 def poseToArrays(pose):
+    """
+    Converts geometry_msg/Pose to position and orientation numpy arrays for 
+    subsequent operations 
+    """
     a1 = pose.position.x
     a2 = pose.position.y
     a3 = pose.position.z
@@ -14,6 +18,10 @@ def poseToArrays(pose):
     return pos, orient
 
 def isPoseClose(currentPose, targetPose, posTol=0.002, orientTol=0.005):
+    """
+    Compares two poses for closesness within specified position and 
+    orientation tolerances
+    """
     pos1, orient1 = poseToArrays(currentPose)
     pos2, orient2 = poseToArrays(targetPose)
     matchPose = np.allclose(pos1, pos2, atol=posTol)
