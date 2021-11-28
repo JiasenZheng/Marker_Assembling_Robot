@@ -1,2 +1,4 @@
 ---
-string result
+bool success
+geometry_msgs/Vector3 xyz
+string error_msg

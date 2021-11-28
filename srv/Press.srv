@@ -1,0 +1,4 @@
+int32 location
+---
+bool result
+string error_msg

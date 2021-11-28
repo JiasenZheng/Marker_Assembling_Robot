@@ -2,8 +2,10 @@
 
 import moveit_commander
 import moveit_msgs.msg 
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, Point, Vector3
+
 from math import pi
+import numpy as np
 
 import rospy
 
@@ -102,7 +104,9 @@ class ManipulationMacroA:
         Args:
             None
         Return:
-            string
+            bool success status (True or False)
+            Vector3 x,y,z position
+            string error_msg
         """
         #Check and move in z if close to obstacles
 
@@ -129,6 +133,7 @@ class ManipulationMacroA:
         dy = - current.pose.pose.position.y + self.above_marker_y - cam_y
         dz = cam_height_marker - current.pose.pose.position.z
 
+        ref_xyz = [(self.above_marker_x - cam_x), (self.above_marker_y - cam_y), (cam_height_marker)]
 
         #Actuate maneuvers
         self.delta_move(0.0,dx)
@@ -144,16 +149,20 @@ class ManipulationMacroA:
 
         #Check if the appopriate locations was reached, and return a "Done" or failed
         current = self.get_arm_pose()
+        current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)))
         print('(abs(current.pose.pose.position.y) - (abs(self.above_marker_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_marker_y - cam_y))))
 
-        if (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) < 0.01 and (abs(current.pose.pose.position.y) - (abs(self.above_marker_y - cam_y))) < 0.01:
-            return "Done"
+        if self.isXYZClose(ref_xyz,current_xyz):
+            success = True
+            error_msg = f"Final XYZ matches reference{ref_xyz}"
 
         else:
-            return "Failed"
+            success = False
+            error_msg = f"[ERROR]: Final XYZ {current_xyz} does not match the target pose {ref_xyz}"
 
+        return success, Vector3(current_xyz[0],current_xyz[1],current_xyz[2]), error_msg
 
     def handle_cap(self, req):
         """
@@ -161,7 +170,9 @@ class ManipulationMacroA:
         Args:
             None
         Return:
-            string
+            bool success status (True or False)
+            Vector3 x,y,z position
+            string error_msg
         """
         #Check current position for collisions, shift upwards if too low
         current = self.get_arm_pose()
@@ -187,6 +198,8 @@ class ManipulationMacroA:
         dy = - current.pose.pose.position.y + self.above_cap_y - cam_y
         dz = cam_height_cap - current.pose.pose.position.z
 
+        ref_xyz = [(self.above_cap_x), (self.above_cap_y), (cam_height_cap)]
+
         #Actuate maneuver
         self.delta_move(0.0,dx)
         print('dx ' , dx)
@@ -200,16 +213,21 @@ class ManipulationMacroA:
 
         #Check final position to see if it completed proprely        
         current = self.get_arm_pose()
+        current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)))
         print('(abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y)))
 
 
-        if (abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)) < 0.01 and (abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y)) < 0.01:
-            return "Done"
+        if self.isXYZClose(ref_xyz,current_xyz):
+            success = True
+            error_msg = f"Final XYZ matches reference{ref_xyz}"
 
         else:
-            return "Failed"
+            success = False
+            error_msg = f"[ERROR]: Final XYZ {current_xyz} does not match the target pose {ref_xyz}"
+
+        return success, Vector3(current_xyz[0],current_xyz[1],current_xyz[2]), error_msg
 
 
     def handle_master(self, req):
@@ -218,7 +236,9 @@ class ManipulationMacroA:
         Args:
             None
         Return:
-            string
+            bool success status (True or False)
+            Vector3 x,y,z position
+            string error_msg
         """
         #Check current position, shift upwards if too low
         current = self.get_arm_pose()
@@ -244,6 +264,9 @@ class ManipulationMacroA:
         dy = - current.pose.pose.position.y + self.above_master_y - cam_y
         dz = cam_height_master - current.pose.pose.position.z
 
+        ref_xyz = [(self.above_master_x), (self.above_master_y), (cam_height_master)]
+
+
         #Actuate maneuvers
         self.delta_move(0.0,dx)
         print('dx ' , dx)
@@ -256,16 +279,23 @@ class ManipulationMacroA:
 
         #Check final position for completion status
         current = self.get_arm_pose()
+        current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)))
         print('(abs(current.pose.pose.position.y) - (abs(self.above_master_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_master_y) - cam_y)))
 
 
-        if (abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)) < 0.01 and (abs(current.pose.pose.position.y) + (abs(self.above_master_y) - cam_y)) < 0.01:
-            return "Done"
+
+
+        if self.isXYZClose(ref_xyz,current_xyz):
+            success = True
+            error_msg = f"Final XYZ matches reference{ref_xyz}"
 
         else:
-            return "Failed"
+            success = False
+            error_msg = f"[ERROR]: Final XYZ {current_xyz} does not match the target pose {ref_xyz}"
+
+        return success, Vector3(current_xyz[0],current_xyz[1],current_xyz[2]), error_msg
 
 
 
@@ -275,7 +305,9 @@ class ManipulationMacroA:
         Args:
             None
         Return:
-            string
+            bool success status (True or False)
+            Vector3 x,y,z position
+            string error_msg
         """
         #Check the z height before moving to avoid collisions
         current = self.get_arm_pose()
@@ -287,10 +319,14 @@ class ManipulationMacroA:
         #Define disposal location, and go to it
 
         pose = [0.0, -0.4, 0.6, pi, 0.0, -pi/4]
+        ref_xyz = [0.0, -0.4, 0.6]
+
+
         self.arm.set_pose_target(pose)
         self.arm.go(wait=True)
 
         current = self.get_arm_pose()
+        current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
         print('1  ', (abs(current.pose.pose.position.x) - 0.0))
         print('2 ' ,(abs(current.pose.pose.position.y) - (0.4)))
@@ -300,13 +336,29 @@ class ManipulationMacroA:
         self.gripper.go(wait=True)
 
 
-        #Check location 
-        if (abs(current.pose.pose.position.x) - 0.0) < 0.01 and (abs(current.pose.pose.position.y) - (0.4)) < 0.01:
-            return "Done"
+        if self.isXYZClose(ref_xyz,current_xyz):
+            success = True
+            error_msg = f"Final XYZ matches reference{ref_xyz}"
 
         else:
-            return "Failed"
+            success = False
+            error_msg = f"[ERROR]: Final XYZ {current_xyz} does not match the target {ref_xyz}"
 
+        return success, Vector3(current_xyz[0],current_xyz[1],current_xyz[2]), error_msg
+
+
+    def isXYZClose(self, referencePose, currentPose):
+        #Source/reference (11/28): https://numpy.org/doc/stable/reference/generated/numpy.allclose.html
+        ref = self.poseToArray(referencePose)
+        cur = self.poseToArray(currentPose)
+        return np.allclose(ref, cur, atol = 0.05, rtol = 0.05)  ## might need to tweak the tolerance
+
+    def poseToArray(self, pose):
+        a1 = pose[0]
+        a2 = pose[1]
+        a3 = pose[2]
+        print("array: " , np.array([a1,a2,a3]))
+        return np.array([a1, a2, a3])
 
 def main():
     """
