@@ -100,6 +100,8 @@
   <build_export_depend>tf2_ros</build_export_depend>
   <build_export_depend>smach</build_export_depend>
   <build_export_depend>franka_gripper</build_export_depend>
+
+  <test_depend>rostest</test_depend>
   
   <!-- The export tag contains other, unspecified, tags -->
   <export>
