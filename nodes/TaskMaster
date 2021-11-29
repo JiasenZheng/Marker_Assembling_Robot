@@ -15,11 +15,29 @@ from copy import deepcopy
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
 #The next state concerns a different marker.
 
+#Test Code:
+def Foo():
+    return
+
+def Caz():
+    return
+
 def match():
     return True
 
 def search(input):
     return input
+
+class Restart(smach.State):
+    pass
+
+class Markers(smach.State):
+    pass
+
+class Caps(smach.State):
+    pass
+
+
 
 class lookProcedure(smach.State):
     def __init__(self):
@@ -111,6 +129,8 @@ def main():
 
     #Open the container
     with sm:
+        smach.StateMachine.add('RESET', )
+
         smach.StateMachine.add('LOOK_PROCEDURE', lookProcedure(), 
                                 transitions= {
                                     'match':'NAVIGATE_TO_MARKER',
