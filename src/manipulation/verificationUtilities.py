@@ -25,7 +25,7 @@ def isPoseClose(currentPose, targetPose, posTol=0.002, orientTol=0.005):
     pos1, orient1 = poseToArrays(currentPose)
     pos2, orient2 = poseToArrays(targetPose)
     matchPose = np.allclose(pos1, pos2, atol=posTol)
-    matchOrient = np.allclose(orient1, orient2, atol=orientTol)
+    matchOrient = np.allclose(np.abs(orient1), np.abs(orient2), atol=orientTol)
     match =  matchPose and matchOrient
     if match:
         msg = f"[Success] Current pose matches the Target pose {targetPose}"

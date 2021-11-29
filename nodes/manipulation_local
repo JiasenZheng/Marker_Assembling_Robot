@@ -103,8 +103,7 @@ class LocalManipulationNode():
                             self.markersXPitch, self.markersyYPitch, 
                             sorted([self.markersZStandoff, self.markersZPick, self.markersZClear]))
 
-        capsRPY = self.default_rpy.copy()
-        capsRPY[-1] = -capsRPY[-1]
+        capsRPY = [np.pi, -0.0212150281, np.pi/4]
         self.capsTray = tP.TrayPositions(
                             self.capsX, self.capsY, 
                             self.capsXPitch, self.capsyYPitch, 
@@ -116,7 +115,7 @@ class LocalManipulationNode():
         # self.matchPositionTol = rospy.get_param("/match_position_tolerance", 0.002)
         # self.matchOrientationTol = rospy.get_param("/match_orientation_tolerance", 0.008802)
         self.matchPosTol = 0.001
-        self.matchOrientTol = 0.001
+        self.matchOrientTol = 0.002
 
     def handle_goToTrayLocation(self, req):
 
@@ -149,6 +148,7 @@ class LocalManipulationNode():
         ## Command robot to move
         # self.move_to_pose(xyzPoint, rpyOrientation)
         self.cartesian_move_to_pose(xyzPoint, rpyOrientation, req.velocityLevel)
+        rospy.sleep(0.2) ## MIGHT NOT BE NEEDED
 
         ## Verify Completed move
         currentPose = self.get_current_pose().pose

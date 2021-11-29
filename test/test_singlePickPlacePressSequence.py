@@ -26,7 +26,7 @@ class TestSinglePPPSeqNode(unittest.TestCase):
         self.go_to_caps = rospy.ServiceProxy('go_to_cap', GotoPos)
 
         rospy.wait_for_service('go_to_disposal')
-        self.go_to_disposal = rospy.ServiceProxy('go_to_diaposal', GotoPos)
+        self.go_to_disposal = rospy.ServiceProxy('go_to_disposal', GotoPos)
 
         rospy.wait_for_service('go_to_marker')
         self.go_to_markers = rospy.ServiceProxy('go_to_marker', GotoPos)
@@ -157,7 +157,7 @@ class TestSinglePPPSeqNode(unittest.TestCase):
         #     success = result.success
         #     msg = result.error_msg
 
-        assert(success, True)
+        self.assertEqual(success, True)
 
     # def test_pickPlaceCapLoc0(self):
     #     ## go to clearance
@@ -233,7 +233,7 @@ class TestSinglePPPSeqNode(unittest.TestCase):
     #     #     success = result.success
     #     #     msg = result.error_msg
             
-    #     assert(success, True)
+    #     self.assertEqual(success, True)
 
     # def test_pressLoc0(self):
     #     ## go to clearance
@@ -268,7 +268,7 @@ class TestSinglePPPSeqNode(unittest.TestCase):
     #         success = result.success
     #         msg = result.error_msg
         
-    #     assert(success, True)
+    #     self.assertEqual(success, True)
 
 
 if __name__ == "__main__":
