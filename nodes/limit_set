@@ -1,18 +1,28 @@
 #!/usr/bin/env python
 
+from logging import error
 import rospy
 
 from group4.srv import CollisionSet
 
 from franka_msgs.srv import SetForceTorqueCollisionBehavior
 
+"""
+This node must be run prior to MOVEIT! being run on the robot
+
+"""
+
 class LimitSet:
     def __init__(self):
-        self.coll_hi_service = rospy.Service("/coll_hi", CollisionSet,self.handle_coll_hi)
-        self.coll_hi_service = rospy.Service("/coll_lo", CollisionSet,self.handle_coll_lo)
 
+        self.coll_hi_service = rospy.Service("/coll_hi", CollisionSet,self.handle_coll_hi)
+        self.coll_lo_service = rospy.Service("/coll_lo", CollisionSet,self.handle_coll_lo)
         self.set_force_torque_proxy = rospy.ServiceProxy('/franka_control/set_force_torque_collision_behavior', SetForceTorqueCollisionBehavior)    
+
         pass
+
+
+
 
     def handle_coll_hi(self,req):
         
@@ -32,9 +42,17 @@ class LimitSet:
         rospy.set_param('/franka_control/collision_config/lower_torque_thresholds_nominal', tau)
         rospy.set_param('/franka_control/collision_config/upper_torque_thresholds_nominal', tau)
 
-        self.set_force_torque_proxy(tau,tau,force,force)
+        status = self.set_force_torque_proxy(tau,tau,force,force)
 
-        return "Done"
+        if status.success == True:
+            success = True
+            error_msg = "Limits updated successfully"
+        else:
+            success = False
+            error_msg = "Limits not updated"
+        
+        return success, error_msg
+
 
 
     def handle_coll_lo(self,req):
@@ -42,22 +60,26 @@ class LimitSet:
         force = [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]
         #force = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-
-
         tau = [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]
         #tau = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         
-
-
         rospy.set_param('/franka_control/collision_config/lower_force_thresholds_nominal', force)
         rospy.set_param('/franka_control/collision_config/upper_force_thresholds_nominal', force)
 
         rospy.set_param('/franka_control/collision_config/lower_torque_thresholds_nominal', tau)
         rospy.set_param('/franka_control/collision_config/upper_torque_thresholds_nominal', tau)
 
-        self.set_force_torque_proxy(tau,tau,force,force)
+        status = self.set_force_torque_proxy(tau,tau,force,force)
 
-        return "Done"
+        if status.success == True:
+            success = True
+            error_msg = "Limits updated successfully"
+        else:
+            success = False
+            error_msg = "Limits not updated"
+
+        return success, error_msg
+
         
 
 def main():
