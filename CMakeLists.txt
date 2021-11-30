@@ -82,6 +82,7 @@ add_service_files(
   CollisionSet.srv
   GetMaxWrenches.srv
   Press.srv
+  PickNPlace.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -205,6 +206,8 @@ nodes/manipulation_pen
 nodes/debug_manipulation
 nodes/manipulation_macro_a
 nodes/manipulation_local
+nodes/manipulation_press
+nodes/manipulation_pnp
 nodes/limit_set
 nodes/bridge
 nodes/manipulation_press
@@ -251,3 +254,8 @@ DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+if(CATKIN_ENABLE_TESTING)
+    find_package(rostest REQUIRED)
+    add_rostest(test/single_ppp_sequence.test)
+endif()
