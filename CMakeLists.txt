@@ -89,6 +89,7 @@ generate_messages(
   geometry_msgs
   moveit_msgs
   franka_gripper
+  sensor_msgs
 )
 
 ################################################
@@ -181,7 +182,7 @@ catkin_install_python(PROGRAMS
   nodes/TaskMaster 
   nodes/TaskCommander
   nodes/manipulation_cap
-  nodes/bridge
+  nodes/vision_bridge
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

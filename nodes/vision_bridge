@@ -4,11 +4,12 @@
     Publishes: image_processed (sensor_msgs/Image) - The processed image
 """
 
+from inspect import currentframe
 import rospy
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 import cv2
-import vision.vision1 as v1
+from vision.vision1 import detect_contour
 from group4.srv import ImageCapture
 
 
@@ -16,52 +17,69 @@ class Bridge:
 
     def __init__(self):
         self.take_image = rospy.Service('capture', ImageCapture, self.capture_callback)
-        
-        self.bridge = CvBridge()
+        # self.subscriber = rospy.Subscriber('/camera/color/image_raw', Image, )
+        self._bridge = CvBridge()
         self._pub = rospy.Publisher("image_processed", Image, queue_size = 10)
         rospy.init_node("vision_bridge")
 
-    def callback(self,data):
+    # def callback(self,data):
 
-        # Output debugging information to the terminal
-        rospy.loginfo("receiving video frame")
+    #     # Output debugging information to the terminal
+    #     rospy.logerr("receiving video frame")
         
-        # Convert ROS Image message to OpenCV image
-        current_frame = self.bridge.imgmsg_to_cv2(data)
+    #     #Convert ROS Image message to OpenCV image
+    #     current_frame = self._bridge.imgmsg_to_cv2(data)
         
-        # Display image
-        # cv2.imshow("camera", current_frame)
-        
-        # cv2.waitKey(1)
+    #     #OpenCV stuff
 
-        cam = cv2.VideoCapture(2)
+    
 
-        current_frame = cam.read()[1]
+    #     cv2.imshow("image", current_frame)
+    #     cv2.imwrite("image.png", current_frame)
 
-        cv2.imshow("image", current_frame)
+    #     # stopping the output
 
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    #     # cv2.waitKey(1)
 
+    #     # releasing all windows
 
-
-
-        # manipulate with open cv
-        # low_res = cv2.blur(cv_image, (50, 50))
-        image_contour,grid = v1.detect_contour(current_frame, grid_size = (1,3), pixel_size = [475,125], starting_pixel = [125,200])
+    #     # cv2.destroyAllWindows()
+    #     cv2.release()
 
 
-        # convert to ROS
-        msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
+    #     # manipulate with open cv
+    #     # low_res = cv2.blur(current_frame, (50, 50))
+    #     image_contour,grid = detect_contour(current_frame, grid_size = (1,3), pixel_size = [475,125], starting_pixel = [125,200])
 
-        self._pub.publish(msg)
+
+    #     # convert to ROS
+    #     msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
+    #     # msg = self._bridge.cv2_to_imgmsg(low_res, "bgr8")
+
+    #     self._pub.publish(msg)
 
     def capture_callback(self, req):
-        rospy.loginfo("service is working")
+        rospy.logerr("service is working")
         
         if req.a == True:
+            cap = cv2.VideoCapture('/dev/video1')
+            success, image = cap.read()
+            
+            if success:
+                rospy.logerr("cv2 is working")
+                cv2.imshow("my_image", image)
+                cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg',image)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
+                msg = self._bridge.cv2_to_imgmsg(image, "bgr8")
 
-            image_subscriber = rospy.Subscriber("/camera/color/image_raw", Image, self.callback)
+                self._pub.publish(msg)
+
+            
+        
+        # image_contour,grid = detect_contour(current_frame, grid_size = (1,3), pixel_size = [475,125], starting_pixel = [125,200])
+        # msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
+        # self._pub.publish(msg)
 
         return 1
         
