@@ -132,69 +132,69 @@ class PickAndPlaceNode():
         ## go to clearance
         result = self.go_to_trayLoc(3, loc0, 2, 1)
         success = result.success
-        msg = result.error_msg
+        msg = "[Report @ GoToClearance]" + result.error_msg
 
         ## go to standoff
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 1, 1)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToStandoff]" + result.error_msg
 
         ## go to pick height
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 0, 0)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToPickHeight]" + result.error_msg
 
         ## grip 
         if success == True:
             result = self.grip()
             # success = result.success
             success = True
-            msg = result.message
+            msg = "[Report @ Grip]" + result.message
 
         ## withdraw from tray to standoff
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 1, 0)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToStandoff2]" + result.error_msg
         
         ## go to clearance
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 2, 1)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToClearance2]" + result.error_msg
 
         ## go to assembly clearance
         if success:
             result = self.go_to_trayLoc(1, loc1, 4, 1)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToAssemblyClearance]" + result.error_msg
 
         ## go to assembly standoff
         if success:
             result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToAssemblyStandoff]" + result.error_msg
 
         ## insert to cap place height
         if success:
             result = self.go_to_trayLoc(1, loc1, 1, 0)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToCapPlaceHeight]" + result.error_msg
 
         ## ungrip
         if success:
             result = self.ungrip()
             # success = result.success
             success = True
-            msg = result.message
+            msg = "[Report @ Ungrip]" + result.message
 
         ## withdraw to standoff
         if success:
             result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
-            msg = result.error_msg
+            msg = "[Report @ GoToAssemblyStandoff2]" + result.error_msg
 
         return success, msg
 
