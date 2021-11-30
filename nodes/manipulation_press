@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+
+from logging import error
+import moveit_commander
+import moveit_msgs.msg 
+from geometry_msgs.msg import Pose
+from math import pi
+
+import rospy
+
+from group4.srv import DeltaMove, Press, GripperClose, TrayLocationMove
+
+"""
+This node presses the marker caps onto each pen.
+
+Services:
+    /press: of type Press.srv presses a cap onto a marker. Relax collisions prior to launching Moveit first
+
+"""
+
+class ManipulationPress:
+    def __init__(self):
+
+        self.robot = moveit_commander.RobotCommander()
+        self.gripper_group_name = "hand"
+        self.gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name)
+
+
+
+        self.press_service = rospy.Service("/press",Press,self.handle_press)
+        self.delta_move = rospy.ServiceProxy('/delta_move',DeltaMove)
+        self.close_service = rospy.ServiceProxy("grip", GripperClose)
+        self.go_to_tray_loc = rospy.ServiceProxy("go_to_trayLocation", TrayLocationMove)
+
+
+
+    def handle_press(self,req):
+        """
+        handle_press is the call back that actuates the arm through Moveit to cap the marker
+        Args:
+            location: int32 variable for row major position of the marker to press
+        Return:
+            bool success is the status of the service completion
+            string error message is a string providing info on the status of completion of the service.
+        """
+        complete = self.go_to_tray_loc(1,req.location,2,0)
+        
+
+        if complete.success:
+            
+            self.gripper.set_named_target("close")
+            self.gripper.go(wait=True)
+
+            dz = -0.005
+            self.delta_move(2.0,dz)
+
+            success = True
+            error_msg = "Done"
+            return success, error_msg
+        
+        else:
+            success = False
+            error_msg = "Failed"
+            return success, error_msg
+
+
+def main():
+    """
+    Main function
+    """
+    rospy.init_node('manipulation_press')
+    manipulation_press = ManipulationPress()
+    rospy.spin()
+
+if __name__ == '__main__':
+    main()

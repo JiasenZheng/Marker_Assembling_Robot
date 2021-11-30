@@ -2,5 +2,5 @@ __pycache__
 *.vscode
 *.pyd
 *.pyc
-
- .vscode
+.vscode
+taskmaster.launch
