@@ -81,6 +81,7 @@ add_service_files(
   GotoPos.srv
   CollisionSet.srv
   GetMaxWrenches.srv
+  Press.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -206,6 +207,7 @@ nodes/manipulation_macro_a
 nodes/manipulation_local
 nodes/limit_set
 nodes/bridge
+nodes/manipulation_press
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
