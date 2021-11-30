@@ -21,19 +21,48 @@ class match:
             if arr[front] == data or arr[back] == data:
                 if arr[front] == data:
                     ans = deepcopy(arr[front])
-                    del arr[front]
+                    # del arr[front] Not certain whether this value needs to be deleted. Should be used for comparison later.
                 else:
                     ans = deepcopy(arr[back])
-                    del arr[back]
+                    # del arr[back]
                 return ans
             front += 1
             back -= 1
         return None
 
     def matching(self, sub1, sub2):
+        """
+        Func:matching: Returns an array of items that "match" eachother
+        Param:sub1: First list of values.
+        Param:sub2: Second list of vlaues.
+        """
         ans = []
         for x in sub1:
             y = self.fbsearch(sub2, x)
             if y != None:
                 ans.append([x, y])
-        return ans, sub1, sub2
+        return ans
+
+    def genMatch(lst):
+        """
+        Func:genMatch: Creates generated list object.
+        General Use: In order to iterate through object say: 
+            obj = match.genMatch(lst)
+            iter = next(obj)
+        Param:lst: List of matches
+        """
+        for i in lst:
+            yield i
+
+    def allNil(self, data, nil):
+        """
+        Func:allNil: Returns true if all data being compared is equal to some nil value.
+        Param:data:Data being observed.
+        Param:nil:Nil value to compare.
+        """
+        for t in data:
+            if t != nil:
+                return False
+        return True
+    
+    
