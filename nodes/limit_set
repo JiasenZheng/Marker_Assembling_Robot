@@ -8,7 +8,18 @@ from group4.srv import CollisionSet
 from franka_msgs.srv import SetForceTorqueCollisionBehavior
 
 """
-This node must be run prior to MOVEIT! being run on the robot
+This node must be run prior to MOVEIT! being run on the robot. The franka_control.launch file must be launched. This node provides two services to 
+change the force and torque collision limits in order to press the cap onto the pen. 
+Services:
+    /coll_hi of type CollisionSet sets the collision limit parameters to a higher threshold.
+    /coll_lo of type CollisionSet set the collision limit parameter to their default lower values.
+
+    Parameters:
+        /franka_control/collision_config/lower_force_thresholds_nominal: lower force threshold
+        /franka_control/collision_config/upper_force_thresholds_nominal: upper force threshold
+
+        /franka_control/collision_config/lower_torque_thresholds_nominal: lower force theshold
+        /franka_control/collision_config/upper_torque_thresholds_nominal: upper force threshold
 
 """
 
@@ -25,15 +36,19 @@ class LimitSet:
 
 
     def handle_coll_hi(self,req):
+        """
+        handle_coll_hi sets the limits to a hgiher value.
+        Args:
+            None
+        Return:
+            bool success status
+            string error_msg
+        """
         
 
         force = [44.0, 44.0, 44.0, 40.0, 40.0, 40.0]
-        #force = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-
 
         tau = [45.0, 45.0, 45.0, 45.0, 40.0, 40.0, 40.0]
-        #tau = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 
         rospy.set_param('/franka_control/collision_config/lower_force_thresholds_nominal', force)
@@ -56,12 +71,18 @@ class LimitSet:
 
 
     def handle_coll_lo(self,req):
+        """
+        handle_coll_hi sets the limits to a hgiher value.
+        Args:
+            None
+        Return:
+            bool success status
+            string error_msg
+        """
 
         force = [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]
-        #force = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         tau = [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]
-        #tau = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         
         rospy.set_param('/franka_control/collision_config/lower_force_thresholds_nominal', force)
         rospy.set_param('/franka_control/collision_config/upper_force_thresholds_nominal', force)
