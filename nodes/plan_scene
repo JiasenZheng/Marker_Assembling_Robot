@@ -4,16 +4,56 @@ import rospy
 import moveit_commander
 import geometry_msgs.msg
 from time import sleep
+
 """
 This node generates the planning scene with the table, and marker/pen hardware for the project. The planning scene
 loads parameters from a scene.yaml
 
+
+Parameters:
+    wid: width of cap, marker and pen locations in meters
+    len: length of cap, marker and pen locations in meters
+
+    o1: orientation of the master assembly area in the z axis in radians
+    o2: orientation of cap  area in the z axis in radians
+    o3: orientation of marker  area in the z axis in radians
+
+
+    x1: x location of master assembly area in meters
+    y1: y location of master assembly area in meters
+
+    x2: x location of marker area in meters
+    y2: y location of marker area in meters
+
+    x3: x location of cap area in meters
+    y3: y location of cap area in meters
+
+    r: Approximate radius of caps and markers in meters
+
+    h1: height of marker and master location in meters
+    h2: approximate height of cap location in meters
+
+    h11: approximate marker height in meters
+    h12: approximate marker+cap height in meters
+    h13: approximate cap height in meters
+
+    pitch_1_x: x dimension hole pitch of master location in meters
+    pitch_1_y: y dimension hole pitch  of master location in meters
+
+    pitch_2_x: x dimension hole pitch of marker location in meters
+    pitch_2_y: y dimension hole pitch of marker location in meters
+
+    pitch_3_x: x dimension hole pitch of cap location in meters
+    pitch_3_y: y dimension hole pitch of cap location in meters
+    
 """
 
 class Scene:
     def __init__(self):
+        
         self.scene = moveit_commander.PlanningSceneInterface()
         
+        #Acquire all parameters from server
         self.wid = rospy.get_param('wid')
         self.len = rospy.get_param('len')
         self.h1 = rospy.get_param('h1')
@@ -37,10 +77,19 @@ class Scene:
         self.h12 = rospy.get_param('h12')
         self.h13 = rospy.get_param('h13')
 
+        self.pitch_1_x = rospy.get_param('pitch_1_x')
+        self.pitch_1_y = rospy.get_param('pitch_1_y')
 
+        self.pitch_2_x = rospy.get_param('pitch_2_x')
+        self.pitch_2_y = rospy.get_param('pitch_2_y')
+
+        self.pitch_3_x = rospy.get_param('pitch_3_x')
+        self.pitch_3_y = rospy.get_param('pitch_3_y')
 
         sleep(1)
 
+        #Create table  surface
+        """
         self.ground_pose = geometry_msgs.msg.PoseStamped()
         self.ground_pose.header.frame_id = "world"
         self.ground_pose.pose.orientation.w=1
@@ -48,7 +97,9 @@ class Scene:
         self.ground_pose.pose.position.x=0.55
         self.ground_name = "ground"
         self.scene.add_box(self.ground_name,self.ground_pose,size=(0.91,0.61,0.01))
+        """
 
+        #Create master assembly location
         self.master_pose = geometry_msgs.msg.PoseStamped()
         self.master_pose.header.frame_id = "world"
         self.master_pose.pose.orientation.w=1
@@ -59,70 +110,74 @@ class Scene:
         self.master_name = "master"
         self.scene.add_box(self.master_name,self.master_pose,size=(self.wid,self.len,self.h1))
 
+
+        #Create cap location
         self.pen_pose = geometry_msgs.msg.PoseStamped()
         self.pen_pose.header.frame_id = "world"
         self.pen_pose.pose.orientation.w=1
-        self.pen_pose.pose.orientation.z=self.o2
-        self.pen_pose.pose.position.x=self.x2 
-        self.pen_pose.pose.position.y=self.y2     
-        self.pen_pose.pose.position.z=+self.h1/2  
-        self.pen_name = "pen"
-        self.scene.add_box(self.pen_name,self.pen_pose,size=(self.wid,self.len,self.h1))
+        self.pen_pose.pose.orientation.z=self.o3
+        self.pen_pose.pose.position.x=self.x3 
+        self.pen_pose.pose.position.y=self.y3     
+        self.pen_pose.pose.position.z=+self.h2/2  
+        self.pen_name = "cap"
+        self.scene.add_box(self.pen_name,self.pen_pose,size=(self.wid,self.len,self.h2))
 
+
+        #Create marker location
         self.marker_pose = geometry_msgs.msg.PoseStamped()
         self.marker_pose.header.frame_id = "world"
         self.marker_pose.pose.orientation.w=1
-        self.pen_pose.pose.orientation.z=self.o3        
-        self.marker_pose.pose.position.x=self.x3 
-        self.marker_pose.pose.position.y=self.y3    
-        self.marker_pose.pose.position.z=self.h2/2   
-        self.marker_name = "cap"
-        self.scene.add_box(self.marker_name,self.marker_pose,size=(self.wid,self.len,self.h2))
+        self.pen_pose.pose.orientation.z=self.o2        
+        self.marker_pose.pose.position.x=self.x2 
+        self.marker_pose.pose.position.y=self.y2    
+        self.marker_pose.pose.position.z=self.h1/2   
+        self.marker_name = "marker"
+        self.scene.add_box(self.marker_name,self.marker_pose,size=(self.wid,self.len,self.h1))
+        
 
-        
-        
+        #Create cap+marker objects at master area
         for i in range(3):
             for j in range(3):
                 self.marker_pose = geometry_msgs.msg.PoseStamped()
                 self.marker_pose.header.frame_id = "world"
                 self.marker_pose.pose.orientation.w=1
-                self.marker_pose.pose.position.x= 0.067818*i + self.x1 - 0.067818
-                self.marker_pose.pose.position.y=0.067818*j  + self.y1 - 0.06718
+                self.marker_pose.pose.position.x= self.pitch_1_x*i + self.x1 - self.pitch_1_x
+                self.marker_pose.pose.position.y=self.pitch_1_y*j  + self.y1 - self.pitch_1_y
                 self.marker_pose.pose.position.z=self.h1 + self.h11/2  
                 self.marker_name = "master"+str(i)+str(j)
                 self.scene.add_cylinder(self.marker_name,self.marker_pose,height=self.h11,radius=self.r)
                 pass
             pass
         
-        
+
+        #Create markers at marker location
         for i in range(3):
             for j in range(3):
                 self.marker_pose = geometry_msgs.msg.PoseStamped()
                 self.marker_pose.header.frame_id = "world"
                 self.marker_pose.pose.orientation.w=1
-                self.marker_pose.pose.position.x= 0.067818*i + self.x2 - 0.067818
-                self.marker_pose.pose.position.y=0.067818*j + self.y2  - 0.067818
+                self.marker_pose.pose.position.x= self.pitch_2_x*i + self.x2 - self.pitch_2_x
+                self.marker_pose.pose.position.y = self.pitch_2_y*j + self.y2  - self.pitch_2_y
                 self.marker_pose.pose.position.z=self.h1 + self.h12/2  
-                self.marker_name = "pen"+str(i)+str(j)
+                self.marker_name = "marker"+str(i)+str(j)
                 self.scene.add_cylinder(self.marker_name,self.marker_pose,height=self.h12,radius=self.r)
                 pass   
             pass
 
+
+        #Create caps at cap location
         for i in range(3):
             for j in range(3):
                 self.marker_pose = geometry_msgs.msg.PoseStamped()
                 self.marker_pose.header.frame_id = "world"
                 self.marker_pose.pose.orientation.w=1
-                self.marker_pose.pose.position.x= 0.067818*i + self.x3 - 0.067818
-                self.marker_pose.pose.position.y=0.067818*j + self.y3 - 0.06718
+                self.marker_pose.pose.position.x= self.pitch_3_x*i + self.x3 - self.pitch_3_x
+                self.marker_pose.pose.position.y=self.pitch_3_y*j + self.y3 - self.pitch_3_y
                 self.marker_pose.pose.position.z=self.h2 + self.h13/2
                 self.marker_name = "cap"+str(i)+str(j)
                 self.scene.add_cylinder(self.marker_name,self.marker_pose,height=self.h13,radius=self.r)
                 pass
             pass
-
-
-
         pass
 
 def main():

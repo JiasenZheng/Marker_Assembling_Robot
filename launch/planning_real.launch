@@ -1,0 +1,9 @@
+<launch>
+
+<rosparam command="load" file="$(find group4)/config/scene.yaml"/>
+
+<node name="manipulation_cap" pkg="group4" type="manipulation_cap" />
+
+<!-- <node name="manipulation_macro_a" pkg="group4" type="manipulation_macro_a" /> -->
+
+</launch>

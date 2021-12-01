@@ -1,0 +1,5 @@
+int32 pickLocation
+int32 placeLocation
+---
+bool result
+string error_msg

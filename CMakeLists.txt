@@ -55,11 +55,13 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
+add_message_files(
+  FILES
+  MaxWrenches.msg
+
 #   Message1.msg
 #   Message2.msg
-# )
+)
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -70,11 +72,18 @@ add_service_files(
   GripperClose.srv
   PoseMove.srv
   DeltaMove.srv
+  LocationMove.srv
+  TrayLocationMove.srv
   GetState.srv
   GetPose.srv
   GetStringList.srv
   GetFloatList.srv
   Grasp.srv
+  GotoPos.srv
+  CollisionSet.srv
+  GetMaxWrenches.srv
+  Press.srv
+  PickNPlace.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -125,7 +134,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES final-project-group-4-inc
- CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime
+ CATKIN_DEPENDS rospy smach std_msgs message_generation sensor_msgs moveit_msgs moveit_commander geometry_msgs message_runtime franka_gripper
 #  DEPENDS system_lib
 )
 
@@ -184,8 +193,15 @@ catkin_install_python(PROGRAMS nodes/TaskMaster nodes/TaskCommander
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
-
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+nodes/debug_manipulation
+nodes/manipulation_macro_a
+nodes/manipulation_local
+nodes/manipulation_press
+nodes/manipulation_pnp
+nodes/limit_set
+nodes/bridge
+nodes/manipulation_press
+DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ## Mark executables for installation
@@ -228,3 +244,8 @@ nodes/manipulation_pen
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+if(CATKIN_ENABLE_TESTING)
+    find_package(rostest REQUIRED)
+    add_rostest(test/single_ppp_sequence.test)
+endif()
