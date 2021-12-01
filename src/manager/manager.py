@@ -1,9 +1,9 @@
 """
-This class performs match functions
+This class is used to manage markers and caps
 """
 from copy import deepcopy
 
-class match:
+class manage:
     def __init__(self):
         return
     
@@ -27,20 +27,20 @@ class match:
             back -= 1
         return None
 
-    def matching(self, sub1, sub2):
-        """
-        Func:matching: Returns an array of items that "match" eachother
-        Param:sub1: First list of values.
-        Param:sub2: Second list of vlaues.
-        """
-        ans = []
-        for x in sub1:
-            y = self.fbsearch(sub2, x)
-            if y != None:
-                ans.append([x, y])
-        return ans
+    # def matching(self, sub1, sub2):
+    #     """
+    #     Func:matching: Returns an array of items that "match" eachother
+    #     Param:sub1: First list of values.
+    #     Param:sub2: Second list of vlaues.
+    #     """
+    #     ans = []
+    #     for x in sub1:
+    #         y = self.fbsearch(sub2, x)
+    #         if y != None:
+    #             ans.append([x, y])
+    #     return ans
 
-    def genMatch(lst):
+    def genList(lst):
         """
         Func:genMatch: Creates generated list object.
         General Use: In order to iterate through object say: 
