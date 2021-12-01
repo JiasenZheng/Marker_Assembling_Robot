@@ -1,9 +1,6 @@
 """
 This class performs match functions
 """
-import rospy
-import numpy as np
-
 from copy import deepcopy
 
 class match:
@@ -51,8 +48,8 @@ class match:
             iter = next(obj)
         Param:lst: List of matches
         """
-        for i in lst:
-            yield i
+        for index, item in enumerate(lst):
+            yield index, item
 
     def allNil(self, data, nil):
         """

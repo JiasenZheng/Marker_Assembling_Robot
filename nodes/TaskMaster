@@ -7,17 +7,23 @@ import numpy as np
 import moveit_commander
 import geometry_msgs.msg
 
+#Array of nine values where the index specifies locaition.
+
 # from std_msgs.msg import String
 from copy import deepcopy
 from match import match
+from schrodinger import cat
 
 #This finite state machine for the time being is a test.
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
 #The next state concerns a different marker.
 
+# markers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+# caps = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
 #Test Code:
 def Foo():
-    return
+    return ['v']
 
 def Caz():
     return
@@ -36,106 +42,81 @@ def search(input):
 
 #Manipulaition Services
 Marker_standoff = Foo
+Cap_standoff = Foo
+PickUp = Faz
 
 #OpenCV Services
 GetImage = Caz
 ParseData = Faz
 
 #Python Packages: 
-Search = Fuz
+TargetSearch = Fuz
 Match = Fuz
 
-
-class Restart(smach.State):
+class StandBy(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['Look'],
-                                output_keys = ['cf_output'])
+        smach.State.__init__(self, outcomes=['Input_Detected', 'Wait'],
+                                input_keys = ['Change'])
     def execute(self, userdata):
         rospy.loginfo('Executing state RESTART')
-        userdata.cf_output = False
-        return 'Look'
+        if userdata.ChangeFlag:
+            return 'Look'
+        return 'wait'
 
 class Markers(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['Look', 'Answer'],
-                            input_keys = ['CheckFlag', 'TargetMarker'],
-                            output_keys = ['MarkerData', 'TargetFlag'])
+        smach.State.__init__(self, outcomes=['Next?'],
+                            output_keys = ['MarkerData'])
     
     #Things to keep note of incase it causes logic errors down the line
     #I don't know if services output data has to be passed between each state
 
     def execute(self, userdata):
-        rospy.loginfo('Executing state MARKERS')
         Marker_standoff()
-        data = GetImage()
-        if userdata.CheckFlag:
-            if search(userdata.TargetMarker, data):
-                userdata.TargetFlag = True
-            else: userdata.TargetFlag = False
-            return 'Answer'
-        userdata.MarkerData = ParseData(data)
-        return 'Look'
-
-class Caps(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Next?', 'Answer'],
-                                input_keys = ['CheckFlag', 'TargetCap', 'MarkerData'],
-                                output_keys = ['CapData', 'TargetFlag', 'TargetList'])
-
-    def execute(self, userdata):
-        rospy.loginfo('Executing state CAPS')
-        Marker_standoff()
-        data = GetImage()
-        if userdata.CheckFlag:
-            if search(userdata.TargetCap, data):
-                userdata.TargetFlag = True
-            else: userdata.TargetFlag = False
-            return 'Answer'
-        userdata.MarkerData = ParseData(data)
-        userdata.TargetList = match.genMatch(match(userdata.MarkerData, userdata.CapData))
-        return 'Next?'
+        userdata.MarkerData = match.genMatch(ParseData(GetImage()))
+        return 'Next'
 
 class setTarget(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['Next?'],
-                                input_keys = [])
+        smach.State.__init__(self, outcomes=['To-Assembly', 'Finished'],
+                                input_keys = ['TargetList'],
+                                output_keys=['Target'])
     def execute(self, userdata):
         rospy.loginfo('Executing state SET_TARGET')
-        
-        return 'HaveTarget?'
-
-class Check(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['MarkerTarget?', 'CapTarget?', 'HaveTarget', 'CapTargetMissing', 'HaveTarget', 'Reset'],
-                                input_keys = [])
-    def execute(self, userdata):
-        rospy.loginfo('Executing state CHECK')
-        return 'MarkerTarget?'
-        return 'Reset'
-        return 'HaveTarget'
-        return 'CapTarget?'
-        return 'CapTargetMissing'
-        return 'HaveTarget'
-
-class Search(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Result'],
-                            input_keys = [])
+        userdata.Target = next(userdata.TargetList)
+        return 'To-Assembly'
+        return 'Finished'
 
 class Move(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['HaveTarget?', 'To-Input', 'To-Assemble'],
-                                input_keys = [])
+        smach.State.__init__(self, outcomes=['HaveTarget?', 'To-Input', 'Assemble'],
+                                input_keys = ['Target','HaveTarget'])
+    
     def execute(self, userdata):
         rospy.loginfo('Executing state MOVE')
-        return 'HaveTarget?'
-        return 'To-Input'
-        return 'To-Assymbly'
+        if userdata.HaveTarget[0]:
+            return 'HaveTarget?'
+        else:
+            if userdata.HaveTarget[1]:
+                userdata.HaveTarget.CloseBox()
+                return 'Assemble'
+            else:
+                userdata.HaveTarget.CloseBox()
+                return 'To-Input'
 
-class Assemble(smach.State):
+class Caps(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['Next?'],
-                                input_keys = [])
+        smach.State.__init__(self, outcomes=['Result'],
+                                input_keys = ['Target'],
+                                output_keys = ['HaveTarget'])
+
+    def execute(self, userdata):
+        userdata.HaveTarget.OpenBox(True)
+        return 'Result'
+
+class Complete(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['Next?'])
     def execute(self, userdata):
         rospy.loginfo('Executing state ASSEMBLE')
         return 'Next?'
@@ -146,57 +127,63 @@ def main():
 
     #Create state machine
     sm = smach.StateMachine(outcomes = ['Finished'])
-    sm.userdata.item = 2
-    #input: 0
-    #Assymbly: 1
-    sm.userdata.at = 0
-    sm.userdata.CheckFlag = False
-    sm.userdata.
-
-
+    sm.userdata.list = []
+    sm.userdata.changeFlag = True
+    sm.userdata.loc = 0
+    sm.userdata.have = cat
+    sm.userdata.obj = None
+    sm.userdata.index = 0
+    
     #Open the container
     with sm:
-        smach.StateMachine.add('RESET', Restart(), 
+        smach.StateMachine.add('STAND-BY', StandBy(), 
                                 transitions = {
-                                    'Look':'MARKERS'
-                                }, remapping = {})
+                                    'Input_Detected':'MARKERS',
+                                    'wait':'StandBy'
+                                }, remapping = {
+                                    'Change':'changeFlag'
+                                })
 
         smach.StateMachine.add('MARKERS', Markers(), 
                                 transitions = {
-                                    'Look':'CAPS',
-                                    'Answer':'CHECK'
-                                }, remapping = {})
-
-        smach.StateMachine.add('CAPS', Caps(), 
-                                transitions = {
-                                    'Next?':'SET_TARGET',
-                                    'Answer':'CHECK'
-                                }, remapping = {})
+                                    'Next?':'SET_TARGET'
+                                }, remapping = {
+                                    'MarkerData':'list'
+                                })
 
         smach.StateMachine.add('SET_TARGET', setTarget(), 
                                 transitions = {
-                                    'HaveTarget?':'CHECK'
-                                }, remapping = {})
-
-        smach.StateMachine.add('CHECK', Check(), 
-                                        transitions = {
-                                            'MarkerTarget?':'MARKERS',
-                                            'CapTarget?':'CAPS',
-                                            'HaveTarget':'MOVE',
-                                            'CapTargetMissing':'SEARCH',
-                                            'Reset':'RESTART'
-                                        }, remapping = {})
-
-        smach.StateMachine.add('SEARCH', Search(), 
-                                        transitions = {
-                                            'result':'MOVE'
-                                        }, remapping = {})
+                                    'finished':'STAND-BY',
+                                    'To-Assembly':'MOVE'
+                                }, remapping = {
+                                    'TargetList':'list',
+                                    'Target':'obj'
+                                })
 
         smach.StateMachine.add('MOVE', Move(), 
                                 transitions = {
+                                    'HaveTarget?':'CAPS',
                                     'To-Input':'RESTART',
-                                    'To-Assymbly':'ASSEMBLE'
-                                }, remapping = {})
+                                    'assemble':'COMPLETE'
+                                }, remapping = {
+                                    'Target':'obj',
+                                    'HaveTarget':'have'
+                                })
+        
+        smach.StateMachine.add('CAPS', Caps(),
+                                transitions = {
+                                    'Next?':'SET_TARGET',
+                                    'Answer':'CHECK'
+                                }, remapping = {
+                                    'Target':'obj',
+                                    'HaveTarget':'have'
+                                })
+        smach.StateMachine.add('COMPLETE', Complete(),
+                                transitions = {
+                                    'Next?':'SET-TARGET'
+                                })
+
+
 
         smach.StateMachine.add('ASSEMBLE', Assemble(), 
                                 transitions = {
