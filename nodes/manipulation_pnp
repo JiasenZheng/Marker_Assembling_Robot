@@ -38,11 +38,11 @@ class PickAndPlaceNode():
         rospy.wait_for_service('/stop_recording_F_ext')
         self.get_local_max_ext_F = rospy.ServiceProxy('stop_recording_F_ext', GetMaxWrenches)        
 
-        rospy.wait_for_service('grip_cap')
-        self.grip = rospy.ServiceProxy('grip_cap', Trigger)
+        # rospy.wait_for_service('grip_cap')
+        # self.grip = rospy.ServiceProxy('grip_cap', Trigger)
 
-        rospy.wait_for_service('release_cap')
-        self.ungrip = rospy.ServiceProxy('release_cap', Trigger)
+        # rospy.wait_for_service('release_cap')
+        # self.ungrip = rospy.ServiceProxy('release_cap', Trigger)
 
 
         # rospy.wait_for_service('coll_hi')
@@ -74,11 +74,11 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToPickHeight]" + result.error_msg
 
         ## grip
-        if success == True:
-            result = self.grip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Grip]" + result.message
+        # if success == True:
+        #     result = self.grip()
+        #     # success = result.success
+        #     success = True
+        #     msg = "[Report @ Grip]" + result.message
 
         ## withdraw from tray to standoff
         if success == True:
@@ -111,11 +111,11 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToMarkerPlace]" + result.error_msg
 
         ## ungrip, iff not simulation test
-        if success:
-            result = self.ungrip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Ungrip]" + result.message
+        # if success:
+        #     result = self.ungrip()
+        #     # success = result.success
+        #     success = True
+        #     msg = "[Report @ Ungrip]" + result.message
 
         ## withdraw to standoff
         if success:
@@ -147,11 +147,11 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToPickHeight]" + result.error_msg
 
         ## grip 
-        if success == True:
-            result = self.grip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Grip]" + result.message
+        # if success == True:
+        #     result = self.grip()
+        #     # success = result.success
+        #     success = True
+        #     msg = "[Report @ Grip]" + result.message
 
         ## withdraw from tray to standoff
         if success == True:
@@ -184,11 +184,11 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToCapPlaceHeight]" + result.error_msg
 
         ## ungrip
-        if success:
-            result = self.ungrip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Ungrip]" + result.message
+        # if success:
+        #     result = self.ungrip()
+        #     # success = result.success
+        #     success = True
+        #     msg = "[Report @ Ungrip]" + result.message
 
         ## withdraw to standoff
         if success:
