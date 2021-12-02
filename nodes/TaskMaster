@@ -7,7 +7,7 @@ import smach
 import numpy as np
 import moveit_commander
 import geometry_msgs.msg
-from group4.srv import Press, PickNPlace
+from group4.srv import Press, PickNPlace, GotoPos
 
 
 #Array of nine values where the index specifies locaition.
@@ -31,10 +31,10 @@ def CloseBox():
 press_down = rospy.ServiceProxy('press', Press)
 marker_to_assembly = rospy.ServiceProxy('pnpMarker', PickNPlace)
 cap_to_assembly = rospy.ServiceProxy('pnpCap', PickNPlace)
-look_at_assembly = rospy.ServiceProxy('go_to_master', manipulation_macro)
-go_to_disposal = rospy.ServiceProxy('go_to_disposal', manipulation_macro)
-go_to_cap = rospy.ServiceProxy('go_to_cap', manipulation_macro)
-go_to_marker = rospy.ServiceProxy('go_to_marker', manipulation_macro)
+assembly_standoff = rospy.ServiceProxy('go_to_master', GotoPos)
+dispose = rospy.ServiceProxy('go_to_disposal', GotoPos)
+cap_standoff = rospy.ServiceProxy('go_to_cap', GotoPos)
+marker_standoff = rospy.ServiceProxy('go_to_marker', GotoPos)
 
 #This finite state machine for the time being is a test.
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
@@ -42,7 +42,8 @@ go_to_marker = rospy.ServiceProxy('go_to_marker', manipulation_macro)
 
 genList = manage.genList
 
-markers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+# markers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+markers = [0]
 # caps = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 #Test Code:
@@ -84,6 +85,7 @@ class StandBy(smach.State):
                                 output_keys = ['Change'])
     def execute(self, userdata):
         rospy.loginfo('Executing state STAND-BY')
+        userdata.Change = False
         if userdata.Change:
             return 'input-detected'
         return 'wait'
@@ -97,7 +99,7 @@ class Markers(smach.State):
     #I don't know if services output data has to be passed between each state
 
     def execute(self, userdata):
-        Marker_standoff()
+        marker_standoff()
         userdata.MarkerData = genList(markers)
         return 'next?'
 
@@ -123,16 +125,16 @@ class Move(smach.State):
     
     def execute(self, userdata):
         rospy.loginfo('Executing state MOVE')
-        # print(type(userdata.HaveTarget))
         if not userdata.HaveTarget[0]:
+            marker_to_assembly(userdata.Target, 0)
             return 'have-target?'
         else:
-            # return 'Finished'
-            # print(f"The cat is i: {userdata.HaveTarget[1]}")
             if userdata.HaveTarget[1]:
+                cap_to_assembly(0, 0)
                 userdata.HaveTarget = CloseBox()
                 return 'assemble'
             else:
+                #Might be a service Might go back to previous model
                 userdata.HaveTarget = CloseBox()
                 return 'to-input'
 
@@ -144,6 +146,7 @@ class Caps(smach.State):
 
     def execute(self, userdata):
         rospy.loginfo('Executing state CAPS')
+        cap_standoff()
         userdata.HaveTarget = OpenBox(True)
         print(f"The cat is a: {userdata.HaveTarget}")
         return 'result'
@@ -151,8 +154,10 @@ class Caps(smach.State):
 class Complete(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['next?'])
+    
     def execute(self, userdata):
         rospy.loginfo('Executing state ASSEMBLE')
+        press_down(0)
         return 'next?'
 
 
