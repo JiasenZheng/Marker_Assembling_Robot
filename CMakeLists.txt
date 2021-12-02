@@ -10,6 +10,7 @@ project(group4)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
 rospy
+roslib
 smach
 std_msgs
 message_generation
@@ -189,6 +190,7 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
+<<<<<<< HEAD
 # catkin_install_python(PROGRAMS 
 #   nodes/smach_viewer  
 #   nodes/TaskMaster 
@@ -207,6 +209,10 @@ catkin_install_python(PROGRAMS
 nodes/TaskMaster 
 nodes/TaskCommander 
 nodes/smach_viewer
+=======
+catkin_install_python(PROGRAMS nodes/TaskMaster
+#   scripts/my_python_script
+>>>>>>> defae55cb3bf27b95f57af3e3942d40cca2049f4
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
@@ -217,6 +223,7 @@ nodes/manipulation_press
 nodes/manipulation_pnp
 nodes/limit_set
 nodes/bridge
+nodes/manipulation_press
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
