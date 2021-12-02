@@ -10,6 +10,7 @@ project(group4)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
 rospy
+roslib
 smach
 std_msgs
 message_generation
@@ -199,7 +200,7 @@ include_directories(
 catkin_install_python(PROGRAMS 
 nodes/TaskMaster 
 # nodes/TaskCommander 
-nodes/smach_viewer
+# nodes/smach_viewer
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
@@ -210,6 +211,7 @@ nodes/manipulation_press
 nodes/manipulation_pnp
 nodes/limit_set
 nodes/bridge
+nodes/manipulation_press
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

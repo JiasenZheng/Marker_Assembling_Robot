@@ -4,3 +4,4 @@ __pycache__
 *.pyc
 .vscode
 taskmaster.launch
+samch_viewer2
