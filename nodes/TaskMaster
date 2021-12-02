@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+# from nodes.manipulation_press import ManipulationPress
 import rospy
 import smach_ros
 import smach
 import numpy as np
 import moveit_commander
 import geometry_msgs.msg
+from group4.srv import Press, PickNPlace
 
 
 #Array of nine values where the index specifies locaition.
@@ -13,7 +15,6 @@ import geometry_msgs.msg
 # from std_msgs.msg import String
 from copy import deepcopy
 from manager.manager import manage
-# from schrodinger.cat import cat
 
 box = [False, False]
 
@@ -24,6 +25,16 @@ def OpenBox(cat):
 def CloseBox():
     """Resets the box such that its state is unknown"""
     return box
+
+
+#Rosservice Proxies
+press_down = rospy.ServiceProxy('press', Press)
+marker_to_assembly = rospy.ServiceProxy('pnpMarker', PickNPlace)
+cap_to_assembly = rospy.ServiceProxy('pnpCap', PickNPlace)
+look_at_assembly = rospy.ServiceProxy('go_to_master', manipulation_macro)
+go_to_disposal = rospy.ServiceProxy('go_to_disposal', manipulation_macro)
+go_to_cap = rospy.ServiceProxy('go_to_cap', manipulation_macro)
+go_to_marker = rospy.ServiceProxy('go_to_marker', manipulation_macro)
 
 #This finite state machine for the time being is a test.
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
