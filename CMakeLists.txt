@@ -190,29 +190,8 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-<<<<<<< HEAD
-# catkin_install_python(PROGRAMS 
-#   nodes/smach_viewer  
-#   nodes/TaskMaster 
-#   nodes/TaskCommander
-#   nodes/manipulation_cap
-#   nodes/bridge
-#   nodes/plan_scene
-#   nodes/manipulation_pen)
-
-catkin_install_python(PROGRAMS 
-  nodes/TaskMaster 
-  nodes/TaskCommander
-  nodes/manipulation_cap
-  nodes/vision_bridge
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-nodes/TaskMaster 
-nodes/TaskCommander 
-nodes/smach_viewer
-=======
 catkin_install_python(PROGRAMS nodes/TaskMaster
 #   scripts/my_python_script
->>>>>>> defae55cb3bf27b95f57af3e3942d40cca2049f4
 nodes/manipulation_cap
 nodes/plan_scene
 nodes/manipulation_pen
