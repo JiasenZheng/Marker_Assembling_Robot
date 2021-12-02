@@ -198,7 +198,7 @@ include_directories(
 
 catkin_install_python(PROGRAMS 
 nodes/TaskMaster 
-nodes/TaskCommander 
+# nodes/TaskCommander 
 nodes/smach_viewer
 nodes/manipulation_cap
 nodes/plan_scene
