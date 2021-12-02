@@ -32,6 +32,7 @@ def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel
     return img0, grid
 
 def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200]):
+    grid_len = grid_size[0]*grid_size[1]
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
@@ -57,6 +58,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             grid[gy,gx] = hsv[cy,cx]
             cs.append(c)
     cv.rectangle(img0,starting_pixel,np.add(starting_pixel,pixel_size),(0,0,255),3)
+    grid = grid.reshape(1,grid_len,3)[0]
 
     return img0, grid
 
@@ -76,3 +78,7 @@ def detect(img0):
 
     return img0
 
+if __name__ == "__main__":
+    image = cv.imread('image.png')
+    img0, grid = detect_contour2(image)
+    print(grid)
