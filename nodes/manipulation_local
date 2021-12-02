@@ -114,8 +114,8 @@ class LocalManipulationNode():
 
         # self.matchPositionTol = rospy.get_param("/match_position_tolerance", 0.002)
         # self.matchOrientationTol = rospy.get_param("/match_orientation_tolerance", 0.008802)
-        self.matchPosTol = 0.001
-        self.matchOrientTol = 0.002
+        self.matchPosTol = 0.002
+        self.matchOrientTol = 0.005
 
     def handle_goToTrayLocation(self, req):
 
