@@ -14,60 +14,57 @@ class PickAndPlaceNode():
         self.pnpCap = rospy.Service('pnpCap', PickNPlace, self.pickandplaceCap )
 
         ## Preparing services to be called in the pick and place sequences
-        rospy.wait_for_service('go_to_cap')
+        # rospy.wait_for_service('go_to_cap')
         self.go_to_caps = rospy.ServiceProxy('go_to_cap', GotoPos)
 
-        rospy.wait_for_service('go_to_disposal')
+        # rospy.wait_for_service('go_to_disposal')
         self.go_to_disposal = rospy.ServiceProxy('go_to_diaposal', GotoPos)
 
-        rospy.wait_for_service('go_to_marker')
+        # rospy.wait_for_service('go_to_marker')
         self.go_to_markers = rospy.ServiceProxy('go_to_marker', GotoPos)
 
-        rospy.wait_for_service('go_to_master')
+        # rospy.wait_for_service('go_to_master')
         self.go_to_assembly = rospy.ServiceProxy('go_to_master', GotoPos)
 
-        rospy.wait_for_service('go_to_trayLocation')
+        # rospy.wait_for_service('go_to_trayLocation')
         self.go_to_trayLoc = rospy.ServiceProxy('go_to_trayLocation', TrayLocationMove)
 
-        # rospy.wait_for_service('press')
-        # self.press = rospy.ServiceProxy('press', Press)
-
-        rospy.wait_for_service('/getMax_F_ext')
+        # rospy.wait_for_service('/getMax_F_ext')
         self.listen_for_max_ext_F = rospy.ServiceProxy('getMax_F_ext', Trigger)
 
-        rospy.wait_for_service('/stop_recording_F_ext')
+        # rospy.wait_for_service('/stop_recording_F_ext')
         self.get_local_max_ext_F = rospy.ServiceProxy('stop_recording_F_ext', GetMaxWrenches)        
 
-        rospy.wait_for_service('grip_cap')
+        # rospy.wait_for_service('grip_cap')
         self.grip = rospy.ServiceProxy('grip_cap', Trigger)
 
-        rospy.wait_for_service('release_cap')
+        # rospy.wait_for_service('release_cap')
         self.ungrip = rospy.ServiceProxy('release_cap', Trigger)
 
-
-        # rospy.wait_for_service('coll_hi')
-        # self.set_coll_limit_high = rospy.ServiceProxy('coll_hi', CollisionSet)
-
-        # rospy.wait_for_service('coll_lo')
-        # self.set_coll_limit_low = rospy.ServiceProxy('coll_lo', CollisionSet)
 
     def pickandplaceMarker(self,req):
         loc0 = req.pickLocation
         loc1 = req.placeLocation
         # loc = req.location
 
-        ## go to clearance
-        result = self.go_to_trayLoc(2, loc0, 2, 1)
+        ## ungrip for extra assurance
+        result = self.ungrip()
         success = result.success
-        msg = "[Report @ GoToClearance]" + result.error_msg
+        msg = "[Report @ Ungrip]" + result.message
 
-        ## go to standoff
+        ## go to clearance, fast
+        if success:
+            result = self.go_to_trayLoc(2, loc0, 2, 1)
+            success = result.success
+            msg = "[Report @ GoToClearance]" + result.error_msg
+
+        ## go to standoff, fast
         if success == True:
             result = self.go_to_trayLoc(2, loc0, 1, 1)
             success = result.success
             msg = "[Report @ GoToStandoff]" + result.error_msg
 
-        ## go to pick height
+        ## go to pick height, slow
         if success == True:
             result = self.go_to_trayLoc(2, loc0, 0, 0)
             success = result.success
@@ -80,31 +77,31 @@ class PickAndPlaceNode():
             success = True
             msg = "[Report @ Grip]" + result.message
 
-        ## withdraw from tray to standoff
+        ## withdraw from tray to standoff, slow
         if success == True:
             result = self.go_to_trayLoc(2, loc0, 1, 0)
             success = result.success
             msg = "[Report @ GoToStandoff2]" + result.error_msg
         
-        ## go to clearance
+        ## go to clearance, fast
         if success:
             result = self.go_to_trayLoc(2, loc0, 2, 1)
             success = result.success
             msg = "[Report @ GoToClearance2]" + result.error_msg
 
-        ## go to assembly clearance
+        ## go to assembly clearance, fast
         if success:
             result = self.go_to_trayLoc(1, loc1, 4, 1)
             success = result.success
             msg = "[Report @ GoToAssyClearance]" + result.error_msg
 
-        ## go to assembly standoff
+        ## go to assembly standoff, fast
         if success:
             result = self.go_to_trayLoc(1, loc1, 4, 1)
             success = result.success
             msg = "[Report @ GoToAssyStandoff]" + result.error_msg
 
-        ## insert to marker place height
+        ## insert to marker place height, slow
         if success:
             result = self.go_to_trayLoc(1, loc1, 0, 0)
             success = result.success
@@ -113,34 +110,39 @@ class PickAndPlaceNode():
         ## ungrip, iff not simulation test
         if success:
             result = self.ungrip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Ungrip]" + result.message
+            success = result.success
+            msg = "[Report @ Ungrip2]" + result.message
 
-        ## withdraw to standoff
+        ## withdraw to standoff, fast
         if success:
             result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
             msg = "[Report @ GoToAssyStandoff2]" + result.error_msg
-        
+
         return success, msg
 
     def pickandplaceCap(self, req):
         loc0 = req.pickLocation
         loc1 = req.placeLocation
 
-        ## go to clearance
-        result = self.go_to_trayLoc(3, loc0, 2, 1)
+        ## ungrip for extra assurance
+        result = self.ungrip()
         success = result.success
-        msg = "[Report @ GoToClearance]" + result.error_msg
+        msg = "[Report @ Ungrip]" + result.message
 
-        ## go to standoff
+        ## go to clearance, fast
+        if success:
+            result = self.go_to_trayLoc(3, loc0, 2, 1)
+            success = result.success
+            msg = "[Report @ GoToClearance]" + result.error_msg
+
+        ## go to standoff, fast
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 1, 1)
             success = result.success
             msg = "[Report @ GoToStandoff]" + result.error_msg
 
-        ## go to pick height
+        ## go to pick height, slow
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 0, 0)
             success = result.success
@@ -149,35 +151,34 @@ class PickAndPlaceNode():
         ## grip 
         if success == True:
             result = self.grip()
-            # success = result.success
-            success = True
+            success = result.success
             msg = "[Report @ Grip]" + result.message
 
-        ## withdraw from tray to standoff
+        ## withdraw from tray to standoff, slow
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 1, 0)
             success = result.success
             msg = "[Report @ GoToStandoff2]" + result.error_msg
         
-        ## go to clearance
+        ## go to clearance, fast
         if success == True:
             result = self.go_to_trayLoc(3, loc0, 2, 1)
             success = result.success
             msg = "[Report @ GoToClearance2]" + result.error_msg
 
-        ## go to assembly clearance
+        ## go to assembly clearance, fast
         if success:
             result = self.go_to_trayLoc(1, loc1, 4, 1)
             success = result.success
             msg = "[Report @ GoToAssemblyClearance]" + result.error_msg
 
-        ## go to assembly standoff
+        ## go to assembly standoff, fast
         if success:
             result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
             msg = "[Report @ GoToAssemblyStandoff]" + result.error_msg
 
-        ## insert to cap place height
+        ## insert to cap place height, slow
         if success:
             result = self.go_to_trayLoc(1, loc1, 1, 0)
             success = result.success
@@ -186,16 +187,14 @@ class PickAndPlaceNode():
         ## ungrip
         if success:
             result = self.ungrip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Ungrip]" + result.message
+            success = result.success
+            msg = "[Report @ Ungrip2]" + result.message
 
-        ## withdraw to standoff
+        ## withdraw to standoff, fast
         if success:
             result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
             msg = "[Report @ GoToAssemblyStandoff2]" + result.error_msg
-
         return success, msg
 
 
