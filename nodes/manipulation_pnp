@@ -71,11 +71,11 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToPickHeight]" + result.error_msg
 
         ## grip
-        if success == True:
-            result = self.grip()
-            # success = result.success
-            success = True
-            msg = "[Report @ Grip]" + result.message
+        # if success == True:
+        #     result = self.grip()
+        #     # success = result.success
+        #     success = True
+        #     msg = "[Report @ Grip]" + result.message
 
         ## withdraw from tray to standoff, slow
         if success == True:
