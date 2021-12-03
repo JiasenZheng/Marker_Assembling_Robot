@@ -34,9 +34,14 @@
     <node name="manipulation_macro" pkg="group4" type="manipulation_macro_a" output="screen" />
     <!-- <node name="limit_set" pkg="group4" type="limit_set" output="screen" /> -->
     <node name="pick_and_place" pkg="group4" type="manipulation_pnp" output="screen"/>
+<<<<<<< HEAD
     <node name="press" pkg="group4" type="manipulation_press" output = "screen"/>
 
     <node name="TaskMaster" pkg="group4" type="TaskMaster" />
+=======
+    <node name="press" pkg="group4" type="manipulation_press" output="screen"/>
+    <!-- <node name="TaskMaster" pkg="group4" type="TaskMaster"/> -->
+>>>>>>> 8d6584bb346ee422b9595f7381ec81c3fd076318
 
     <node pkg = "group4" name="bridge" type="bridge"/>
 </launch>

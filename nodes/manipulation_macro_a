@@ -36,7 +36,7 @@ Parameters:
 
 
 #Threshold to move linearly upwars to before lateral movement
-z_thresh = 0.2
+z_thresh = 0.3
 
 
 
@@ -46,7 +46,7 @@ cam_y = 0.0315
 
 
 #Camera height above 3 locations
-cam_height_cap = 0.21
+cam_height_cap = 0.25
 cam_height_master = 0.45
 cam_height_marker = 0.36
 
@@ -117,8 +117,8 @@ class ManipulationMacroA:
             self.delta_move(2.0,dz)
 
         
-        self.arm.set_named_target("ready")
-        self.arm.go(wait=True)
+        #self.arm.set_named_target("ready")
+        #self.arm.go(wait=True)
 
         current = self.get_arm_pose()
 
@@ -130,7 +130,7 @@ class ManipulationMacroA:
 
         #Define XYZ linear maneuvers for above marker locations
         dx = - current.pose.pose.position.x + self.above_marker_x - cam_x
-        dy = - current.pose.pose.position.y + self.above_marker_y - cam_y
+        dy = - current.pose.pose.position.y + self.above_marker_y - cam_y - 0.025
         dz = cam_height_marker - current.pose.pose.position.z
 
         ref_xyz = [(self.above_marker_x - cam_x), (self.above_marker_y - cam_y), (cam_height_marker)]
@@ -150,6 +150,15 @@ class ManipulationMacroA:
         #Check if the appopriate locations was reached, and return a "Done" or failed
         current = self.get_arm_pose()
         current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
+
+        x = current_xyz[0] #Add to other services
+        y = current_xyz[1]
+        z = current_xyz[2]
+
+        pose = [x, y, z, pi, 0.0, -pi/4]
+
+        self.arm.set_pose_target(pose)
+        self.arm.go(wait=True)
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)))
         print('(abs(current.pose.pose.position.y) - (abs(self.above_marker_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_marker_y - cam_y))))
@@ -182,8 +191,8 @@ class ManipulationMacroA:
             self.delta_move(2.0,dz)
 
         #Go to home
-        self.arm.set_named_target("ready")
-        self.arm.go(wait=True)
+        #self.arm.set_named_target("ready")
+        #self.arm.go(wait=True)
 
         current = self.get_arm_pose()
 
@@ -214,6 +223,16 @@ class ManipulationMacroA:
         #Check final position to see if it completed proprely        
         current = self.get_arm_pose()
         current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
+
+
+        x = current_xyz[0] #Add to other services
+        y = current_xyz[1]
+        z = current_xyz[2]
+
+        pose = [x, y, z, pi, 0.0, -pi/4]
+
+        self.arm.set_pose_target(pose)
+        self.arm.go(wait=True)
 
         print('(abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)))
         print('(abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y)))
@@ -248,8 +267,8 @@ class ManipulationMacroA:
             self.delta_move(2.0,dz)
 
         #Go to home
-        self.arm.set_named_target("ready")
-        self.arm.go(wait=True)
+        #self.arm.set_named_target("ready")
+        #sself.arm.go(wait=True)
 
         current = self.get_arm_pose()
 
@@ -281,10 +300,18 @@ class ManipulationMacroA:
         current = self.get_arm_pose()
         current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
+        x = current_xyz[0] #Add to other services
+        y = current_xyz[1]
+        z = current_xyz[2]
+
+        pose = [x, y, z, pi, 0.0, -pi/4]
+
+        self.arm.set_pose_target(pose)
+        self.arm.go(wait=True)
+
+
         print('(abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)))
         print('(abs(current.pose.pose.position.y) - (abs(self.above_master_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_master_y) - cam_y)))
-
-
 
 
         if self.isXYZClose(ref_xyz,current_xyz):
