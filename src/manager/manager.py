@@ -37,7 +37,7 @@ class manage:
         Given two one d array of 3 elements this function will compare hsv values
         And return whether the two pieces of data are similar enough to match.
         """
-        return (a[0]-b[0] < threshold and a[1]-b[1] < threshold and a[2]-b[2] < threshold)
+        return (abs(a[0]-b[0]) < threshold and a[1]-b[1] < threshold and a[2]-b[2] < threshold)
 
     def matching(self, sub1, sub2):
         """
@@ -74,4 +74,7 @@ class manage:
                 return False
         return True
     
+    def nilCheck(loc):
+        """Checks if a cell is empty"""
+        return
     
