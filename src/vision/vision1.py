@@ -79,6 +79,6 @@ def detect(img0):
     return img0
 
 if __name__ == "__main__":
-    image = cv.imread('image.png')
+    image = cv.imread('first_frame.jpg')
     img0, grid = detect_contour2(image)
     print(grid)
