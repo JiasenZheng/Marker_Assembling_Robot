@@ -102,14 +102,13 @@ class Move(smach.State):
             return 'have-target?'
         else:
             if userdata.HaveTarget[1]:
-                marker_standoff()
                 marker_to_assembly(0, 0)
                 userdata.HaveTarget = CloseBox()
                 return 'assemble'
             else:
                 #Might be a service Might go back to previous model
                 userdata.HaveTarget = CloseBox()
-                return 'to-input'
+                return 'Next?'
 
 class Markers(smach.State):
     def __init__(self):
