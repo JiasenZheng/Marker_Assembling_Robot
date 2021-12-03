@@ -5,7 +5,7 @@ from copy import deepcopy
 
 class manage:
     def __init__(self):
-        return
+        return self
     
     def fbsearch(self, arr, data):
         """
