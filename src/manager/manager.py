@@ -12,6 +12,7 @@ class manage:
         Given a target data value, this function will look 
         for data that is similar in a seperate array.
         """
+        threshold = 1
         if len(arr) < 2:
             ans = deepcopy(arr[0])
             # del arr[0]
@@ -19,7 +20,7 @@ class manage:
         front = 0
         back = len(arr)-1
         while front <= back:
-            if self.colorMatch(arr[front], data) or self.colorMatch(arr[back], data):
+            if self.colorMatch(arr[front], data, threshold) or self.colorMatch(arr[back], data, threshold):
                 if arr[front] == data:
                     ans = deepcopy(arr[front])
                     # del arr[front] Not certain whether this value needs to be deleted. Should be used for comparison later.
@@ -31,12 +32,12 @@ class manage:
             back -= 1
         return None
 
-    def colorMatch(self, a, b):
+    def colorMatch(self, a, b, threshold):
         """
         Given two one d array of 3 elements this function will compare hsv values
         And return whether the two pieces of data are similar enough to match.
         """
-        return (a[0]-b[0] < 1 and a[1]-b[1] < 1 and a[2]-b[2] < 1)
+        return (a[0]-b[0] < threshold and a[1]-b[1] < threshold and a[2]-b[2] < threshold)
 
     def matching(self, sub1, sub2):
         """
