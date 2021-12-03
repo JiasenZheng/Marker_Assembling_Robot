@@ -78,6 +78,7 @@ add_service_files(
   GetPose.srv
   GetStringList.srv
   GetFloatList.srv
+  ImageCapture.srv
   Grasp.srv
   GotoPos.srv
   CollisionSet.srv
@@ -100,6 +101,7 @@ generate_messages(
   geometry_msgs
   moveit_msgs
   franka_gripper
+  sensor_msgs
 )
 
 ################################################

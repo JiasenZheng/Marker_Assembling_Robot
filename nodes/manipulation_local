@@ -52,7 +52,7 @@ class LocalManipulationNode():
         self.assemblyZStandoff = 0.27 #0.26
         self.assemblyZPress = 0.25
         self.assemblyZCapPlace = 0.228 #0.222945 #0.2
-        self.assemblyZMarkerPlace = 0.19962
+        self.assemblyZMarkerPlace = 0.19962 + 0.005
         self.assemblyZClear = 0.35
 
 
@@ -86,7 +86,7 @@ class LocalManipulationNode():
         self.capsY = 0.210
         self.capsXPitch = 0.0508
         self.capsyYPitch = 0.0635
-        self.capsZStandoff = 0.27
+        self.capsZStandoff = 0.145
         self.capsZPick = 0.124
         self.capsZClear = 0.35
 
@@ -114,8 +114,8 @@ class LocalManipulationNode():
 
         # self.matchPositionTol = rospy.get_param("/match_position_tolerance", 0.002)
         # self.matchOrientationTol = rospy.get_param("/match_orientation_tolerance", 0.008802)
-        self.matchPosTol = 0.001
-        self.matchOrientTol = 0.002
+        self.matchPosTol = 0.002
+        self.matchOrientTol = 0.005
 
     def handle_goToTrayLocation(self, req):
 
