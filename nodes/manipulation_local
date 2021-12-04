@@ -51,7 +51,7 @@ class LocalManipulationNode():
         self.assemblyYPitch = 0.0762
         self.assemblyZStandoff = 0.27 #0.26
         self.assemblyZPress = 0.25
-        self.assemblyZCapPlace = 0.228 #0.222945 #0.2
+        self.assemblyZCapPlace = 0.228+0.002 #0.222945 #0.2
         self.assemblyZMarkerPlace = 0.19962 + 0.005
         self.assemblyZClear = 0.35
 
