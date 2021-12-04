@@ -47,7 +47,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     cs = []
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 1000:
+        if area > 1500:
             M = cv.moments(contour)
             cv.drawContours(img0,contour,-1,(0,255,0),3)
             cx = int(M['m10']/M['m00'])
