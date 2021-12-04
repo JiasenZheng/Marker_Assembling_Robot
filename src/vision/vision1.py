@@ -7,8 +7,8 @@ def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
-    lower_thresh = np.array([0,100,0])
-    upper_thresh = np.array([255,255,255])
+    lower_thresh = np.array([0,100,20])
+    upper_thresh = np.array([180,255,255])
     mask = cv.inRange(hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     x_interval = pixel_size[0]/grid_size[1]
@@ -61,13 +61,14 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     grid = grid.reshape(1,grid_len,3)[0]
     for hsv in grid:
         list_H.append(hsv[0])
+    list_H.reverse()
     return img0, list_H
 
 def detect(img0):
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
-    lower_thresh = np.array([60,50,20])
+    lower_thresh = np.array([0,100,20])
     upper_thresh = np.array([180,255,255])
     mask = cv.inRange(hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
@@ -85,15 +86,15 @@ def plot_image(filename):
     plt.imshow(cv.cvtColor(img, cv.COLOR_BGR2RGB))
     plt.show()
 
-def find_matching(markers,caps,ignores,error = 3):
-    for a, marker in enumerate(markers):
-        if (marker == 0) or (a in ignores): 
-            continue
-        for b, cap in enumerate(caps):
-            if abs(marker - cap) <= error:
-                return [a,b],ignores
-        ignores.append(a)
-        return [None, None],ignores
+# def find_matching(markers,caps,ignores,error = 3):
+#     for a, marker in enumerate(markers):
+#         if (marker == 0) or (a in ignores): 
+#             continue
+#         for b, cap in enumerate(caps):
+#             if abs(marker - cap) <= error:
+#                 return [a,b],ignores
+#         ignores.append(a)
+#         return [None, None],ignores
         
         
 
@@ -114,14 +115,14 @@ def find_matching(markers,caps,ignores,error = 3):
 
 
 if __name__ == "__main__":
-    image = cv.imread('pictures/image2.png')
-    image, list_h = detect_contour2(image,grid_size=(3,3),pixel_size=(650,520),starting_pixel=(330,80))
+    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
     # markers = [0, 77, 109, 10,0]
     # caps = [0,109, 0, 10,0]
     # ignores = []
     # [a,b] = find_matching(markers, caps, ignores)
     # print(a,b)
-    print(list_h)
+    # print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
 

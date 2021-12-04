@@ -54,78 +54,75 @@ class VisionTestCase(unittest.TestCase):
                     "truth": (BABYBLUE, YELLOW, GREEN, ORANGE, BABYBLUE, GREEN, PINK, PINK, PINK)}
                                                                                                 
     
-    def create_test(self, test_dict):
-
-        filepath = os.path.join(self.img_dir, test_dict["img"])
-        img = cv.imread(filepath)
-        _, grid = detect_contour2(img, (3,3), [990,600],[0,0])
-        truth_arr = np.vstack(test_dict["truth"])
-        colorsCheck = self.inRange(np.array(grid), truth_arr[:, 1], truth_arr[:, 0])
-        print("grid: ", grid)
-        print("truth_arr: ", truth_arr)
-        print("colorsCheck", colorsCheck)
-        return np.all(colorsCheck)
-
-    def inRange(self, src, upper, lower):
-        return np.logical_and(np.greater_equal(src, lower), np.less_equal(src, upper))
-
-
-    def test_detectContours_C1(self):
-        c1 = self.create_test(self.C1)
-        self.assertTrue(c1)
-
-    def test_detectContours_C2(self):
-        c2 = self.create_test(self.C2)
-        self.assertTrue(c2)
-
-    def test_detectContours_C3(self):
-        c3 = self.create_test(self.C3)
-        self.assertTrue(c3)
-
-    def test_detectContours_C4(self):
-        c4 = self.create_test(self.C4)
-        self.assertTrue(c4) 
-
-
-
-    def test_detectContours_M1(self):
-        m1 = self.create_test(self.M1)
-        self.assertTrue(m1)
-
-    def test_detectContours_M2(self):
-        m2 = self.create_test(self.M2)
-        self.assertTrue(m2)
-
-    def test_detectContours_M3(self):
-        m3 = self.create_test(self.M3)
-        self.assertTrue(m3)
-
-    def test_detectContours_M4(self):
-        m4 = self.create_test(self.M4)
-        self.assertTrue(m4)
-
-
 
 
     def test_detectContours_A1(self):
-        a1 = self.create_test(self.A1)
+        a1 = create(self.img_dir, self.A1)
         self.assertTrue(a1)
 
     def test_detectContours_A2(self):
-        a2 = self.create_test(self.A2)
+        a2 = create(self.img_dir, self.A2)
         self.assertTrue(a2)    
 
     def test_detectContours_A3(self):
-        a3 = self.create_test(self.A3)
+        a3 = create(self.img_dir,self.A3)
         self.assertTrue(a3)
 
     def test_detectContours_A4(self):
-        a4 = self.create_test(self.A4)
+        a4 = create(self.img_dir,self.A4)
         self.assertTrue(a4)
 
+    def test_detectContours_A5(self):
+        a5 = create(self.img_dir,self.A5)
+        self.assertTrue(a5)
+
+    def test_detectContours_M1(self):
+        m1 = create(self.img_dir,self.M1)
+        self.assertTrue(m1)
+
+    def test_detectContours_M2(self):
+        m2 = create(self.img_dir,self.M2)
+        self.assertTrue(m2)
+
+    def test_detectContours_M3(self):
+        m3 = create(self.img_dir,self.M3)
+        self.assertTrue(m3)
+
+    def test_detectContours_M4(self):
+        m4 = create(self.img_dir,self.M4)
+        self.assertTrue(m4)
+
+    def test_detectContours_C1(self):
+        c1 = create(self.img_dir,self.C1)
+        self.assertTrue(c1)
+
+    def test_detectContours_C2(self):
+        c2 = create(self.img_dir,self.C2)
+        self.assertTrue(c2)
+
+    def test_detectContours_C3(self):
+        c3 = create(self.img_dir,self.C3)
+        self.assertTrue(c3)
+
+    def test_detectContours_C4(self):
+        c4 = create(self.img_dir,self.C4)
+        self.assertTrue(c4)  
 
 
- 
+def create(dir_path, test_dict):
+
+    filepath = os.path.join(dir_path, test_dict["img"])
+    img = cv.imread(filepath)
+    _, grid = detect_contour2(img, (3,3), [990,600],[0,0])
+    truth_arr = np.vstack(test_dict["truth"])
+    colorsCheck = inRange(np.array(grid), truth_arr[:, 1], truth_arr[:, 0])
+    print("grid: ", grid)
+    print("truth_arr: ", truth_arr)
+    print("colorsCheck", colorsCheck)
+    return np.all(colorsCheck)
+
+def inRange(src, upper, lower):
+    return np.logical_and(np.greater_equal(src, lower), np.less_equal(src, upper))
 
 if __name__ == "__main__":
     import rosunit
