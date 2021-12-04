@@ -5,13 +5,14 @@ from copy import deepcopy
 
 class manage:
     def __init__(self):
-        return
-    
+        self.ans = []
+
     def fbsearch(self, arr, data):
         """
         Given a target data value, this function will look 
         for data that is similar in a seperate array.
         """
+        threshold = 3
         if len(arr) < 2:
             ans = deepcopy(arr[0])
             # del arr[0]
@@ -19,39 +20,38 @@ class manage:
         front = 0
         back = len(arr)-1
         while front <= back:
-            if self.colorMatch(arr[front], data) or self.colorMatch(arr[back], data):
+            if self.colorMatch(arr[front], data, threshold) or self.colorMatch(arr[back], data, threshold):
                 if arr[front] == data:
-                    ans = deepcopy(arr[front])
+                    ans = front
                     # del arr[front] Not certain whether this value needs to be deleted. Should be used for comparison later.
                 else:
-                    ans = deepcopy(arr[back])
+                    ans = back
                     # del arr[back]
                 return ans
             front += 1
             back -= 1
         return None
 
-    def colorMatch(self, a, b):
+    def colorMatch(self, a, b, threshold):
         """
         Given two one d array of 3 elements this function will compare hsv values
-        And return whether the two pieces of data are similar enough to match.
+        And return whether the two pieces of data are similar enough to match. 
         """
-        return (a[0]-b[0] < 1 and a[1]-b[1] < 1 and a[2]-b[2] < 1)
+        return (abs(a-b) < threshold)
 
-    def matching(self, sub1, sub2):
+    def matching(self, sub1, sub2, event=None):
         """
         Func:matching: Returns an array of items that "match" eachother
         Param:sub1: First list of values.
         Param:sub2: Second list of vlaues.
         """
-        ans = []
-        for x in sub1:
-            y = self.fbsearch(sub2, x)
+        for x, item in enumerate(sub1):
+            y = self.fbsearch(sub2, item)
             if y != None:
-                ans.append([x, y])
-        return ans
+                self.ans.append([x, y])
+        return self.ans
 
-    def genList(lst):
+    def genList(self, lst):
         """
         Func:genMatch: Creates generated list object.
         General Use: In order to iterate through object say: 
@@ -73,4 +73,7 @@ class manage:
                 return False
         return True
     
+    def nilCheck(loc):
+        """Checks if a cell is empty"""
+        return
     
