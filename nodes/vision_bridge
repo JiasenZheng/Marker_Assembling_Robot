@@ -31,11 +31,7 @@ class Bridge:
     def callback(self,data):
 
         # Output debugging information to the terminal
-<<<<<<< HEAD
-        rospy.loginfo("receiving video frame")
-=======
-        # rospy.logerr("receiving video frame")
->>>>>>> a6ac551ac2412985223fec749fdaa15d5a42c644
+        # rospy.loginfo("receiving video frame")
         
         #Convert ROS Image message to OpenCV image
         self.current_frame = self._bridge.imgmsg_to_cv2(data)
@@ -50,7 +46,7 @@ class Bridge:
     
 
     def capture_callback(self, req):
-        rospy.loginfo("service is working")
+        # rospy.loginfo("service is working")
         # self.subscriber = rospy.Subscriber('/camera/color/image_raw', Image, self.callback)
 
         # if self.counter == self.image_frame:
@@ -58,25 +54,27 @@ class Bridge:
         tray_location = req.tray_location
         #At assembly
         if tray_location == 1:
-            # cv2.imshow("image", self.current_frame)
-            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
             image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [450,300], starting_pixel = [110,64])
-        
+            cv2.imshow("image", image_contour)
+            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+
 
         #At markers
         elif tray_location == 2: 
             image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [580,450], starting_pixel = [0,0])
             cv2.imshow("image", image_contour)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
             cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
         
         
         #At caps
         elif tray_location == 3:
-
-            cv2.imshow("image", self.current_frame)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
             image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [640,480], starting_pixel = [0,0])
-        
+            cv2.imshow("image", image_contour)
+            cv2.waitkey(0)
+            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
         
         
         # self.grid = [1, 2, 3, 4, 5]
