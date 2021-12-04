@@ -78,7 +78,7 @@ class Caps(smach.State):
 
     def execute(self, userdata):
         cap_standoff()
-        # self.capList_output = takeImage(True)
+        self.capList_output = takeImage(True)
         assembly_standoff()
         return 'look'
 
@@ -90,7 +90,7 @@ class Markers(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state MARKERS')
         marker_standoff()
-        # self.markerList_output = takeImage(True)
+        self.markerList_output = takeImage(True)
         assembly_standoff()
         return 'match!'
 
@@ -116,6 +116,7 @@ class setTarget(smach.State):
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
             assembly_standoff()
+            
             userdata.loc_output = userdata.loc_input + 1
             return 'move!'
         except StopIteration:
