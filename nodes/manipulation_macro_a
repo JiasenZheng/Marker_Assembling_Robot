@@ -116,9 +116,6 @@ class ManipulationMacroA:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
-        
-        #self.arm.set_named_target("ready")
-        #self.arm.go(wait=True)
 
         current = self.get_arm_pose()
 
@@ -160,9 +157,6 @@ class ManipulationMacroA:
         self.arm.set_pose_target(pose)
         self.arm.go(wait=True)
 
-        print('(abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_marker_x) - cam_x)))
-        print('(abs(current.pose.pose.position.y) - (abs(self.above_marker_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_marker_y - cam_y))))
-
         if self.isXYZClose(ref_xyz,current_xyz):
             success = True
             error_msg = f"Final XYZ matches reference{ref_xyz}"
@@ -190,16 +184,7 @@ class ManipulationMacroA:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
-        #Go to home
-        #self.arm.set_named_target("ready")
-        #self.arm.go(wait=True)
-
         current = self.get_arm_pose()
-
-        print('current.pose.pose.position.x ', current.pose.pose.position.x)
-        print('current.pose.pose.position.y ' , current.pose.pose.position.y)
-        print('self.above_cap_x' , self.above_cap_x ) 
-        print('self.above_cap_y' , self.above_cap_y)  
 
 
         #Calculate XYZ Cartesian shift movements
@@ -234,10 +219,6 @@ class ManipulationMacroA:
         self.arm.set_pose_target(pose)
         self.arm.go(wait=True)
 
-        print('(abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_cap_x) - cam_x)))
-        print('(abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_cap_y) - cam_y)))
-
-
         if self.isXYZClose(ref_xyz,current_xyz):
             success = True
             error_msg = f"Final XYZ matches reference{ref_xyz}"
@@ -266,16 +247,8 @@ class ManipulationMacroA:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
-        #Go to home
-        #self.arm.set_named_target("ready")
-        #sself.arm.go(wait=True)
 
         current = self.get_arm_pose()
-
-        print('current.pose.pose.position.x ', current.pose.pose.position.x)
-        print('current.pose.pose.position.y ' , current.pose.pose.position.y)
-        print('self.above_masterx' , self.above_master_x ) 
-        print('self.above_master_y' , self.above_master_y)  
 
 
         #Calculate positions
@@ -308,11 +281,6 @@ class ManipulationMacroA:
 
         self.arm.set_pose_target(pose)
         self.arm.go(wait=True)
-
-
-        print('(abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)) ', (abs(current.pose.pose.position.x) - (abs(self.above_master_x) - cam_x)))
-        print('(abs(current.pose.pose.position.y) - (abs(self.above_master_y) - cam_y))' , (abs(current.pose.pose.position.y) - (abs(self.above_master_y) - cam_y)))
-
 
         if self.isXYZClose(ref_xyz,current_xyz):
             success = True
@@ -355,9 +323,6 @@ class ManipulationMacroA:
         current = self.get_arm_pose()
         current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
-        print('1  ', (abs(current.pose.pose.position.x) - 0.0))
-        print('2 ' ,(abs(current.pose.pose.position.y) - (0.4)))
-
         #Open gripper
         self.gripper.set_named_target("open")
         self.gripper.go(wait=True)
@@ -378,8 +343,8 @@ class ManipulationMacroA:
         #Source/reference (11/28): https://numpy.org/doc/stable/reference/generated/numpy.allclose.html
         ref = self.poseToArray(referencePose)
         cur = self.poseToArray(currentPose)
-        return np.allclose(ref, cur, atol = 0.05, rtol = 0.05)  ## might need to tweak the tolerance
-
+        return np.allclose(ref, cur, atol = 0.05, rtol = 0.05)
+        
     def poseToArray(self, pose):
         a1 = pose[0]
         a2 = pose[1]
