@@ -134,7 +134,7 @@ class Assemble(smach.State):
         assembly_standoff()
         cap_standoff()
         cap_to_assembly(userdata.target_input[0], userdata.loc_input)
-        press_down()
+        press_down(userdata.loc_input)
         return 'Next?'
 
 def starterCallback():
@@ -151,7 +151,7 @@ def main():
     sm.userdata.capList = caps
     sm.userdata.matchList = []
     sm.userdata.target = []
-    sm.userdata.loc = 0
+    sm.userdata.loc = -1
 
 
     
