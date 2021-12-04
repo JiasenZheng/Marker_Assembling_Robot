@@ -45,9 +45,11 @@ takeImage = rospy.ServiceProxy('capture', ImageCapture)
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
 #The next state concerns a different marker.
 
-genList = manage.genList
-search = manage.fbsearch
-match = manage.matching
+manager = manage()
+
+genList = manager.genList
+search = manager.fbsearch
+match = manager.matching
 
 
 
@@ -94,44 +96,44 @@ class Markers(smach.State):
 
 class genMatch(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['result', 'wait'],
+        smach.State.__init__(self, outcomes=['next?', 'wait'],
                                     input_keys = ['markerList_input', 'capList_input'],
                                     output_keys = ['matchList_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state GENERATE-MATCH')
-        userdata.matchList_output = match(userdata.markerList_input, userdata.capList_input)
-        userdata.changFlag_output = False
+        userdata.matchList_output = genList(match(userdata.capList_input, userdata.markerList_input))
+        userdata.changeFlag_output = False
         return 'next?'
         return 'wait'
 
 class setTarget(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['move!', 'finished'],
-                                input_keys = ['matchList_input'],
-                                output_keys=['target_output', 'assemble_output', 'changFlag_output'])
+                                input_keys = ['matchList_input', 'loc_input'],
+                                output_keys=['target_output', 'loc_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state SET_TARGET')
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
             assembly_standoff()
-            userdata.assembly_output += 1
+            userdata.loc_output = userdata.loc_input + 1
             return 'move!'
         except StopIteration:
-            userdata.changFlag_output = False
+            userdata.changeFlag_output = False
             return 'finished'
 
 class Assemble(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Next?'],
-                                input_keys = ['target_input', 'assembly_input'])
+                                input_keys = ['target_input', 'loc_input'])
     
     def execute(self, userdata):
         rospy.loginfo('Executing state ASSEMBLE')
         marker_standoff()
-        marker_to_assembly(userdata.target_input[1], userdata.assembly_input)
+        marker_to_assembly(userdata.target_input[1], userdata.loc_input)
         assembly_standoff()
         cap_standoff()
-        cap_to_assembly(userdata.target_input[1], userdata.assembly_input)
+        cap_to_assembly(userdata.target_input[0], userdata.loc_input)
         press_down()
         return 'Next'
         
@@ -141,8 +143,8 @@ def starterCallback():
 
 def main():
     rospy.init_node('marker_assymbly_task_master')
-    markers = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
-    caps = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+    markers = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    caps = [0, 1, 2, 3, 4, 5, 6, 7, 8]
     #Create state machine
     sm = smach.StateMachine(outcomes = ['Finished'])
     sm.userdata.changeFlag = True
@@ -182,7 +184,7 @@ def main():
 
         smach.StateMachine.add('GENERATE-MATCHES', genMatch(),
                                 transitions = {
-                                    'result':'SET-TARGET', 
+                                    'next?':'SET-TARGET', 
                                     'wait':'STAND-BY'
                                 }, remapping = {
                                     'markerList_input':'markerList', 
@@ -197,7 +199,8 @@ def main():
                                     'finished':'STAND-BY'
                                 }, remapping = {
                                     'matchList_input':'matchList',
-                                    'target_output':'target', 
+                                    'loc_input':'loc',
+                                    'target_output':'target',
                                     'loc_output':'loc',
                                     'changeFlag_output':'changeFlag'
                                 })
@@ -207,7 +210,7 @@ def main():
                                     'Next?':'SET-TARGET',
                                 }, remapping = {
                                     'target_input':'target', 
-                                    'assembly_input':'assemble'
+                                    'loc_input':'loc'
                                 })
 
 
