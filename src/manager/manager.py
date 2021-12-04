@@ -63,17 +63,17 @@ class manage:
 
     def thoroughMatching(self, arr1, arr2):
         ans=[]
-        
         for index, item in enumerate(arr1):
             pm = self.fullSearch(arr2, item)
             for item2 in pm:
                 print(item)
                 candidate = [index, item2]
-                print(candidate)
-                print(len(ans) == 0)
-                print(not self.matchedSearch(ans, candidate))
+                # print(candidate)
+                # print(len(ans) == 0)
+                # print(not self.matchedSearch(ans, candidate))
                 if len(ans) == 0: ans.append(candidate)
                 elif not self.matchedSearch(ans, candidate): ans.append(candidate)
+            print(ans)
         return ans
 
     def matching(self, sub1, sub2):
@@ -115,13 +115,19 @@ class manage:
         return
 
 
-# m = manage()
+m = manage()
 
-# a = [1, 2, 5, 3, 5]
+a = [1, 2, 0, 5, 3, 5, 0]
 
-# b = [1, 5, 2, 3, 5, 6]
+b = [1, 5, 2, 3, 5, 6]
 
-# ans = m.thoroughMatching(a, b)
+ans = m.thoroughMatching(a, b)
 
-# for i in ans:
-#     print(f"{a[i[0]]} == {b[i[1]]}")
+ans2 = m.fullSearch(a, 0)
+
+print(ans)
+
+for i in ans:
+    print(f"{a[i[0]]} == {b[i[1]]}")
+
+# print(f"{ans2}")

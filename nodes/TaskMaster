@@ -28,18 +28,33 @@ box = [False, False]
 #     """Resets the box such that its state is unknown"""
 #     return box
 
+def createProxy(service, type):
+    rospy.wait_for_service(service)
+    return rospy.serviceProxy(service, type)
+
 
 #Rosservice Proxies for Manipulaition
-press_down = rospy.ServiceProxy('press', Press)
-marker_to_assembly = rospy.ServiceProxy('pnpMarker', PickNPlace)
-cap_to_assembly = rospy.ServiceProxy('pnpCap', PickNPlace)
-assembly_standoff = rospy.ServiceProxy('go_to_master', GotoPos)
-dispose = rospy.ServiceProxy('go_to_disposal', GotoPos)
-cap_standoff = rospy.ServiceProxy('go_to_cap', GotoPos)
-marker_standoff = rospy.ServiceProxy('go_to_marker', GotoPos)
+# press_down = rospy.ServiceProxy('press', Press)
+# marker_to_assembly = rospy.ServiceProxy('pnpMarker', PickNPlace)
+# cap_to_assembly = rospy.ServiceProxy('pnpCap', PickNPlace)
+# assembly_standoff = rospy.ServiceProxy('go_to_master', GotoPos)
+# dispose = rospy.ServiceProxy('go_to_disposal', GotoPos)
+# cap_standoff = rospy.ServiceProxy('go_to_cap', GotoPos)
+# marker_standoff = rospy.ServiceProxy('go_to_marker', GotoPos)
 
-#Rosservice Proxies for Perception
-takeImage = rospy.ServiceProxy('capture', ImageCapture)
+# #Rosservice Proxies for Perception
+# takeImage = rospy.ServiceProxy('capture', ImageCapture)
+
+#New Method of calling required services
+press_down = createProxy('press', Press)
+marker_to_assembly = createProxy('pnpMarker', PickNPlace)
+cap_to_assembly = createProxy('pnpCap', PickNPlace)
+assembly_standoff = createProxy('go_to_master', GotoPos)
+dispose = createProxy('go_to_disposal', GotoPos)
+cap_standoff = createProxy('go_to_cap', GotoPos)
+marker_standoff = createProxy('go_to_marker', GotoPos)
+
+takeImage = createProxy('capture', ImageCapture)
 
 #This finite state machine for the time being is a test.
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
