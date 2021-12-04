@@ -32,7 +32,7 @@ class VisionTestCase(unittest.TestCase):
         self.A4 = { "img": "assembled4.png", 
                     "truth": (BABYBLUE, GREEN, PINK, YELLOW, GREEN, PINK, YELLOW, PURPLE, PURPLE)}
         self.A5 = { "img": "assembled5.png", 
-                    "truth": (BABYBLUE, YELLOW, PINK, YELLOW, EMPTY, GREEN, PURPLE, YELLOW, ORANGE)}
+                    "truth": (BABYBLUE, YELLOW, PINK, YELLOW, EMPTY, GREEN, PURPLE, EMPTY, ORANGE)}
 
 
         self.M1 = { "img": "markers2.png",
@@ -58,7 +58,7 @@ class VisionTestCase(unittest.TestCase):
         self.C3 = {"img": "caps3.png",
                     "truth": (YELLOW, PURPLE, PINK, PURPLE, PINK, GREEN, GREEN, BABYBLUE, ORANGE)}
 
-        self.C4 = {"img": "cap4.png",
+        self.C4 = {"img": "caps4.png",
                     "truth": (YELLOW, PURPLE, PINK, PURPLE, ORANGE, YELLOW, GREEN, BABYBLUE, BABYBLUE)}
                                                                                                 
     
@@ -66,14 +66,16 @@ class VisionTestCase(unittest.TestCase):
 
         filepath = os.path.join(self.img_dir, test_dict["img"])
         img = cv.imread(filepath)
-        _, grid = detect_contour2(img, (3,3), [640,480],[0,0])
+        _, grid = detect_contour2(img, (3,3), [990,600],[0,0])
         truth_arr = np.vstack(test_dict["truth"])
+        colorsCheck = self.inRange(np.array(grid), truth_arr[:, 1], truth_arr[:, 0])
         print("grid: ", grid)
-        print("truth_arr: ", grid)
-        colorsCheck = cv.inRange(grid, truth_arr[:, :3], truth_arr[:, 3:])
+        print("truth_arr: ", truth_arr)
         print("colorsCheck", colorsCheck)
         return np.all(colorsCheck)
 
+    def inRange(self, src, upper, lower):
+        return np.logical_and(np.greater_equal(src, lower), np.less_equal(src, upper))
 
     def test_detectContours_A1(self):
         a1 = self.create_test(self.A1)
@@ -95,8 +97,6 @@ class VisionTestCase(unittest.TestCase):
         a5 = self.create_test(self.A5)
         self.assertTrue(a5)
 
-
-
     def test_detectContours_M1(self):
         m1 = self.create_test(self.M1)
         self.assertTrue(m1)
@@ -113,8 +113,6 @@ class VisionTestCase(unittest.TestCase):
         m4 = self.create_test(self.M4)
         self.assertTrue(m4)
 
-
-
     def test_detectContours_C1(self):
         c1 = self.create_test(self.C1)
         self.assertTrue(c1)
@@ -129,10 +127,8 @@ class VisionTestCase(unittest.TestCase):
 
     def test_detectContours_C4(self):
         c4 = self.create_test(self.C4)
-        self.assertTrue(c4)     
+        self.assertTrue(c4)  
 
 if __name__ == "__main__":
     import rosunit
     rosunit.unitrun(vision, "Vision Pkg Test", VisionTestCase)
-
-        
