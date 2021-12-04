@@ -32,6 +32,28 @@ class manage:
             back -= 1
         return None
 
+    def matchedSearch(self, arr, data):
+            """
+            This search looks for whether two elements are already paired.
+            """
+            front = 0
+            back = len(arr)-1
+            while front <= back:
+                if arr[front][1] or arr[back][1]:
+                    return True
+                front += 1
+                back -= 1
+            return False
+
+    def fullSearch(self, arr, data):
+        """Returns a list of multiple values that can match with data"""
+        threshold = 3
+        ans = []
+        for index, item in enumerate(arr):
+            if self.colorMatch(item, data, threshold):
+                ans.append(index)
+        return ans
+
     def colorMatch(self, a, b, threshold):
         """
         Given two one d array of 3 elements this function will compare hsv values
@@ -39,7 +61,18 @@ class manage:
         """
         return (abs(a-b) < threshold)
 
-    def matching(self, sub1, sub2, event=None):
+    def thoroughMatching(self, arr1, arr2):
+        ans=[]
+        
+        for index, item in enumerate(arr1):
+            pm = self.fullSearch(arr2, item)
+            for item2 in pm:
+                candidate = [index, item2]
+                if len(ans) == 0: ans.append(candidate)
+                elif not self.matchedSearch(ans, candidate): ans.append(candidate)
+        return ans
+
+    def matching(self, sub1, sub2):
         """
         Func:matching: Returns an array of items that "match" eachother
         Param:sub1: First list of values.
@@ -72,8 +105,7 @@ class manage:
             if t != nil:
                 return False
         return True
-    
+
     def nilCheck(loc):
         """Checks if a cell is empty"""
         return
-    

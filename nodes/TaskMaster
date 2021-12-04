@@ -49,7 +49,7 @@ manager = manage()
 
 genList = manager.genList
 search = manager.fbsearch
-match = manager.matching
+match = manager.thoroughMatching
 
 
 
