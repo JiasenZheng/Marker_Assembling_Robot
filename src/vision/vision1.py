@@ -98,6 +98,21 @@ def plot_image(filename):
         
         
 
+    ## assembled
+    image1 = cv.imread('pictures/assembled.png')
+    img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    print("assembled: ", grid1)
+    
+    ## caps1
+    image2 = cv.imread('pictures/caps1.png')
+    img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
+    print("caps1: ", grid2)
+
+    ## markers2
+    image3 = cv.imread('pictures/markers2.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
+    print("markers2: ", grid3)
+
 
 if __name__ == "__main__":
     image = cv.imread('vision/pictures/image2.png')
@@ -110,3 +125,20 @@ if __name__ == "__main__":
     print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
+
+
+    # # Example runs of detect_contour2
+    # ## assembled
+    # image1 = cv.imread('pictures/assembled.png')
+    # img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    # print("assembled: ", grid1)
+    
+    # ## caps1
+    # image2 = cv.imread('pictures/caps1.png')
+    # img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
+    # print("caps1: ", grid2)
+
+    # ## markers2
+    # image3 = cv.imread('pictures/markers2.png')
+    # img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
+    # print("markers2: ", grid3)

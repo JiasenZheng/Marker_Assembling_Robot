@@ -32,14 +32,14 @@ class manage:
             back -= 1
         return None
 
-    def matchedSearch(self, arr, data):
+    def matchedSearch(self, pairs, candidate):
             """
             This search looks for whether two elements are already paired.
             """
             front = 0
-            back = len(arr)-1
+            back = len(pairs)-1
             while front <= back:
-                if arr[front][1] or arr[back][1]:
+                if pairs[front][1] == candidate[1] or pairs[back][1] == candidate[1]:
                     return True
                 front += 1
                 back -= 1
@@ -47,7 +47,7 @@ class manage:
 
     def fullSearch(self, arr, data):
         """Returns a list of multiple values that can match with data"""
-        threshold = 3
+        threshold = 1
         ans = []
         for index, item in enumerate(arr):
             if self.colorMatch(item, data, threshold):
@@ -67,7 +67,11 @@ class manage:
         for index, item in enumerate(arr1):
             pm = self.fullSearch(arr2, item)
             for item2 in pm:
+                print(item)
                 candidate = [index, item2]
+                print(candidate)
+                print(len(ans) == 0)
+                print(not self.matchedSearch(ans, candidate))
                 if len(ans) == 0: ans.append(candidate)
                 elif not self.matchedSearch(ans, candidate): ans.append(candidate)
         return ans
@@ -102,10 +106,22 @@ class manage:
         Param:nil:Nil value to compare.
         """
         for t in data:
-            if t != nil:
+            if t != 0:
                 return False
         return True
 
     def nilCheck(loc):
         """Checks if a cell is empty"""
         return
+
+
+# m = manage()
+
+# a = [1, 2, 5, 3, 5]
+
+# b = [1, 5, 2, 3, 5, 6]
+
+# ans = m.thoroughMatching(a, b)
+
+# for i in ans:
+#     print(f"{a[i[0]]} == {b[i[1]]}")
