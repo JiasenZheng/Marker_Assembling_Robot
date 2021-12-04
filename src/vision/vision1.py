@@ -38,7 +38,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-    lower_thresh = np.array([60,50,20])
+    lower_thresh = np.array([0,100,20])
     upper_thresh = np.array([180,255,255])
     mask = cv.inRange(hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
@@ -47,7 +47,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     cs = []
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 600:
+        if area > 1000:
             M = cv.moments(contour)
             cv.drawContours(img0,contour,-1,(0,255,0),3)
             cx = int(M['m10']/M['m00'])
@@ -99,13 +99,13 @@ def find_matching(markers,caps,ignores,error = 3):
 
 
 if __name__ == "__main__":
-    image = cv.imread('/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/image.png')
-    image, list_h = detect_contour2(image,grid_size=(3,3),pixel_size=(530,400),starting_pixel=(400,130))
+    image = cv.imread('/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/image2.png')
+    image, list_h = detect_contour2(image,grid_size=(3,3),pixel_size=(650,520),starting_pixel=(330,80))
     # markers = [0, 77, 109, 10,0]
     # caps = [0,109, 0, 10,0]
     # ignores = []
     # [a,b] = find_matching(markers, caps, ignores)
     # print(a,b)
     print(list_h)
-    plt.imshow(image)
+    plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
