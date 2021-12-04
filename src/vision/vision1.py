@@ -99,13 +99,13 @@ def find_matching(markers,caps,ignores,error = 3):
 
 
 if __name__ == "__main__":
-    # image = cv.imread('image.png')
-    # image, list_h = detect_contour2(image)
-    markers = [0, 77, 109, 10,0]
-    caps = [0,109, 0, 10,0]
-    ignores = []
-    [a,b] = find_matching(markers, caps, ignores)
-    print(a,b)
-    # print(list_h)
-    # plt.imshow(image)
-    # plt.show()
+    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/image.png')
+    image, list_h = detect_contour2(image,grid_size=(3,3),pixel_size=(530,400),starting_pixel=(400,130))
+    # markers = [0, 77, 109, 10,0]
+    # caps = [0,109, 0, 10,0]
+    # ignores = []
+    # [a,b] = find_matching(markers, caps, ignores)
+    # print(a,b)
+    print(list_h)
+    plt.imshow(image)
+    plt.show()

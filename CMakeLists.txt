@@ -202,6 +202,7 @@ nodes/manipulation_press
 nodes/manipulation_pnp
 nodes/limit_set
 nodes/bridge
+nodes/vision_bridge
 nodes/manipulation_press
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -41,6 +41,8 @@ class PickAndPlaceNode():
         # rospy.wait_for_service('release_cap')
         self.ungrip = rospy.ServiceProxy('release_cap', Trigger)
 
+        self.joints_move = rospy.ServiceProxy('joints_move', JointsMove)
+
 
     def pickandplaceMarker(self,req):
         loc0 = req.pickLocation
@@ -71,11 +73,11 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToPickHeight]" + result.error_msg
 
         ## grip
-        # if success == True:
-        #     result = self.grip()
-        #     # success = result.success
-        #     success = True
-        #     msg = "[Report @ Grip]" + result.message
+        if success == True:
+            result = self.grip()
+            # success = result.success
+            success = True
+            msg = "[Report @ Grip]" + result.message
 
         ## withdraw from tray to standoff, slow
         if success == True:
@@ -118,6 +120,9 @@ class PickAndPlaceNode():
             result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
             msg = "[Report @ GoToAssyStandoff2]" + result.error_msg
+        
+        if success:
+            result = self.joints_move([0,-5,0,-138,-1,133,46])
 
         return success, msg
 
