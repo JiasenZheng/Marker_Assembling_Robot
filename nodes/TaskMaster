@@ -135,8 +135,7 @@ class Assemble(smach.State):
         cap_standoff()
         cap_to_assembly(userdata.target_input[0], userdata.loc_input)
         press_down()
-        return 'Next'
-        
+        return 'Next?'
 
 def starterCallback():
     return
