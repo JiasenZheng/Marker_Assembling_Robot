@@ -202,6 +202,7 @@ nodes/manipulation_press
 nodes/manipulation_pnp
 nodes/limit_set
 nodes/bridge
+nodes/vision_bridge
 nodes/manipulation_press
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -249,5 +250,8 @@ DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 
 if(CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)
-    add_rostest(test/single_ppp_sequence.test)
+    # add_rostest(
+    #   # test/single_ppp_sequence.test
+    # )
+    catkin_add_nosetests(test)
 endif()

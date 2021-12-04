@@ -3,6 +3,8 @@ import manager
 from manager.manager import manage
 import numpy as np
 
+
+
 class ManageTestCase(unittest.TestCase):
     def __init__(self, *args):
         super(ManageTestCase, self).__init__(*args)

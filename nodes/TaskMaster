@@ -152,7 +152,7 @@ def main():
     sm.userdata.capList = caps
     sm.userdata.matchList = []
     sm.userdata.target = []
-    sm.userdata.loc = -1
+    sm.userdata.loc = 3
 
 
     

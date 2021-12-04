@@ -37,5 +37,6 @@
     <node name="press" pkg="group4" type="manipulation_press" output="screen"/>
     <!-- <node name="TaskMaster" pkg="group4" type="TaskMaster"/> -->
 
-    <node pkg = "group4" name="bridge" type="bridge"/>
+    <node pkg = "group4" name="bridge" type="bridge" output="screen"/>
+    <node pkg = "group4" name="vision_bridge" type="vision_bridge" output="screen"/>
 </launch>

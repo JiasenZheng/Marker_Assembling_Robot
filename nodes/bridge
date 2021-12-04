@@ -16,7 +16,7 @@ class Processor(object):
         self._bridge = CvBridge()
         self._pub = rospy.Publisher("image_processed", Image, queue_size = 10)
         self._sub = rospy.Subscriber("camera/color/image_raw", Image, self.callback)
-        self.take_image = rospy.Service('take_image', Takeimage, self.capture_callback)
+
 
 
     def callback(self, data):
@@ -30,7 +30,8 @@ class Processor(object):
 
         # manipulate with open cv
         # low_res = cv2.blur(cv_image, (50, 50))
-        image_contour,grid = v1.detect_contour(cv_image,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200])
+        # image_contour,grid = v1.detect_contour(cv_image,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200])
+        image_contour,grid = v1.detect_contour2(cv_image,grid_size=(3,3),pixel_size=(680,500),starting_pixel=(330,50))
         
         # convert to ROS
         msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
@@ -38,7 +39,7 @@ class Processor(object):
         self._pub.publish(msg)
 
     
-    def capture_callback(self, req):
+
         
 
 
