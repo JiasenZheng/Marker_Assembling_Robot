@@ -71,6 +71,7 @@ class StandBy(smach.State):
 class Caps(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['look'],
+                            input_keys = ['capList_output'],
                             output_keys = ['capList_output'])
     
     #Things to keep note of incase it causes logic errors down the line
@@ -78,19 +79,25 @@ class Caps(smach.State):
 
     def execute(self, userdata):
         cap_standoff()
-        self.capList_output = takeImage(True)
+        userdata.capList_output = takeImage(3).data
+        #userdata.capList_output.data
+        print(type(userdata.capList_output))
+        print(userdata.capList_output)
         assembly_standoff()
         return 'look'
 
 class Markers(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['match!'],
+                                input_keys = ['markerList_output'],
                                 output_keys = ['markerList_output'])
 
     def execute(self, userdata):
         rospy.loginfo('Executing state MARKERS')
         marker_standoff()
-        self.markerList_output = takeImage(True)
+        userdata.markerList_output = takeImage(2).data
+        print(type(userdata.markerList_output))
+        print(userdata.markerList_output)
         assembly_standoff()
         return 'match!'
 
@@ -101,6 +108,10 @@ class genMatch(smach.State):
                                     output_keys = ['matchList_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state GENERATE-MATCH')
+        print(type(userdata.markerList_input))
+        print(userdata.markerList_input)
+        print(type(userdata.capList_input))
+        print(userdata.capList_input)
         userdata.matchList_output = genList(match(userdata.capList_input, userdata.markerList_input))
         userdata.changeFlag_output = False
         return 'next?'
@@ -116,7 +127,14 @@ class setTarget(smach.State):
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
             assembly_standoff()
-            userdata.loc_output = search(takeImage(True), 0)[0]
+            assemblyLocList = takeImage(1).data
+            print(type(assemblyLocList))
+            print(assemblyLocList)
+            userdata.loc_output = search(assemblyLocList, 0)[0]
+            
+            # assembly = search(takeImage(1), 0)
+            # print(type(assembly))
+            # userdata.loc_output = assembly[0]
             # userdata.loc_output = userdata.loc_input + 1
             return 'move!'
         except StopIteration:
@@ -143,8 +161,10 @@ def starterCallback():
 
 def main():
     rospy.init_node('marker_assymbly_task_master')
-    markers = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    caps = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    # markers = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    # caps = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    markers = []
+    caps = []
     #Create state machine
     sm = smach.StateMachine(outcomes = ['Finished'])
     sm.userdata.changeFlag = True
@@ -172,6 +192,7 @@ def main():
                                 transitions = {
                                     'look':'MARKERS'
                                 }, remapping = {
+                                    'capList_input':'capList',
                                     'capList_output':'capList'
                                 })
     
@@ -179,6 +200,7 @@ def main():
                                 transitions = {
                                     'match!':'GENERATE-MATCHES'
                                 }, remapping = {
+                                    'markerList_input':'markerList',
                                     'markerList_output':'markerList'
                                 })
 
