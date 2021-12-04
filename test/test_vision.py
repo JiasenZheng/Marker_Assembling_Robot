@@ -23,43 +23,35 @@ class VisionTestCase(unittest.TestCase):
         self.img_dir = os.path.join(dirname(dirname(abspath(__file__))), 'src/vision/pictures/')
         
         ## Tests
-        self.A1 = { "img": "assembled.png", 
-                    "truth": (BABYBLUE, PURPLE, PINK, YELLOW, GREEN, PURPLE, YELLOW, PINK, ORANGE)}
-        self.A2 = { "img": "assembled2.png", 
-                    "truth": (BABYBLUE, GREEN, PINK, YELLOW, ORANGE, YELLOW, PURPLE, PINK, PURPLE)}
-        self.A3 = { "img": "assembled3.png", 
-                    "truth": (BABYBLUE, GREEN, PINK, YELLOW, ORANGE, PINK, YELLOW, PURPLE, PURPLE)}
-        self.A4 = { "img": "assembled4.png", 
-                    "truth": (BABYBLUE, GREEN, PINK, YELLOW, GREEN, PINK, YELLOW, PURPLE, PURPLE)}
-        self.A5 = { "img": "assembled5.png", 
-                    "truth": (BABYBLUE, YELLOW, PINK, YELLOW, EMPTY, GREEN, PURPLE, EMPTY, ORANGE)}
+        self.C1 = { "img": "caps1.png", 
+                    "truth": (PINK, ORANGE, GREEN, BABYBLUE, BABYBLUE, GREEN, YELLOW, PINK, ORANGE)}
+        self.C2 = { "img": "caps2.png", 
+                    "truth": (PINK, YELLOW, GREEN, BABYBLUE, ORANGE, GREEN, BABYBLUE, PINK, ORANGE)}
+        self.C3 = { "img": "caps3.png", 
+                    "truth": (GREEN, YELLOW, GREEN, BABYBLUE, PINK, ORANGE, BABYBLUE, PINK, ORANGE)}
+        self.C4 = { "img": "caps4.png", 
+                    "truth": (GREEN, YELLOW, GREEN, PINK, BABYBLUE, ORANGE, ORANGE, PINK, BABYBLUE)}
 
 
-        self.M1 = { "img": "markers2.png",
-                    "truth":  (BABYBLUE, ORANGE, GREEN, BABYBLUE,GREEN, PURPLE, PINK, YELLOW, YELLOW)}
-        
-        self.M2 = { "img": "markers3.png",
-                "truth":  (BABYBLUE, ORANGE, PURPLE, PURPLE, ORANGE, YELLOW, YELLOW, GREEN, GREEN)}
-
-        self.M3 = { "img": "markers4.png",
-                "truth":  (BABYBLUE, ORANGE, YELLOW, PURPLE, ORANGE, GREEN, PURPLE, YELLOW, GREEN)}
-
-        self.M4 = {"img": "markers5.png",
-                    "truth": (BABYBLUE, ORANGE, YELLOW, PINK, ORANGE, PURPLE, GREEN, YELLOW, PURPLE)}
+        self.M1 = { "img": "markers1.png",
+                    "truth":  (ORANGE, BABYBLUE, GREEN, YELLOW,BABYBLUE, PINK, ORANGE, GREEN, PINK)}       
+        self.M2 = { "img": "markers2.png",
+                "truth":  (GREEN, BABYBLUE, BABYBLUE, PINK, PINK, ORANGE, YELLOW, GREEN, ORANGE)}
+        self.M3 = { "img": "markers3.png",
+                "truth":  (GREEN, BABYBLUE, BABYBLUE, PINK, GREEN, ORANGE, ORANGE, PINK, YELLOW)}
+        self.M4 = {"img": "markers4.png",
+                    "truth": (GREEN, BABYBLUE, GREEN, YELLOW, ORANGE, ORANGE, BABYBLUE, PINK, PINK)}
    
 
 
-        self.C1 = {"img": "caps1.png",
-                    "truth": (BABYBLUE, GREEN, BABYBLUE, ORANGE, YELLOW, PINK, YELLOW, GREEN, PURPLE)}
-
-        self.C2 = {"img": "caps2.png",
-                    "truth":  (YELLOW, PURPLE, PURPLE, PINK, GREEN, GREEN, PINK, BABYBLUE, ORANGE)}
-
-        self.C3 = {"img": "caps3.png",
-                    "truth": (YELLOW, PURPLE, PINK, PURPLE, PINK, GREEN, GREEN, BABYBLUE, ORANGE)}
-
-        self.C4 = {"img": "caps4.png",
-                    "truth": (YELLOW, PURPLE, PINK, PURPLE, ORANGE, YELLOW, GREEN, BABYBLUE, BABYBLUE)}
+        self.A1 = {"img": "assembled1.png",
+                    "truth": (ORANGE, BABYBLUE, PINK, GREEN, EMPTY, BABYBLUE, PINK, ORANGE, YELLOW)}
+        self.A2 = {"img": "assembled2.png",
+                    "truth":  (ORANGE, BABYBLUE, PINK, GREEN, GREEN, BABYBLUE, PINK, ORANGE, YELLOW)}
+        self.A3 = {"img": "assembled3.png",
+                    "truth": (YELLOW, BABYBLUE, PINK, GREEN, PINK, GREEN, ORANGE, BABYBLUE, ORANGE)}
+        self.A4 = {"img": "assembled4.png",
+                    "truth": (BABYBLUE, YELLOW, GREEN, ORANGE, BABYBLUE, GREEN, PINK, PINK, PINK)}
                                                                                                 
     
 
