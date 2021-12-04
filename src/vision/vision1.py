@@ -57,7 +57,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             gy = int(c[1]//y_interval)
             grid[gy,gx] = hsv[cy,cx]
             cs.append(c)
-    cv.rectangle(img0,starting_pixel,np.add(starting_pixel,pixel_size),(0,0,255),3)
+    # cv.rectangle(img0,starting_pixel,np.add(starting_pixel,pixel_size),(0,0,255),3)
     grid = grid.reshape(1,grid_len,3)[0]
 
     return img0, grid
@@ -91,16 +91,68 @@ if __name__ == "__main__":
     print("image.png: ", grid)
 
     ## assembled
-    image1 = cv.imread('/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/assembled.png')
+    image1 = cv.imread('pictures/assembled.png')
     img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
     print("assembled: ", grid1)
 
+    # ## assembled
+    # image1 = cv.imread('pictures/assembled2.png')
+    # img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    # print("assembled: ", grid1)
+
+    # ## assembled
+    # image1 = cv.imread('pictures/assembled3.png')
+    # img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    # print("assembled: ", grid1)
+
+    # ## assembled
+    # image1 = cv.imread('pictures/assembled4.png')
+    # img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    # print("assembled: ", grid1)
+
+    # ## assembled
+    # image1 = cv.imread('pictures/assembled5.png')
+    # img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    # print("assembled: ", grid1)
+    
+
     ## caps1
-    image2 = cv.imread('/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/caps1.png')
+    image2 = cv.imread('pictures/caps1.png')
     img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
     print("caps1: ", grid2)
 
+    # ## caps1
+    # image2 = cv.imread('pictures/caps2.png')
+    # img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
+    # print("caps1: ", grid2)
+
+    # ## caps1
+    # image2 = cv.imread('pictures/caps3.png')
+    # img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
+    # print("caps1: ", grid2)
+
+    # ## caps1
+    # image2 = cv.imread('pictures/caps4.png')
+    # img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
+    # print("caps1: ", grid2)
+
+
+
     ## markers2
-    image3 = cv.imread('/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/markers2.png')
+    image3 = cv.imread('pictures/markers2.png')
     img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
     print("markers2: ", grid3)
+
+    image3 = cv.imread('pictures/markers3.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
+    print("markers2: ", grid3)
+
+    image3 = cv.imread('pictures/markers4.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
+    print("markers2: ", grid3)
+
+    image3 = cv.imread('pictures/markers5.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
+    print("markers2: ", grid3)
+
+    ## 

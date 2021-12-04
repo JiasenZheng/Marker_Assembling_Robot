@@ -8,14 +8,14 @@ from os.path import dirname, abspath, join
 
 from vision.vision1 import detect, detect_contour2
 
-## Definining Lower and Upper HSV Bounds for color check
-BABYBLUE = np.hstack((np.array([]), np.array([])))
-PURPLE = np.hstack((np.array([]), np.array([])))
-PINK = np.hstack((np.array([]), np.array([])))
-YELLOW = np.hstack((np.array([]), np.array([])))
-ORANGE = np.hstack((np.array([]), np.array([])))
-GREEN = np.hstack((np.array([]), np.array([])))
-EMPTY = np.hstack((np.array([]), np.array([])))
+## Definining Lower and Upper Hue Bounds for color check; only checking "H" of HSV value
+BABYBLUE = np.hstack((np.array([95]), np.array([105])))
+PURPLE = np.hstack((np.array([111]), np.array([121])))
+PINK = np.hstack((np.array([171]), np.array([181])))
+YELLOW = np.hstack((np.array([22]), np.array([32])))
+ORANGE = np.hstack((np.array([5]), np.array([15])))
+GREEN = np.hstack((np.array([74]), np.array([84])))
+EMPTY = np.hstack((np.array([0]), np.array([0])))
 
 class VisionTestCase(unittest.TestCase):
     def __init__(self, *args):
@@ -70,7 +70,7 @@ class VisionTestCase(unittest.TestCase):
         truth_arr = np.vstack(test_dict["truth"])
         print("grid: ", grid)
         print("truth_arr: ", grid)
-        colorsCheck = cv.inRange(grid.T, truth_arr[:, :3], truth_arr[:, 3:])
+        colorsCheck = cv.inRange(grid, truth_arr[:, :3], truth_arr[:, 3:])
         print("colorsCheck", colorsCheck)
         return np.all(colorsCheck)
 
