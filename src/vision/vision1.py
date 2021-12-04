@@ -38,8 +38,8 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-    lower_thresh = np.array([0,100,0])
-    upper_thresh = np.array([255,255,255])
+    lower_thresh = np.array([60,50,20])
+    upper_thresh = np.array([180,255,255])
     mask = cv.inRange(hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     x_interval = pixel_size[0]/grid_size[1]
@@ -67,8 +67,8 @@ def detect(img0):
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
-    lower_thresh = np.array([0,100,0])
-    upper_thresh = np.array([255,255,255])
+    lower_thresh = np.array([60,50,20])
+    upper_thresh = np.array([180,255,255])
     mask = cv.inRange(hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     if len(contours)!=0:
@@ -99,7 +99,7 @@ def find_matching(markers,caps,ignores,error = 3):
 
 
 if __name__ == "__main__":
-    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/image.png')
+    image = cv.imread('/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/image.png')
     image, list_h = detect_contour2(image,grid_size=(3,3),pixel_size=(530,400),starting_pixel=(400,130))
     # markers = [0, 77, 109, 10,0]
     # caps = [0,109, 0, 10,0]
