@@ -48,7 +48,7 @@ takeImage = rospy.ServiceProxy('capture', ImageCapture)
 manager = manage()
 
 genList = manager.genList
-search = manager.fbsearch
+search = manager.fullSearch
 match = manager.thoroughMatching
 
 
@@ -116,8 +116,8 @@ class setTarget(smach.State):
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
             assembly_standoff()
-            
-            userdata.loc_output = userdata.loc_input + 1
+            userdata.loc_output = search(takeImage(True), 0)[0]
+            # userdata.loc_output = userdata.loc_input + 1
             return 'move!'
         except StopIteration:
             userdata.changeFlag_output = False
