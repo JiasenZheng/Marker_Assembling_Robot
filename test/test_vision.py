@@ -23,43 +23,35 @@ class VisionTestCase(unittest.TestCase):
         self.img_dir = os.path.join(dirname(dirname(abspath(__file__))), 'src/vision/pictures/')
         
         ## Tests
-        self.A1 = { "img": "assembled.png", 
-                    "truth": (BABYBLUE, PURPLE, PINK, YELLOW, GREEN, PURPLE, YELLOW, PINK, ORANGE)}
-        self.A2 = { "img": "assembled2.png", 
-                    "truth": (BABYBLUE, GREEN, PINK, YELLOW, ORANGE, YELLOW, PURPLE, PINK, PURPLE)}
-        self.A3 = { "img": "assembled3.png", 
-                    "truth": (BABYBLUE, GREEN, PINK, YELLOW, ORANGE, PINK, YELLOW, PURPLE, PURPLE)}
-        self.A4 = { "img": "assembled4.png", 
-                    "truth": (BABYBLUE, GREEN, PINK, YELLOW, GREEN, PINK, YELLOW, PURPLE, PURPLE)}
-        self.A5 = { "img": "assembled5.png", 
-                    "truth": (BABYBLUE, YELLOW, PINK, YELLOW, EMPTY, GREEN, PURPLE, EMPTY, ORANGE)}
+        self.C1 = { "img": "caps1.png", 
+                    "truth": (PINK, ORANGE, GREEN, BABYBLUE, BABYBLUE, GREEN, YELLOW, PINK, ORANGE)}
+        self.C2 = { "img": "caps2.png", 
+                    "truth": (PINK, YELLOW, GREEN, BABYBLUE, ORANGE, GREEN, BABYBLUE, PINK, ORANGE)}
+        self.C3 = { "img": "caps3.png", 
+                    "truth": (GREEN, YELLOW, GREEN, BABYBLUE, PINK, ORANGE, BABYBLUE, PINK, ORANGE)}
+        self.C4 = { "img": "caps4.png", 
+                    "truth": (GREEN, YELLOW, GREEN, PINK, BABYBLUE, ORANGE, ORANGE, PINK, BABYBLUE)}
 
 
-        self.M1 = { "img": "markers2.png",
-                    "truth":  (BABYBLUE, ORANGE, GREEN, BABYBLUE,GREEN, PURPLE, PINK, YELLOW, YELLOW)}
-        
-        self.M2 = { "img": "markers3.png",
-                "truth":  (BABYBLUE, ORANGE, PURPLE, PURPLE, ORANGE, YELLOW, YELLOW, GREEN, GREEN)}
-
-        self.M3 = { "img": "markers4.png",
-                "truth":  (BABYBLUE, ORANGE, YELLOW, PURPLE, ORANGE, GREEN, PURPLE, YELLOW, GREEN)}
-
-        self.M4 = {"img": "markers5.png",
-                    "truth": (BABYBLUE, ORANGE, YELLOW, PINK, ORANGE, PURPLE, GREEN, YELLOW, PURPLE)}
+        self.M1 = { "img": "markers1.png",
+                    "truth":  (ORANGE, BABYBLUE, GREEN, YELLOW,BABYBLUE, PINK, ORANGE, GREEN, PINK)}       
+        self.M2 = { "img": "markers2.png",
+                "truth":  (GREEN, BABYBLUE, BABYBLUE, PINK, PINK, ORANGE, YELLOW, GREEN, ORANGE)}
+        self.M3 = { "img": "markers3.png",
+                "truth":  (GREEN, BABYBLUE, BABYBLUE, PINK, GREEN, ORANGE, ORANGE, PINK, YELLOW)}
+        self.M4 = {"img": "markers4.png",
+                    "truth": (GREEN, BABYBLUE, GREEN, YELLOW, ORANGE, ORANGE, BABYBLUE, PINK, PINK)}
    
 
 
-        self.C1 = {"img": "caps1.png",
-                    "truth": (BABYBLUE, GREEN, BABYBLUE, ORANGE, YELLOW, PINK, YELLOW, GREEN, PURPLE)}
-
-        self.C2 = {"img": "caps2.png",
-                    "truth":  (YELLOW, PURPLE, PURPLE, PINK, GREEN, GREEN, PINK, BABYBLUE, ORANGE)}
-
-        self.C3 = {"img": "caps3.png",
-                    "truth": (YELLOW, PURPLE, PINK, PURPLE, PINK, GREEN, GREEN, BABYBLUE, ORANGE)}
-
-        self.C4 = {"img": "caps4.png",
-                    "truth": (YELLOW, PURPLE, PINK, PURPLE, ORANGE, YELLOW, GREEN, BABYBLUE, BABYBLUE)}
+        self.A1 = {"img": "assembled1.png",
+                    "truth": (ORANGE, BABYBLUE, PINK, GREEN, EMPTY, BABYBLUE, PINK, ORANGE, YELLOW)}
+        self.A2 = {"img": "assembled2.png",
+                    "truth":  (ORANGE, BABYBLUE, PINK, GREEN, GREEN, BABYBLUE, PINK, ORANGE, YELLOW)}
+        self.A3 = {"img": "assembled3.png",
+                    "truth": (YELLOW, BABYBLUE, PINK, GREEN, PINK, GREEN, ORANGE, BABYBLUE, ORANGE)}
+        self.A4 = {"img": "assembled4.png",
+                    "truth": (BABYBLUE, YELLOW, GREEN, ORANGE, BABYBLUE, GREEN, PINK, PINK, PINK)}
                                                                                                 
     
     def create_test(self, test_dict):
@@ -77,25 +69,24 @@ class VisionTestCase(unittest.TestCase):
     def inRange(self, src, upper, lower):
         return np.logical_and(np.greater_equal(src, lower), np.less_equal(src, upper))
 
-    def test_detectContours_A1(self):
-        a1 = self.create_test(self.A1)
-        self.assertTrue(a1)
 
-    def test_detectContours_A2(self):
-        a2 = self.create_test(self.A2)
-        self.assertTrue(a2)    
+    def test_detectContours_C1(self):
+        c1 = self.create_test(self.C1)
+        self.assertTrue(c1)
 
-    def test_detectContours_A3(self):
-        a3 = self.create_test(self.A3)
-        self.assertTrue(a3)
+    def test_detectContours_C2(self):
+        c2 = self.create_test(self.C2)
+        self.assertTrue(c2)
 
-    def test_detectContours_A4(self):
-        a4 = self.create_test(self.A4)
-        self.assertTrue(a4)
+    def test_detectContours_C3(self):
+        c3 = self.create_test(self.C3)
+        self.assertTrue(c3)
 
-    def test_detectContours_A5(self):
-        a5 = self.create_test(self.A5)
-        self.assertTrue(a5)
+    def test_detectContours_C4(self):
+        c4 = self.create_test(self.C4)
+        self.assertTrue(c4) 
+
+
 
     def test_detectContours_M1(self):
         m1 = self.create_test(self.M1)
@@ -113,21 +104,28 @@ class VisionTestCase(unittest.TestCase):
         m4 = self.create_test(self.M4)
         self.assertTrue(m4)
 
-    def test_detectContours_C1(self):
-        c1 = self.create_test(self.C1)
-        self.assertTrue(c1)
 
-    def test_detectContours_C2(self):
-        c2 = self.create_test(self.C2)
-        self.assertTrue(c2)
 
-    def test_detectContours_C3(self):
-        c3 = self.create_test(self.C3)
-        self.assertTrue(c3)
 
-    def test_detectContours_C4(self):
-        c4 = self.create_test(self.C4)
-        self.assertTrue(c4)  
+    def test_detectContours_A1(self):
+        a1 = self.create_test(self.A1)
+        self.assertTrue(a1)
+
+    def test_detectContours_A2(self):
+        a2 = self.create_test(self.A2)
+        self.assertTrue(a2)    
+
+    def test_detectContours_A3(self):
+        a3 = self.create_test(self.A3)
+        self.assertTrue(a3)
+
+    def test_detectContours_A4(self):
+        a4 = self.create_test(self.A4)
+        self.assertTrue(a4)
+
+
+
+ 
 
 if __name__ == "__main__":
     import rosunit
