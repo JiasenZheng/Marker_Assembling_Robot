@@ -91,9 +91,9 @@ def find_matching(markers,caps,ignores,error = 3):
             continue
         for b, cap in enumerate(caps):
             if abs(marker - cap) <= error:
-                return [a,b]
+                return [a,b],ignores
         ignores.append(a)
-        return [None, None]
+        return [None, None],ignores
         
         
 
