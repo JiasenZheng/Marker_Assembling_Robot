@@ -30,7 +30,7 @@ class LimitSet:
         self.coll_lo_service = rospy.Service("/coll_lo", CollisionSet,self.handle_coll_lo)
         self.set_force_torque_proxy = rospy.ServiceProxy('/franka_control/set_force_torque_collision_behavior', SetForceTorqueCollisionBehavior)    
 
-        pass
+        
 
 
 
