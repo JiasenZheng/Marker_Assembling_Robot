@@ -61,17 +61,17 @@ class Bridge:
 
         #At markers
         elif tray_location == 2: 
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [580,450], starting_pixel = [0,0])
-            cv2.imshow("image", image_contour)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            image_contour, self.grid = detect_contour2(self.current_frame,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
+            # cv2.imshow("image", image_contour)
+            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
         
         
         #At caps
         elif tray_location == 3:
 
-            cv2.imshow("image", self.current_frame)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [640,480], starting_pixel = [0,0])
+            # cv2.imshow("image", self.current_frame)
+            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
+            image_contour, self.grid = detect_contour2(self.current_frame, grid_size=(3,3), pixel_size=(910,650), starting_pixel=(180,0))
         
         
         

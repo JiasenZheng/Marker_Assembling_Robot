@@ -115,14 +115,14 @@ def plot_image(filename):
 
 
 if __name__ == "__main__":
-    image = cv.imread('vision/pictures/image2.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(650,520),starting_pixel=(330,80))
+    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
     # markers = [0, 77, 109, 10,0]
     # caps = [0,109, 0, 10,0]
     # ignores = []
     # [a,b] = find_matching(markers, caps, ignores)
     # print(a,b)
-    print(list_H)
+    # print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
 
