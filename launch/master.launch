@@ -1,0 +1,13 @@
+<launch>
+
+    <node name="manipulation_cap" pkg="group4" type="manipulation_cap" output="screen" />
+    <node name="manipulation_press" pkg="group4" type="manipulation_press" output="screen" />
+    <node name="manipulation_pnp" pkg="group4" type="manipulation_pnp" output="screen" />
+    <node name="manipulation_macro_a" pkg="group4" type="manipulation_macro_a" output="screen" />
+    
+
+
+
+
+
+</launch>
