@@ -50,26 +50,27 @@ class Bridge:
 
         # if self.counter == self.image_frame:
         
-        if a == 0:
+        # if a == 0:
 
-        #At markers
-            cv2.imshow("image", self.current_frame)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [580,450], starting_pixel = [0,0])
+        # #At markers
+        # cv2.imshow("image", self.current_frame)
+        # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
+        image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [580,450], starting_pixel = [0,0])
+        cv2.imshow("image", image_contour)
+        cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+        # elif a == 1:
+
+        # #At caps
+        #     cv2.imshow("image", self.current_frame)
+        #     cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
+        #     image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [640,480], starting_pixel = [0,0])
         
-        elif a == 1:
+        # elif a == 2:
 
-        #At caps
-            cv2.imshow("image", self.current_frame)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [640,480], starting_pixel = [0,0])
-        
-        elif a == 2:
-
-        #At assembly
-            cv2.imshow("image", self.current_frame)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [450,300], starting_pixel = [110,64])
+        # #At assembly
+        #     cv2.imshow("image", self.current_frame)
+        #     cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
+        #     image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [450,300], starting_pixel = [110,64])
         
         
         
@@ -80,7 +81,7 @@ class Bridge:
         
         # self.grid = [1, 2, 3, 4, 5]
     
-        return self.grid
+        return [self.grid]
 
         
 if __name__ == "__main__":
