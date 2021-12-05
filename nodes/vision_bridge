@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-""" A python node to read images from a web camera and process with opencv 
+""" A python node to read images from the RealSense camera and process with opencv 
     Subscribes: usb_cam/image_raw (sensor_msgs/Image) - The input raw image
-    Publishes: image_processed (sensor_msgs/Image) - The processed image
+    Publishes: image_processed (sensor_msgs/Image) - The processed image with contours
+    
+    Provides a service to return a list of 9 H values of the markers for specified tray location 
 """
 
 from inspect import currentframe
@@ -11,11 +13,15 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 import cv2
 from vision.vision1 import detect_contour2
+import vision.vision1 as v1
 from group4.srv import ImageCapture
 import numpy as np
-from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 
 class Bridge:
+    """
+    Convert ROS Image to Opencv Image, publish the image on image_processed service and provide a service to 
+    return a list of H values depending on the location of the end effector.
+    """
 
     def __init__(self):
         self.take_image = rospy.Service('capture', ImageCapture, self.capture_callback)
@@ -29,65 +35,47 @@ class Bridge:
         self.current_frame = None
 
     def callback(self,data):
-
-        # Output debugging information to the terminal
-        # rospy.loginfo("receiving video frame")
+        """
+        Convert ROS image message to OpenCV image message, detect contours on the markers and 
+        publish processed OpenCV image frames at certain fix frequency
         
-        #Convert ROS Image message to OpenCV image
-        self.current_frame = self._bridge.imgmsg_to_cv2(data)
-        self.current_frame = cv2.cvtColor(self.current_frame, cv2.COLOR_BGR2RGB)
+        Args:
+        data : ROS Image Message
+
+        """
+
+        self.current_frame = self._bridge.imgmsg_to_cv2(data, "bgr8")
+        image_contour = v1.detect(self.current_frame)
+        msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
+
+        self._pub.publish(msg)
         
-
-        #Convert Opencv_image to ros_image
-        # msg = self._bridge.cv2_to_imgmsg(self.current_frame, "bgr8")
-
-        #Publish the ros message on image_processed topic
-        # self._pub.publish(msg)
     
 
     def capture_callback(self, req):
-        # rospy.loginfo("service is working")
-        # self.subscriber = rospy.Subscriber('/camera/color/image_raw', Image, self.callback)
+        """
+        Returns a list of H values of the markers for specified tray locations by making use of the detect_contour2 function
+        from the vision package. 
 
-        # if self.counter == self.image_frame:
+        Args:
+        req : tray_location (1 indicates assembly tray location, 2 indicates markers tray location and 3 indicates caps tray location)
+
+        Returns:
+        [self.grid] - list of 9 H values of the markers
+        """
         
         tray_location = req.tray_location
-        #At assembly
+        
         if tray_location == 1:
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [450,300], starting_pixel = [110,64])
-            rospy.loginfo(self.grid)
-            # cv2.imshow("image", image_contour)
-            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
-            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = (550,390), starting_pixel = (380,130))
+        
 
-
-        #At markers
         elif tray_location == 2: 
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [580,450], starting_pixel = [0,0])
-            cv2.imshow("image", image_contour)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-            # rospy.loginfo(self.grid)
-            # # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            image_contour, self.grid = detect_contour2(self.current_frame,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
         
         
-        #At caps
         elif tray_location == 3:
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [640,480], starting_pixel = [0,0])
-            rospy.loginfo(self.grid)
-            # cv2.imshow("image", image_contour)
-            # cv2.waitkey(0)
-            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
-        
-        
-        # self.grid = [1, 2, 3, 4, 5]
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        # rospy.logerr(self.grid)
-        
-        # self.grid = [1, 2, 3, 4, 5]
+            image_contour, self.grid = detect_contour2(self.current_frame, grid_size=(3,3), pixel_size=(910,650), starting_pixel=(180,0))
         
     
         return [self.grid]
