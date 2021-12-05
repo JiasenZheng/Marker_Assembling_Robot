@@ -107,7 +107,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
 
 def detect(img0):
     """
-    A function to detect the contours of marker images based on a sepcific
+    A function to detect the contours of marker images based on a specific 
     HSV range
     
     Args:
