@@ -55,26 +55,31 @@ class Bridge:
         #At assembly
         if tray_location == 1:
             image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [450,300], starting_pixel = [110,64])
-            cv2.imshow("image", image_contour)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            rospy.loginfo(self.grid)
+            # cv2.imshow("image", image_contour)
+            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
 
 
         #At markers
         elif tray_location == 2: 
             image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [580,450], starting_pixel = [0,0])
             cv2.imshow("image", image_contour)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+            # rospy.loginfo(self.grid)
+            # # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', image_contour)
         
         
         #At caps
         elif tray_location == 3:
             image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = [640,480], starting_pixel = [0,0])
-            cv2.imshow("image", image_contour)
-            cv2.waitkey(0)
-            cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
+            rospy.loginfo(self.grid)
+            # cv2.imshow("image", image_contour)
+            # cv2.waitkey(0)
+            # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
         
         
         # self.grid = [1, 2, 3, 4, 5]
@@ -83,6 +88,7 @@ class Bridge:
         # rospy.logerr(self.grid)
         
         # self.grid = [1, 2, 3, 4, 5]
+        
     
         return [self.grid]
 
