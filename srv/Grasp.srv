@@ -1,4 +1,4 @@
-float64 w
+float64 w #This service is deprecated
 float64 ei
 float64 eo
 float64 s
