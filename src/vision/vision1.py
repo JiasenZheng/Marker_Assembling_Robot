@@ -37,17 +37,17 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     grid_len = grid_size[0]*grid_size[1]
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (5, 5), 2)
-    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-    lower_thresh = np.array([0,100,20])
+    img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    lower_thresh = np.array([6,100,20])
     upper_thresh = np.array([180,255,255])
-    mask = cv.inRange(hsv, lower_thresh, upper_thresh)
+    mask = cv.inRange(img_hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     x_interval = pixel_size[0]/grid_size[1]
     y_interval = pixel_size[1]/grid_size[0]
     cs = []
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 1500:
+        if area > 500:
             M = cv.moments(contour)
             cv.drawContours(img0,contour,-1,(0,255,0),3)
             cx = int(M['m10']/M['m00'])
@@ -56,7 +56,10 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             # c = np.subtract(c,starting_pixel)
             gx = int(c[0]//x_interval)
             gy = int(c[1]//y_interval)
-            grid[gy,gx] = hsv[cy,cx]
+            if gx == 1 and gy == 1:
+                cx+=10
+                cy+=10
+            grid[gy,gx] = img_hsv[cy,cx]
             cs.append(c)
     grid = grid.reshape(1,grid_len,3)[0]
     for hsv in grid:
@@ -115,30 +118,89 @@ def plot_image(filename):
 
 
 if __name__ == "__main__":
-    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
+<<<<<<< HEAD
+    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size = (650,520), starting_pixel = (330,80))
+
+    print(list_H)
+    plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
+    plt.show()
+=======
+    # image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
+    # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
     # markers = [0, 77, 109, 10,0]
     # caps = [0,109, 0, 10,0]
     # ignores = []
     # [a,b] = find_matching(markers, caps, ignores)
     # print(a,b)
     # print(list_H)
-    plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
-    plt.show()
+    # plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
+    # plt.show()
+>>>>>>> fa36e3243050e5dc7e2f67042cde6a0ff8c2d823
 
 
     # # Example runs of detect_contour2
     # ## assembled
     # image1 = cv.imread('pictures/assembled.png')
-    # img1, grid1 = detect_contour2(image1,(3,3), [450, 300], [110, 64])
+    # img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
     # print("assembled: ", grid1)
-    
-    # ## caps1
-    # image2 = cv.imread('pictures/caps1.png')
-    # img2, grid2 = detect_contour2(image2,(3,3), [640, 480], [0, 0])
-    # print("caps1: ", grid2)
 
-    # ## markers2
-    # image3 = cv.imread('pictures/markers2.png')
-    # img3, grid3 = detect_contour2(image3,(3,3), [580, 450], [0, 0])
-    # print("markers2: ", grid3)
+    ## assembled1
+    image1 = cv.imread('pictures/assembled1.png')
+    img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
+    print("assembled: ", grid1)
+
+    ## assembled2
+    image1 = cv.imread('pictures/assembled2.png')
+    img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
+    print("assembled: ", grid1)
+
+    ## assembled3
+    image1 = cv.imread('pictures/assembled3.png')
+    img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
+    print("assembled: ", grid1)
+
+    ## assembled4
+    image1 = cv.imread('pictures/assembled4.png')
+    img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
+    print("assembled: ", grid1)
+    
+    ## caps1
+    image2 = cv.imread('pictures/caps1.png')
+    img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
+    print("caps1: ", grid2)
+
+    ## caps2
+    image2 = cv.imread('pictures/caps2.png')
+    img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
+    print("caps1: ", grid2)
+
+    ## caps3
+    image2 = cv.imread('pictures/caps3.png')
+    img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
+    print("caps1: ", grid2)
+
+    ## caps4
+    image2 = cv.imread('pictures/caps4.png')
+    img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
+    print("caps1: ", grid2)
+
+    ## markers1
+    image3 = cv.imread('pictures/markers1.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
+    print("markers2: ", grid3)
+
+    ## markers2
+    image3 = cv.imread('pictures/markers2.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
+    print("markers2: ", grid3)
+
+    ## markers3
+    image3 = cv.imread('pictures/markers3.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
+    print("markers2: ", grid3)
+
+    ## markers4
+    image3 = cv.imread('pictures/markers4.png')
+    img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
+    print("markers2: ", grid3)
