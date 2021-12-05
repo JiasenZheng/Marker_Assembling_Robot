@@ -3,6 +3,6 @@ int32 location      ## should be 0-8 for the 3 x 3 tray, row-major order
 int32 heightLevel   ## 0/../n increasing heights (categorical)
 int32 velocityLevel  ## 0 for low speed(with vel scaling), 1 for high speed(no vel scaling)
 ---
-bool success
-geometry_msgs/Pose pose
-string error_msg
+bool success #completion status
+geometry_msgs/Pose pose #goal position
+string error_msg #return status message

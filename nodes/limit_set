@@ -46,9 +46,9 @@ class LimitSet:
         """
         
 
-        force = [44.0, 44.0, 44.0, 40.0, 40.0, 40.0]
+        force = [54.0, 54.0, 54.0, 50.0, 50.0, 50.0]
 
-        tau = [45.0, 45.0, 45.0, 45.0, 40.0, 40.0, 40.0]
+        tau = [55.0, 55.0, 55.0, 55.0, 50.0, 50.0, 50.0]
 
 
         rospy.set_param('/franka_control/collision_config/lower_force_thresholds_nominal', force)

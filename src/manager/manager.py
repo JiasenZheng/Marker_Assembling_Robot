@@ -46,7 +46,7 @@ class manage:
         if data == 0:
             threshold = 1
         else:
-            threshold = 7
+            threshold = 6
         ans = []
         for index, item in enumerate(arr):
             if self.colorMatch(item, data, threshold):

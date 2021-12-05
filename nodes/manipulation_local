@@ -10,85 +10,56 @@ import numpy as np
 
 
 """
-Call a move to each tray location by specifying the tray number and location number and height level
+Call a move to each tray location by specifying the tray number and location number and height level.
+Services:
+    go_to_trayLocation of type TrayLocationMove moves the manipulator arm to one of 3 trays, to prespecified
+    XYZ coordinates.
 """
 
 class LocalManipulationNode():
     def __init__(self):
         self.go_to_trayLocation = rospy.Service("go_to_trayLocation", TrayLocationMove, self.handle_goToTrayLocation)
 
-        ## LATER IF NECESSARY
-        # self.go_to_Assemblylocation = rospy.Service("go_to_assemblylocation", LocationMove, self.handle_goToAssemblyLocation)
-        # self.go_to_Markerslocation = rospy.Service("go_to_markerslocation", LocationMove, self.handle_goToMarkersLocation)
-        # self.go_to_Capslocation = rospy.Service("go_to_capslocation", LocationMove, self.handle_goToCapsLocation)
-
         self.move_to_pose = rospy.ServiceProxy("pose_move", PoseMove)
         self.cartesian_move_to_pose = rospy.ServiceProxy("cartesian_pose_move", PoseMove)
         self.get_current_pose = rospy.ServiceProxy("get_arm_pose", GetPose)
 
         ## The default orientation for all moves, so as to remain vertical in all interaction posiitoins
-        # self.rpy = [np.pi, 0.0277365, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
-        self.default_rpy = [np.pi, -0.0212150281, -np.pi/4] ## will have to change/check the z rotation because of franka's offset
-
-        #   x: 3.14260370
-        #   y: -0.0212150281
-        #   z: -0.78448429
+        self.default_rpy = [np.pi, -0.0212150281, -np.pi/4] 
         self.default_q = transformations.quaternion_from_euler(self.default_rpy[0], self.default_rpy[1], self.default_rpy[2] )
 
         ## Assembly Tray Parameters 
-        ## zlist: [markerPlaceDownZ, capPlaceDownZ, capPressZ, standoffZ ]
-
-        # self.assemblyX = rospy.get_param("/x1")
-        # self.assemblyY = rospy.get_param("/y1")
-        # self.assemblyXPitch = rospy.get_param("/pitch_1_x")
-        # self.assemblyYPitch = rospy.get_param("/pitch_1_y")
-        # self.assemblyZStandoff = rospy.get_param("/z1_standoff")
-        # self.assemblyZPress = rospy.get_param("/z1_press")
-        # self.assemblyZPlace = rospy.get_param("/z1_place")
-        self.assemblyX = 0.4818641
-        self.assemblyY = 0.000193013
-        self.assemblyXPitch = 0.0508
-        self.assemblyYPitch = 0.0762
-        self.assemblyZStandoff = 0.27 #0.26
-        self.assemblyZPress = 0.25
-        self.assemblyZCapPlace = 0.228+0.002 #0.222945 #0.2
-        self.assemblyZMarkerPlace = 0.19962 + 0.005
-        self.assemblyZClear = 0.35
+        self.assemblyX = rospy.get_param('x1')
+        self.assemblyY = rospy.get_param('y1')
+        self.assemblyXPitch = rospy.get_param('pitch_1_x')
+        self.assemblyYPitch = rospy.get_param('pitch_2_y')
+        self.assemblyZClear = rospy.get_param('z11')
+        self.assemblyZStandoff = rospy.get_param('z12') 
+        self.assemblyZPress = rospy.get_param('z13')
+        self.assemblyZCapPlace = rospy.get_param('z14') 
+        self.assemblyZMarkerPlace = rospy.get_param('z15')
 
 
         ## Marker Tray Parameters
-        ## zlist: [markerPickUpZ, standoffZ]
 
-        # self.markersX = rospy.get_param("/x2")
-        # self.markersY = rospy.get_param("/y2")
-        # self.markersXPitch = rospy.get_param("/pitch_2_x")
-        # self.markersyYPitch = rospy.get_param("/pitch_2_y")
-        # self.markersZStandoff = rospy.get_param("/z2_standoff")
-        # self.markersyZPick = rospy.get_param("/z2_pick")
-        self.markersX = 0.3415  #0.343498
-        self.markersY = -0.199562
-        self.markersXPitch = 0.0508
-        self.markersyYPitch = 0.0762
-        self.markersZStandoff = 0.27
-        self.markersZPick = 0.19962
-        self.markersZClear = 0.35
+        self.markersX = rospy.get_param('x2')
+        self.markersY = rospy.get_param('y2')
+        self.markersXPitch = rospy.get_param('pitch_2_x')
+        self.markersyYPitch = rospy.get_param('pitch_2_y')
+        self.markersZClear = rospy.get_param('z21')
+        self.markersZStandoff = rospy.get_param('z22')
+        self.markersZPick = rospy.get_param('z23')
 
         ## Cap Tray Parameters
-        ## zlist: [capPickUpZ, standoffZ]
 
-        # self.capsX = rospy.get_param("/x3")
-        # self.capsY = rospy.get_param("/y3")
-        # self.capsXPitch = rospy.get_param("/pitch_3_x")
-        # self.capsyYPitch = rospy.get_param("/pitch_3_y")
-        # self.capsZStandoff = rospy.get_param("/z3_standoff")
-        # self.capsyZPick = rospy.get_param("/z3_pick")
-        self.capsX = 0.343 #0.3451085
-        self.capsY = 0.210
-        self.capsXPitch = 0.0508
-        self.capsyYPitch = 0.0635
-        self.capsZStandoff = 0.145
-        self.capsZPick = 0.124
-        self.capsZClear = 0.35
+        self.capsX = rospy.get_param('x3')
+        self.capsY = rospy.get_param('y3')
+        self.capsXPitch = rospy.get_param('pitch_3_x')
+        self.capsyYPitch = rospy.get_param('pitch_3_y')
+        self.capsZClear = rospy.get_param('z31')
+        self.capsZStandoff = rospy.get_param('z32')
+        self.capsZPick = rospy.get_param('z33')
+
 
         ## Setting up TrayPositions
 
@@ -112,12 +83,22 @@ class LocalManipulationNode():
 
         ## Pose Matching tolerances
 
-        # self.matchPositionTol = rospy.get_param("/match_position_tolerance", 0.002)
-        # self.matchOrientationTol = rospy.get_param("/match_orientation_tolerance", 0.008802)
         self.matchPosTol = 0.002
         self.matchOrientTol = 0.005
 
     def handle_goToTrayLocation(self, req):
+        """
+        handle_goToTrayLocation is the callback for moving the manipulator arm in XYZ coordinates to discrete locations
+        Args:
+            trayNumber of type int32 goes assembly (1), markers(2), caps(3)
+            location of type int32 specifies a row major 0-8 position on one of 3 trays to go to
+            heightLevel of type int32 goes to a specific z height above the tray location in question
+            velocityLevel of type int32 specifies a low speed (0) or high speed (1)
+        Return:
+            success of type bool returns the completion status of the move
+            pose of type geometry_msgs/Pose specifies the goal position that was moved to
+            error_msg of type string gives a return status message
+         """
 
         ## xyz coords corresponding to specified tray, location and heightLevel
         if req.trayNumber == 1: ## assembly
@@ -146,9 +127,8 @@ class LocalManipulationNode():
         targetPose = Pose(xyzPoint, qOrientation)
 
         ## Command robot to move
-        # self.move_to_pose(xyzPoint, rpyOrientation)
         self.cartesian_move_to_pose(xyzPoint, rpyOrientation, req.velocityLevel)
-        rospy.sleep(0.2) ## MIGHT NOT BE NEEDED
+        rospy.sleep(0.2)
 
         ## Verify Completed move
         currentPose = self.get_current_pose().pose
@@ -157,42 +137,12 @@ class LocalManipulationNode():
         return success, currentPose.pose, msg
         
 if __name__ == "__main__":
+    """
+    Main function
+    """
     rospy.init_node("local_manipulation")
     node = LocalManipulationNode()
     rospy.spin()
 
 
-# SAVED POSE FOR PICTURED DEMO
-#   pose: 
-#     position: 
-#       x: 0.4862770240147619
-#       y: 0.0011834753599661197
-#       z: 0.2628842768456551
-#     orientation: 
-#       x: 0.925012409379751
-#       y: -0.3799160576953355
-#       z: -0.0028783647203887716
-#       w: 0.0027471103433906376
-
-
-## tray 1 loc 8 hL0
-# pose: 
-#   header: 
-#     seq: 0
-#     stamp: 
-#       secs: 1637811024
-#       nsecs: 886617660
-#     frame_id: "panda_link0"
-#   pose: 
-#     position: 
-#       x: 0.5305835695748329
-#       y: 0.07681841928818005
-#       z: 0.22017864091247175
-#     orientation: 
-#       x: -0.923290353056612
-#       y: 0.3839470221322925
-#       z: -0.009351918646839614
-#       w: 0.005670076363189204
-# rpy
-# [-3.123939345305955, -0.01294017778980388, -0.7882980310115272]
 
