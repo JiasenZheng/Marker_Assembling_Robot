@@ -2,14 +2,14 @@
 
 import moveit_commander
 import moveit_msgs.msg 
-from geometry_msgs.msg import Pose, Point, Vector3
+from geometry_msgs.msg import Vector3
 
 from math import pi
 import numpy as np
 
 import rospy
 
-from group4.srv import GotoPos, DeltaMove, GetPose, PoseMove
+from group4.srv import GotoPos, DeltaMove, GetPose
 
 """
 The manipulation_macro_a node provides services to go to the 3 above tray locations, along with a backup disposal location
@@ -37,8 +37,6 @@ Parameters:
 
 #Threshold to move linearly upwars to before lateral movement
 z_thresh = 0.3
-
-
 
 #Camera translation transformation numbers
 cam_x = 0.0504
@@ -76,8 +74,6 @@ class ManipulationMacroA:
         self.above_master_x = self.above_master_x_0
         self.above_master_y = self.above_master_y_0
 
-
-
         #Define MoveIt groups
         self.robot = moveit_commander.RobotCommander()
         self.arm_group_name = "panda_arm"
@@ -88,8 +84,6 @@ class ManipulationMacroA:
         #Import supporting services
         self.delta_move = rospy.ServiceProxy('/delta_move',DeltaMove)
         self.get_arm_pose = rospy.ServiceProxy('/get_arm_pose',GetPose)
-        self.pose_move = rospy.ServiceProxy('/pose_move', PoseMove)
-
 
         #Define main services
         self.go_to_marker = rospy.Service("/go_to_marker", GotoPos, self.handle_marker)
@@ -115,6 +109,11 @@ class ManipulationMacroA:
         if current.pose.pose.position.z<z_thresh:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
+
+
+        #Go to neutral location to avoid bad joint angles
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
 
 
         current = self.get_arm_pose()
@@ -184,6 +183,11 @@ class ManipulationMacroA:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
+        #Go to neutral position to mitigate bad arm configuration
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
+
+
         current = self.get_arm_pose()
 
 
@@ -246,6 +250,11 @@ class ManipulationMacroA:
         if current.pose.pose.position.z<z_thresh:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
+
+
+        #Go to neutral location to avoid bad joint angles
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
 
 
         current = self.get_arm_pose()

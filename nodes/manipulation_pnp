@@ -6,6 +6,13 @@ from group4.srv import *
 from group4.srv import PickNPlace
 from std_srvs.srv import Trigger
 
+"""
+This node provides services for picking and placing markers and caps. 
+    Services:
+        pnpMarker of type PickNPlace picks a marker from the feeder tray and places it in the assembly tray
+        pnpCap of type PickNPlace picks a cap from the feeder tray and places it on a marker in the assembly tray
+"""
+
 class PickAndPlaceNode():
     def __init__(self):
 
@@ -14,40 +21,50 @@ class PickAndPlaceNode():
         self.pnpCap = rospy.Service('pnpCap', PickNPlace, self.pickandplaceCap )
 
         ## Preparing services to be called in the pick and place sequences
-        # rospy.wait_for_service('go_to_cap')
+        
+        rospy.wait_for_service('go_to_cap')
         self.go_to_caps = rospy.ServiceProxy('go_to_cap', GotoPos)
 
-        # rospy.wait_for_service('go_to_disposal')
+        rospy.wait_for_service('go_to_disposal')
         self.go_to_disposal = rospy.ServiceProxy('go_to_diaposal', GotoPos)
 
-        # rospy.wait_for_service('go_to_marker')
+        rospy.wait_for_service('go_to_marker')
         self.go_to_markers = rospy.ServiceProxy('go_to_marker', GotoPos)
 
-        # rospy.wait_for_service('go_to_master')
+        rospy.wait_for_service('go_to_master')
         self.go_to_assembly = rospy.ServiceProxy('go_to_master', GotoPos)
 
-        # rospy.wait_for_service('go_to_trayLocation')
+        rospy.wait_for_service('go_to_trayLocation')
         self.go_to_trayLoc = rospy.ServiceProxy('go_to_trayLocation', TrayLocationMove)
 
-        # rospy.wait_for_service('/getMax_F_ext')
+        rospy.wait_for_service('/getMax_F_ext')
         self.listen_for_max_ext_F = rospy.ServiceProxy('getMax_F_ext', Trigger)
 
-        # rospy.wait_for_service('/stop_recording_F_ext')
+        rospy.wait_for_service('/stop_recording_F_ext')
         self.get_local_max_ext_F = rospy.ServiceProxy('stop_recording_F_ext', GetMaxWrenches)        
 
-        # rospy.wait_for_service('grip_cap')
+        rospy.wait_for_service('grip_cap')
         self.grip = rospy.ServiceProxy('grip_cap', Trigger)
 
-        # rospy.wait_for_service('release_cap')
+        rospy.wait_for_service('release_cap')
         self.ungrip = rospy.ServiceProxy('release_cap', Trigger)
 
+        rospy.wait_for_service('joints_move')
         self.joints_move = rospy.ServiceProxy('joints_move', JointsMove)
 
 
     def pickandplaceMarker(self,req):
+        """
+        pickandplaceMarker if a call back from executing the pick and place marker sequence
+        Args:
+            pickLocation of type int32 is the starting location in the marker pick and place sequence on the marker feeder tray (0-8, row major order).
+            placeLocation of type int32 is the placing location on the assembly tray (0-8, row major order)
+        Return:
+            result of type boolean is the completion status of sequence
+            error_msg of type string provides info on the status of the pick and place sequence            
+        """
         loc0 = req.pickLocation
         loc1 = req.placeLocation
-        # loc = req.location
 
         ## ungrip for extra assurance
         result = self.ungrip()
@@ -121,12 +138,23 @@ class PickAndPlaceNode():
             success = result.success
             msg = "[Report @ GoToAssyStandoff2]" + result.error_msg
         
+
+        #Neutral location
         if success:
             result = self.joints_move([0,-5,0,-138,-1,133,46])
 
         return success, msg
 
     def pickandplaceCap(self, req):
+        """
+        pickandplaceCap is the callback for moving a cap from the cap feeder tray onto a marker on the assembly tray
+        Args:
+            pickLocation of type int32 is the starting location in the cap pick and place sequence on the cap feeder tray (0-8, row major order).
+            placeLocation of type int32 is the placing location on the assembly tray (0-8, row major order)
+        Return:
+            result of type boolean is the completion status of sequence
+            error_msg of type string provides info on the status of the pick and place sequence              
+        """
         loc0 = req.pickLocation
         loc1 = req.placeLocation
 
@@ -134,6 +162,10 @@ class PickAndPlaceNode():
         result = self.ungrip()
         success = result.success
         msg = "[Report @ Ungrip]" + result.message
+
+        ## go to a standoff location
+        if success:
+            result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
 
         ## go to clearance, fast
         if success:

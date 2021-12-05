@@ -1,3 +1,3 @@
 ---
-bool success
-string error_msg
+bool success #boolean success status of limit set
+string error_msg #string status return message for the limit set call

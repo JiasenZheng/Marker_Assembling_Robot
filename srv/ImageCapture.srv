@@ -1,3 +1,3 @@
-int32 tray_location
+int32 tray_location # tray location to capture
 ---
-float32[] data
+float32[] data #hue data in the form of a list for matching
