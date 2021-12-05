@@ -118,14 +118,12 @@ def plot_image(filename):
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png')
     image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size = (650,520), starting_pixel = (330,80))
 
     print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
-=======
     # image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
     # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
     # markers = [0, 77, 109, 10,0]
@@ -136,7 +134,6 @@ if __name__ == "__main__":
     # print(list_H)
     # plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     # plt.show()
->>>>>>> fa36e3243050e5dc7e2f67042cde6a0ff8c2d823
 
 
     # # Example runs of detect_contour2

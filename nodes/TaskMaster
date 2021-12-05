@@ -90,21 +90,23 @@ class StandBy(smach.State):
 class Caps(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['look'],
-                            input_keys = ['capList_output'],
-                            output_keys = ['capList_output'])
+                            input_keys = ['capList_output', 'locList_output'],
+                            output_keys = ['capList_output', 'locList_output'])
     
     #Things to keep note of incase it causes logic errors down the line
     #I don't know if services output data has to be passed between each state
 
     def execute(self, userdata):
         rospy.loginfo('Executing state CAPS')
-        # cap_standoff()
         userdata.capList_output = takeImage(3).data
         rospy.loginfo(userdata.capList_output)
-        #userdata.capList_output.data
         print(type(userdata.capList_output))
         print(userdata.capList_output)
         assembly_standoff()
+        rospy.loginfo('At assembly standoff')
+        assemblyLocList = takeImage(1).data
+        rospy.loginfo(f"This is list of empty assembly locaitions {assemblyLocList}")
+        userdata.locList_output = genList(search(assemblyLocList, 0))
         return 'look'
 
 class Markers(smach.State):
@@ -118,7 +120,7 @@ class Markers(smach.State):
         marker_standoff()
         userdata.markerList_output = takeImage(2).data
         rospy.loginfo(f"Marker List: {userdata.markerList_output}")
-        assembly_standoff()
+        # assembly_standoff()
         return 'match!'
 
 class genMatch(smach.State):
@@ -140,18 +142,14 @@ class genMatch(smach.State):
 class setTarget(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['move!', 'finished'],
-                                input_keys = ['matchList_input', 'loc_input', 'target_output', 'loc_output'],
+                                input_keys = ['matchList_input', 'loc_input', 'target_output', 'loc_output', 'locList_input'],
                                 output_keys=['target_output', 'loc_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state SET_TARGET')
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
             rospy.loginfo(f"Current Target: {userdata.target_output}")
-            rospy.loginfo('Going to assembly standoff')
-            assembly_standoff()
-            rospy.loginfo('At assembly standoff')
-            assemblyLocList = takeImage(1).data
-            userdata.loc_output = search(assemblyLocList, 0)[0]
+            ____, userdata.loc_output = next(userdata.locList_input)
             rospy.loginfo(f"Putting marker at {userdata.loc_output} in assembly grid.")
             return 'move!'
         except StopIteration:
@@ -166,19 +164,22 @@ class Assemble(smach.State):
     
     def execute(self, userdata):
         rospy.loginfo('Executing state ASSEMBLE')
-        marker_standoff()
+        # marker_standoff()
         rospy.loginfo('Getting Marker')
-        marker_to_assembly(userdata.target_input[1], userdata.loc_input)
-        assembly_standoff()
-        cap_standoff()
+        marker_to_assembly(userdata.target_input[0], userdata.loc_input)
+        # assembly_standoff()
+        # cap_standoff()
         rospy.loginfo('Getting Caps')
-        cap_to_assembly(userdata.target_input[0], userdata.loc_input)
+        cap_to_assembly(userdata.target_input[1], userdata.loc_input)
         rospy.loginfo('Finishing')
         press_down(userdata.loc_input)
         return 'Next?'
 
-def starterCallback():
-    return
+# def starterCallback():
+#     return 
+
+# def stopCallback():
+#     return
 
 def main():
     rospy.init_node('marker_assymbly_task_master')
@@ -193,9 +194,11 @@ def main():
     sm.userdata.capList = caps
     sm.userdata.matchList = []
     sm.userdata.target = []
-    sm.userdata.loc = 3
+    sm.userdata.locList = []
+    sm.userdata.loc = 0
 
-
+    # start = rospy.Service("start", Empty, starterCallback)
+    # stop = rospy.Service("stop", Empty, stopCallback)
     
     #Open the container
     with sm:
@@ -214,7 +217,8 @@ def main():
                                     'look':'MARKERS'
                                 }, remapping = {
                                     'capList_input':'capList',
-                                    'capList_output':'capList'
+                                    'capList_output':'capList',
+                                    'locList_output':'locList'
                                 })
     
         smach.StateMachine.add('MARKERS', Markers(),
@@ -239,13 +243,15 @@ def main():
         smach.StateMachine.add('SET-TARGET', setTarget(), 
                                 transitions = {
                                     'move!':'ASSEMBLE', 
-                                    'finished':'STAND-BY'
+                                    # 'finished':'STAND-BY'
+                                    'finished':'Finished'
                                 }, remapping = {
                                     'matchList_input':'matchList',
                                     'loc_input':'loc',
                                     'target_output':'target',
                                     'loc_output':'loc',
-                                    'changeFlag_output':'changeFlag'
+                                    'changeFlag_output':'changeFlag',
+                                    'locList_input':'locList'
                                 })
     
         smach.StateMachine.add('ASSEMBLE', Assemble(), 
