@@ -37,17 +37,17 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     grid_len = grid_size[0]*grid_size[1]
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (5, 5), 2)
-    hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-    lower_thresh = np.array([0,100,20])
+    img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+    lower_thresh = np.array([6,100,20])
     upper_thresh = np.array([180,255,255])
-    mask = cv.inRange(hsv, lower_thresh, upper_thresh)
+    mask = cv.inRange(img_hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     x_interval = pixel_size[0]/grid_size[1]
     y_interval = pixel_size[1]/grid_size[0]
     cs = []
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 1500:
+        if area > 500:
             M = cv.moments(contour)
             cv.drawContours(img0,contour,-1,(0,255,0),3)
             cx = int(M['m10']/M['m00'])
@@ -56,7 +56,10 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             # c = np.subtract(c,starting_pixel)
             gx = int(c[0]//x_interval)
             gy = int(c[1]//y_interval)
-            grid[gy,gx] = hsv[cy,cx]
+            if gx == 1 and gy == 1:
+                cx+=10
+                cy+=10
+            grid[gy,gx] = img_hsv[cy,cx]
             cs.append(c)
     grid = grid.reshape(1,grid_len,3)[0]
     for hsv in grid:
@@ -115,14 +118,10 @@ def plot_image(filename):
 
 
 if __name__ == "__main__":
-    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
-    # markers = [0, 77, 109, 10,0]
-    # caps = [0,109, 0, 10,0]
-    # ignores = []
-    # [a,b] = find_matching(markers, caps, ignores)
-    # print(a,b)
-    # print(list_H)
+    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size = (650,520), starting_pixel = (330,80))
+
+    print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
 
