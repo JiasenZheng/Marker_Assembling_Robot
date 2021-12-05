@@ -36,18 +36,17 @@ class manage:
             """
             This search looks for whether two elements are already paired.
             """
-            front = 0
-            back = len(pairs)-1
-            while front <= back:
-                if pairs[front][1] == candidate[1] or pairs[back][1] == candidate[1]:
+            for item in pairs:
+                if item[1] == candidate[1] or item[0] == candidate[0]:
                     return True
-                front += 1
-                back -= 1
             return False
 
     def fullSearch(self, arr, data):
         """Returns a list of multiple values that can match with data"""
-        threshold = 1
+        if data == 0:
+            threshold = 1
+        else:
+            threshold = 7
         ans = []
         for index, item in enumerate(arr):
             if self.colorMatch(item, data, threshold):
@@ -66,14 +65,14 @@ class manage:
         for index, item in enumerate(arr1):
             pm = self.fullSearch(arr2, item)
             for item2 in pm:
-                print(item)
+                # print(item)
                 candidate = [index, item2]
                 # print(candidate)
                 # print(len(ans) == 0)
                 # print(not self.matchedSearch(ans, candidate))
                 if len(ans) == 0: ans.append(candidate)
-                elif not self.matchedSearch(ans, candidate): ans.append(candidate)
-            print(ans)
+                if not self.matchedSearch(ans, candidate): ans.append(candidate)
+            # print(ans)
         return ans
 
     def matching(self, sub1, sub2):
@@ -115,19 +114,19 @@ class manage:
         return
 
 
-m = manage()
+# m = manage()
 
-a = [1, 2, 0, 5, 3, 5, 0]
+# a = [1, 2, 0, 5, 3, 5, 0]
 
-b = [1, 5, 2, 3, 5, 6]
+# b = [1, 5, 2, 3, 5, 6]
 
-ans = m.thoroughMatching(a, b)
+# ans = m.thoroughMatching(a, b)
 
-ans2 = m.fullSearch(a, 0)
+# ans2 = m.fullSearch(a, 0)
 
-print(ans)
-
-for i in ans:
-    print(f"{a[i[0]]} == {b[i[1]]}")
+# print(ans)
+# print(f"this is a failed fullSearch {m.fullSearch(a, 90)}")
+# for i in ans:
+#     print(f"{a[i[0]]} == {b[i[1]]}")
 
 # print(f"{ans2}")
