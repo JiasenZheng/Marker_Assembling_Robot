@@ -98,16 +98,25 @@ class manage:
         for index, item in enumerate(lst):
             yield index, item
 
-    def allNil(self, data, nil):
-        """
-        Func:allNil: Returns true if all data being compared is equal to some nil value.
-        Param:data:Data being observed.
-        Param:nil:Nil value to compare.
-        """
-        for t in data:
-            if t != 0:
-                return False
-        return True
+    def swap(self, A, p, q):
+        A[p], A[q] = A[q], A[p]
+        return A
+
+    def partition(self, A, B, p, r):
+        x = A[B[r][0]]
+        i = p-1
+        for j in range(p, r-1):
+            if A[B[j][0]] <= x:
+                i += 1
+                self.swap(B, i, j)
+        self.swap(A, i+1, r)
+        return i+1
+    
+    def QuickSort(self, A, B, p, r):
+        if p < r:
+            q = self.partition(A, B, p, r)
+            self.QuickSort(A, B, p, q-1)
+            self.QuickSort(A, B, q+1, r)
 
 
 # m = manage()
