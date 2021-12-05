@@ -16,6 +16,7 @@ from group4.srv import Press, PickNPlace, GotoPos, ImageCapture
 
 # from std_msgs.msg import String
 from copy import deepcopy
+import numpy as np
 from manager.manager import manage
 
 box = [False, False]
@@ -118,7 +119,9 @@ class Markers(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state MARKERS')
         marker_standoff()
-        userdata.markerList_output = takeImage(2).data
+        # markerList = np.argsort(takeImage(2).data)
+        markerList = takeImage(2).data
+        userdata.markerList_output = markerList
         rospy.loginfo(f"Marker List: {userdata.markerList_output}")
         # assembly_standoff()
         return 'match!'
