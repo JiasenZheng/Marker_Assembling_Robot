@@ -28,6 +28,10 @@ box = [False, False]
 #     """Resets the box such that its state is unknown"""
 #     return box
 
+def createProxy(service, type):
+    rospy.wait_for_service(service)
+    return rospy.serviceProxy(service, type)
+
 
 #Rosservice Proxies for Manipulaition
 press_down = rospy.ServiceProxy('press', Press)
@@ -38,8 +42,19 @@ dispose = rospy.ServiceProxy('go_to_disposal', GotoPos)
 cap_standoff = rospy.ServiceProxy('go_to_cap', GotoPos)
 marker_standoff = rospy.ServiceProxy('go_to_marker', GotoPos)
 
-#Rosservice Proxies for Perception
+# #Rosservice Proxies for Perception
 takeImage = rospy.ServiceProxy('capture', ImageCapture)
+
+#New Method of calling required services
+# press_down = createProxy('press', Press)
+# marker_to_assembly = createProxy('pnpMarker', PickNPlace)
+# cap_to_assembly = createProxy('pnpCap', PickNPlace)
+# assembly_standoff = createProxy('go_to_master', GotoPos)
+# dispose = createProxy('go_to_disposal', GotoPos)
+# cap_standoff = createProxy('go_to_cap', GotoPos)
+# marker_standoff = createProxy('go_to_marker', GotoPos)
+
+# takeImage = createProxy('capture', ImageCapture)
 
 #This finite state machine for the time being is a test.
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
@@ -63,7 +78,11 @@ class StandBy(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state STAND-BY')
         cap_standoff()
-        userdata.changeFlag_output = True
+        changeList = takeImage(3).data
+        changes = search(changeList, 0)
+        if len(changes) != 9:
+            rospy.loginfo('I detected change.')
+            userdata.changeFlag_output = True
         if userdata.changeFlag_input:
             return 'input-detected'
         return 'wait'
@@ -78,8 +97,10 @@ class Caps(smach.State):
     #I don't know if services output data has to be passed between each state
 
     def execute(self, userdata):
-        cap_standoff()
+        rospy.loginfo('Executing state CAPS')
+        # cap_standoff()
         userdata.capList_output = takeImage(3).data
+        rospy.loginfo(userdata.capList_output)
         #userdata.capList_output.data
         print(type(userdata.capList_output))
         print(userdata.capList_output)
@@ -96,8 +117,7 @@ class Markers(smach.State):
         rospy.loginfo('Executing state MARKERS')
         marker_standoff()
         userdata.markerList_output = takeImage(2).data
-        print(type(userdata.markerList_output))
-        print(userdata.markerList_output)
+        rospy.loginfo(f"Marker List: {userdata.markerList_output}")
         assembly_standoff()
         return 'match!'
 
@@ -108,14 +128,14 @@ class genMatch(smach.State):
                                     output_keys = ['matchList_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state GENERATE-MATCH')
-        print(type(userdata.markerList_input))
-        print(userdata.markerList_input)
-        print(type(userdata.capList_input))
-        print(userdata.capList_input)
-        userdata.matchList_output = genList(match(userdata.capList_input, userdata.markerList_input))
-        userdata.changeFlag_output = False
+        matchList = match(userdata.capList_input, userdata.markerList_input)
+        rospy.loginfo(f"match list: {matchList}")
+        if matchList == []:
+            rospy.loginfo('Could not find matches going to STAND-BY')
+            userdata.changeFlag_output = False
+            return 'wait'
+        userdata.matchList_output = genList(matchList)
         return 'next?'
-        return 'wait'
 
 class setTarget(smach.State):
     def __init__(self):
@@ -126,18 +146,13 @@ class setTarget(smach.State):
         rospy.loginfo('Executing state SET_TARGET')
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
+            rospy.loginfo(f"Current Target: {userdata.target_output}")
             assembly_standoff()
             assemblyLocList = takeImage(1).data
-            print(type(assemblyLocList))
-            print(assemblyLocList)
             userdata.loc_output = search(assemblyLocList, 0)[0]
-            
-            # assembly = search(takeImage(1), 0)
-            # print(type(assembly))
-            # userdata.loc_output = assembly[0]
-            # userdata.loc_output = userdata.loc_input + 1
             return 'move!'
         except StopIteration:
+            rospy.loginfo('I finished so I am going to STAND-BY')
             userdata.changeFlag_output = False
             return 'finished'
 
@@ -149,10 +164,13 @@ class Assemble(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state ASSEMBLE')
         marker_standoff()
+        rospy.loginfo('Getting Marker')
         marker_to_assembly(userdata.target_input[1], userdata.loc_input)
         assembly_standoff()
         cap_standoff()
+        rospy.loginfo('Getting Caps')
         cap_to_assembly(userdata.target_input[0], userdata.loc_input)
+        rospy.loginfo('Finishing')
         press_down(userdata.loc_input)
         return 'Next?'
 
