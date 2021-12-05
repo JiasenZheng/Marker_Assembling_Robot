@@ -1,5 +1,6 @@
 """
-Python Package to detect contours on an image 
+Python Package to detect contours on images of color markers and return 
+a list of color information based on the locations of the marker
 """
 
 
@@ -17,11 +18,11 @@ def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel
     img0 : OpenCV Image
     grid_size : size of the Grid for the image
     pixel_size : size of the bounding box
-    starting_pixel : reference coordinate for the bounding box
+    starting_pixel : reference starting coordinate for the bounding box
 
     Returns:
     img0 : Processed Image with contours
-    grid : list of 9 H values
+    grid : 2D array of HSV values 
 
     """
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
@@ -61,7 +62,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     img0 : OpenCV Image
     grid_size : size of the Grid for the image
     pixel_size : size of the bounding box
-    starting_pixel : reference coordinate for the bounding box
+    starting_pixel : reference starting coordinate for the bounding box
 
     Returns:
     img0 : Processed Image with contours
@@ -105,6 +106,16 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     return img0, list_H
 
 def detect(img0):
+    """
+    A function to detect the contours of marker images based on a sepcific
+    HSV range
+    
+    Args:
+    img0 : The original openCV image data
+
+    Returns:
+    img0 : The processed openCV image with contours drawing on it 
+    """
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
@@ -152,7 +163,8 @@ def plot_image(filename):
 
 
 if __name__ == "__main__":
-    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png')
+    # Test the detect_contour2 function with the sample images
+    image = cv.imread('pictures/assembled3.png')
     image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size = (550,390), starting_pixel = (380,130))
 
     print(list_H)
