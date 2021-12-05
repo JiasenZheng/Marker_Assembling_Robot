@@ -70,7 +70,7 @@ while True:
     # ret, frame = cap.read()
     # if frame is None:
     #     break
-    frame = cv.imread("/home/kjw/fall21/me495/project/ws/src/final-project-group-4-inc/src/vision/pictures/image2.png")
+    frame = cv.imread("/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png")
     frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
     
