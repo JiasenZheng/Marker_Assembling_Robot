@@ -59,7 +59,7 @@ class Bridge:
         if tray_location == 1:
             # cv2.imshow("image", self.current_frame)
             # cv2.imwrite('/home/bhagyesh/Desktop/first_frame.jpg', self.current_frame)
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = (650,520), starting_pixel = (330,80))
+            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = (550,390), starting_pixel = (380,130))
         
 
         #At markers
