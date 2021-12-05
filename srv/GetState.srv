@@ -1,4 +1,4 @@
 ---
-float64[] joints
-geometry_msgs/PoseStamped pose
-float64[] rpy
+float64[] joints #Joint angle list
+geometry_msgs/PoseStamped pose #pose data
+float64[] rpy #roll, pitch, yaw data

@@ -1,4 +1,4 @@
 ---
-bool success
-geometry_msgs/Vector3 xyz
-string error_msg
+bool success #bool completion status
+geometry_msgs/Vector3 xyz #pose data for where the robot arrived
+string error_msg # string msg status
