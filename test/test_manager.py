@@ -103,9 +103,9 @@ class ManageTestCase(unittest.TestCase):
     #     result, expected = self.create_matchTest(self.t2)
     #     self.assertEquals(result, expected)
 
-    # def test_t3MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t3)
-    #     self.assertEquals(result, expected)
+    def test_t3MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t3)
+        self.assertEquals(result, expected)
 
     def test_t4MatchCapsAndMarkers(self):
         result, expected = self.create_matchTest(self.t4)
