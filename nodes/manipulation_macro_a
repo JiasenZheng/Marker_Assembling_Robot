@@ -116,6 +116,9 @@ class ManipulationMacroA:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
+
 
         current = self.get_arm_pose()
 
@@ -184,6 +187,11 @@ class ManipulationMacroA:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
 
+
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
+
+
         current = self.get_arm_pose()
 
 
@@ -246,6 +254,10 @@ class ManipulationMacroA:
         if current.pose.pose.position.z<z_thresh:
             dz = - current.pose.pose.position.z + z_thresh
             self.delta_move(2.0,dz)
+
+
+        self.arm.set_named_target("ready")
+        self.arm.go(wait=True)
 
 
         current = self.get_arm_pose()

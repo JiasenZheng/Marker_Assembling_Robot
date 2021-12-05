@@ -135,6 +135,10 @@ class PickAndPlaceNode():
         success = result.success
         msg = "[Report @ Ungrip]" + result.message
 
+        if success:
+            #result = self.joints_move([15, -28, 18, -159, 12, 131, 68])
+            result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
+
         ## go to clearance, fast
         if success:
             result = self.go_to_trayLoc(3, loc0, 2, 1)

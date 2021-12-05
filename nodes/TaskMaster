@@ -128,7 +128,7 @@ class genMatch(smach.State):
                                     output_keys = ['matchList_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state GENERATE-MATCH')
-        matchList = match(userdata.capList_input, userdata.markerList_input)
+        matchList = match(userdata.markerList_input, userdata.capList_input)
         rospy.loginfo(f"match list: {matchList}")
         if matchList == []:
             rospy.loginfo('Could not find matches going to STAND-BY')
@@ -140,16 +140,19 @@ class genMatch(smach.State):
 class setTarget(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['move!', 'finished'],
-                                input_keys = ['matchList_input', 'loc_input'],
+                                input_keys = ['matchList_input', 'loc_input', 'target_output', 'loc_output'],
                                 output_keys=['target_output', 'loc_output', 'changeFlag_output'])
     def execute(self, userdata):
         rospy.loginfo('Executing state SET_TARGET')
         try:
             ____, userdata.target_output = next(userdata.matchList_input)
             rospy.loginfo(f"Current Target: {userdata.target_output}")
+            rospy.loginfo('Going to assembly standoff')
             assembly_standoff()
+            rospy.loginfo('At assembly standoff')
             assemblyLocList = takeImage(1).data
             userdata.loc_output = search(assemblyLocList, 0)[0]
+            rospy.loginfo(f"Putting marker at {userdata.loc_output} in assembly grid.")
             return 'move!'
         except StopIteration:
             rospy.loginfo('I finished so I am going to STAND-BY')
