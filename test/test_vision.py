@@ -55,61 +55,58 @@ class VisionTestCase(unittest.TestCase):
                                                                                                 
     
     def test_detectContours_A1(self):
-        a1 = create(self.img_dir, self.A1,(650,520), (330, 80) )
+        a1 = create(self.img_dir, self.A1,[650,520], [330, 80] )
         self.assertTrue(a1)
 
     def test_detectContours_A2(self):
-        a2 = create(self.img_dir, self.A2,(650,520), (330, 80))
+        a2 = create(self.img_dir, self.A2, [650,520], [330, 80])
         self.assertTrue(a2)    
 
     def test_detectContours_A3(self):
-        a3 = create(self.img_dir,self.A3,(650,520), (330, 80))
+        a3 = create(self.img_dir,self.A3, [650,520], [330, 80])
         self.assertTrue(a3)
 
     def test_detectContours_A4(self):
-        a4 = create(self.img_dir,self.A4,(650,520), (330, 80))
+        a4 = create(self.img_dir,self.A4, [650,520], [330, 80])
         self.assertTrue(a4)
 
-    # def test_detectContours_A5(self):
-    #     a5 = create(self.img_dir,self.A5)
-    #     self.assertTrue(a5)
-
     def test_detectContours_M1(self):
-        m1 = create(self.img_dir,self.M1, (830,580), (150,50))
+        m1 = create(self.img_dir,self.M1, [830,580], [150,50])
         self.assertTrue(m1)
 
     def test_detectContours_M2(self):
-        m2 = create(self.img_dir,self.M2, (830,580), (150,50))
+        m2 = create(self.img_dir,self.M2, [830,580], [150,50])
         self.assertTrue(m2)
 
     def test_detectContours_M3(self):
-        m3 = create(self.img_dir,self.M3, (830,580), (150,50))
+        m3 = create(self.img_dir,self.M3, [830,580], [150,50])
         self.assertTrue(m3)
 
     def test_detectContours_M4(self):
-        m4 = create(self.img_dir,self.M4, (830,580), (150,50))
+        m4 = create(self.img_dir,self.M4, [830,580], [150,50])
         self.assertTrue(m4)
 
-    def test_detectContours_C1(self):
-        c1 = create(self.img_dir,self.C1, (910,650), (180,0))
-        self.assertTrue(c1)
+    # def test_detectContours_C1(self):
+    #     c1 = create(self.img_dir,self.C1, [910,650], [180,0])
+    #     self.assertTrue(c1)
 
-    def test_detectContours_C2(self):
-        c2 = create(self.img_dir,self.C2, (910,650), (180,0))
-        self.assertTrue(c2)
+    # def test_detectContours_C2(self):
+    #     c2 = create(self.img_dir,self.C2, [910,650], [180,0])
+    #     self.assertTrue(c2)
 
-    def test_detectContours_C3(self):
-        c3 = create(self.img_dir,self.C3, (910,650), (180,0))
-        self.assertTrue(c3)
+    # def test_detectContours_C3(self):
+    #     c3 = create(self.img_dir,self.C3, [910,650], [180,0])
+    #     self.assertTrue(c3)
 
-    def test_detectContours_C4(self):
-        c4 = create(self.img_dir,self.C4, (910,650), (180,0))
-        self.assertTrue(c4)  
+    # def test_detectContours_C4(self):
+    #     c4 = create(self.img_dir,self.C4, [910,650], [180,0])
+    #     self.assertTrue(c4)  
 
 
 def create(dir_path, test_dict, bb_start, bb_size):
 
     filepath = os.path.join(dir_path, test_dict["img"])
+    print(filepath)
     img = cv.imread(filepath)
     print(img)
     _, grid = detect_contour2(img, (3,3), bb_size, bb_start)
