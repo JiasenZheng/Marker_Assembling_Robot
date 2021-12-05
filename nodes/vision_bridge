@@ -11,9 +11,10 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 import cv2
 from vision.vision1 import detect_contour2
+import vision.vision1 as v1
 from group4.srv import ImageCapture
 import numpy as np
-from std_msgs.msg import Float32MultiArray, MultiArrayDimension
+# from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 
 class Bridge:
 
@@ -31,13 +32,15 @@ class Bridge:
     def callback(self,data):
 
         # Output debugging information to the terminal
-        rospy.loginfo("receiving video frame")
+        # rospy.loginfo("receiving video frame")
         
         #Convert ROS Image message to OpenCV image
-        self.current_frame = self._bridge.imgmsg_to_cv2(data)
-        self.current_frame = cv2.cvtColor(self.current_frame, cv2.COLOR_BGR2RGB)
-        
+        self.current_frame = self._bridge.imgmsg_to_cv2(data, "bgr8")
+        # self.current_frame = cv2.cvtColor(self.current_frame, cv2.COLOR_BGR2RGB)
+        image_contour = v1.detect(self.current_frame)
+        msg = self._bridge.cv2_to_imgmsg(image_contour, "bgr8")
 
+        self._pub.publish(msg)
         #Convert Opencv_image to ros_image
         # msg = self._bridge.cv2_to_imgmsg(self.current_frame, "bgr8")
 
