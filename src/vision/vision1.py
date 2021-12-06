@@ -121,7 +121,7 @@ def detect(img0):
     Returns:
     img0 : The processed openCV image with contours drawing on it 
     """
-    img = cv.GaussianBlur(img0, (5, 5), 2)
+    img = cv.GaussianBlur(img0, (7, 7), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
     lower_thresh = np.array([6,100,20])
