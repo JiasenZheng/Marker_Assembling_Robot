@@ -17,6 +17,7 @@ xdotool type "roscore";
 Enter;
 terminal;
 xdotool type "ssh -oSendEnv=ROS_MASTER_URI student@station";
+sleep 3;
 xdotool type "roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de";
 Enter;
 terminal;
