@@ -74,7 +74,8 @@ class LocalManipulationNode():
                             self.markersXPitch, self.markersyYPitch, 
                             sorted([self.markersZStandoff, self.markersZPick, self.markersZClear]))
 
-        capsRPY = [np.pi, -0.0212150281, np.pi/4]
+        # capsRPY = [np.pi, -0.0212150281, np.pi/4]
+        capsRPY = [np.pi, -0.0278679411670870753, np.pi/4]
         self.capsTray = tP.TrayPositions(
                             self.capsX, self.capsY, 
                             self.capsXPitch, self.capsyYPitch, 

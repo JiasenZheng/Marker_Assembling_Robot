@@ -9,7 +9,8 @@ import numpy as np
 
 import rospy
 
-from group4.srv import GotoPos, DeltaMove, GetPose
+from group4.srv import GotoPos, DeltaMove, GetPose, PoseMove
+from geometry_msgs.msg import Point, Quaternion, Vector3, Pose
 
 """
 The manipulation_macro_a node provides services to go to the 3 above tray locations, along with a backup disposal location
@@ -84,6 +85,8 @@ class ManipulationMacroA:
         #Import supporting services
         self.delta_move = rospy.ServiceProxy('/delta_move',DeltaMove)
         self.get_arm_pose = rospy.ServiceProxy('/get_arm_pose',GetPose)
+        self.cart_pose_move = rospy.ServiceProxy('/cartesian_pose_move', PoseMove)
+
 
         #Define main services
         self.go_to_marker = rospy.Service("/go_to_marker", GotoPos, self.handle_marker)
@@ -111,9 +114,11 @@ class ManipulationMacroA:
             self.delta_move(2.0,dz)
 
 
-        #Go to neutral location to avoid bad joint angles
-        self.arm.set_named_target("ready")
-        self.arm.go(wait=True)
+
+
+        # #Go to neutral location to avoid bad joint angles
+        # self.arm.set_named_target("ready")
+        # self.arm.go(wait=True)
 
 
         current = self.get_arm_pose()
@@ -132,15 +137,21 @@ class ManipulationMacroA:
         ref_xyz = [(self.above_marker_x - cam_x), (self.above_marker_y - cam_y), (cam_height_marker)]
 
         #Actuate maneuvers
-        self.delta_move(0.0,dx)
-        print('dx ' , dx)
+        #self.delta_move(0.0,dx)
+        #print('dx ' , dx)
 
-        self.delta_move(1.0,dy)
-        print('dy ' , dy)
+        #self.delta_move(1.0,dy)
+        #print('dy ' , dy)
 
-        self.delta_move(2.0,dz)
-        print('dz ' , dz)
+        #self.delta_move(2.0,dz)
+        #print('dz ' , dz)
 
+
+        xyzPoint = Point(0.286, -0.257, 0.359)
+        rpyOrientation = Vector3(pi, 0.0, -pi/4)
+        targetPose = Pose(xyzPoint, rpyOrientation)
+
+        self.cart_pose_move(xyzPoint, rpyOrientation, 1)
 
 
         #Check if the appopriate locations was reached, and return a "Done" or failed
@@ -184,32 +195,39 @@ class ManipulationMacroA:
             self.delta_move(2.0,dz)
 
         #Go to neutral position to mitigate bad arm configuration
-        self.arm.set_named_target("ready")
-        self.arm.go(wait=True)
+        #self.arm.set_named_target("ready")
+        #self.arm.go(wait=True)
 
 
-        current = self.get_arm_pose()
+        #current = self.get_arm_pose()
 
 
         #Calculate XYZ Cartesian shift movements
-        dx = - current.pose.pose.position.x + self.above_cap_x - cam_x
-        dy = - current.pose.pose.position.y + self.above_cap_y - cam_y
-        dz = cam_height_cap - current.pose.pose.position.z
+        # dx = - current.pose.pose.position.x + self.above_cap_x - cam_x
+        # dy = - current.pose.pose.position.y + self.above_cap_y - cam_y
+        # dz = cam_height_cap - current.pose.pose.position.z
 
         ref_xyz = [(self.above_cap_x), (self.above_cap_y), (cam_height_cap)]
 
-        #Actuate maneuver
-        self.delta_move(0.0,dx)
-        print('dx ' , dx)
+        # Actuate maneuver
+        # self.delta_move(0.0,dx)
+        # print('dx ' , dx)
 
-        self.delta_move(1.0,dy)
-        print('dy ' , dy)
+        # self.delta_move(1.0,dy)
+        # print('dy ' , dy)
 
-        self.delta_move(2.0,dz)
-        print('dz ' , dz)
+        # self.delta_move(2.0,dz)
+        # print('dz ' , dz)
 
 
-        #Check final position to see if it completed proprely        
+        #Check final position to see if it completed proprely  
+
+        xyzPoint = Point(0.28767, 0.17758, 0.24909)
+        rpyOrientation = Vector3(pi, 0.0, -pi/4)
+        targetPose = Pose(xyzPoint, rpyOrientation)
+
+        self.cart_pose_move(xyzPoint, rpyOrientation, 1)             
+              
         current = self.get_arm_pose()
         current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
@@ -253,32 +271,40 @@ class ManipulationMacroA:
 
 
         #Go to neutral location to avoid bad joint angles
-        self.arm.set_named_target("ready")
-        self.arm.go(wait=True)
+        #self.arm.set_named_target("ready")
+        #self.arm.go(wait=True)
 
 
         current = self.get_arm_pose()
 
 
         #Calculate positions
-        dx = - current.pose.pose.position.x + self.above_master_x - cam_x
-        dy = - current.pose.pose.position.y + self.above_master_y - cam_y
-        dz = cam_height_master - current.pose.pose.position.z
+        #dx = - current.pose.pose.position.x + self.above_master_x - cam_x
+        #dy = - current.pose.pose.position.y + self.above_master_y - cam_y
+        #dz = cam_height_master - current.pose.pose.position.z
 
         ref_xyz = [(self.above_master_x), (self.above_master_y), (cam_height_master)]
 
 
         #Actuate maneuvers
-        self.delta_move(0.0,dx)
-        print('dx ' , dx)
+        #self.delta_move(0.0,dx)
+        #print('dx ' , dx)
 
-        self.delta_move(1.0,dy)
-        print('dy ' , dy)
+        #self.delta_move(1.0,dy)
+        #print('dy ' , dy)
 
-        self.delta_move(2.0,dz)
-        print('dz ' , dz)
+        #self.delta_move(2.0,dz)
+        #print('dz ' , dz)
 
         #Check final position for completion status
+        
+        xyzPoint = Point(0.426, -0.032, 0.4475)
+        rpyOrientation = Vector3(pi, 0.0, -pi/4)
+        targetPose = Pose(xyzPoint, rpyOrientation)
+
+        self.cart_pose_move(xyzPoint, rpyOrientation, 1)        
+        
+        
         current = self.get_arm_pose()
         current_xyz = [current.pose.pose.position.x, current.pose.pose.position.y, current.pose.pose.position.z]
 
