@@ -77,7 +77,7 @@ while True:
     # ret, frame = cap.read()
     # if frame is None:
     #     break
-    frame = cv.imread("pictures/assembled3.png")
+    frame = cv.imread("vision/pictures/RepositionedPhotos/marker3.png")
     frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
     

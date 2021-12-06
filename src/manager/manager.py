@@ -121,10 +121,10 @@ class manage:
         return list(map(untie, C))
 
     def sort(self, A, B):
-        if type(A) != type(list()):
-            A = A.tolist()
-        if type(B) != type(list()):
-            B = B.tolist()
+        # if type(A) != type(list()):
+        #     A = A.tolist()
+        # if type(B) != type(list()):
+        #     B = B.tolist()
         C = self.bind(A, B)
         # print(C)
         self.QuickSort(C, 0, len(C)-1)

@@ -67,15 +67,18 @@ class Bridge:
         tray_location = req.tray_location
         ## assembly
         if tray_location == 1:
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size = (3,3), pixel_size = (550,390), starting_pixel = (380,130))
+            image_contour, self.grid = detect_contour2(self.current_frame,grid_size=(3,3),pixel_size=(550,390),starting_pixel=(400,150),
+                                                        lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
         
         ## markers
         elif tray_location == 2: 
-            image_contour, self.grid = detect_contour2(self.current_frame,grid_size=(3,3),pixel_size=(750,530),starting_pixel=(200,100))
+            image_contour, self.grid = detect_contour2(self.current_frame,grid_size=(3,3),pixel_size=(750,510),starting_pixel=(200,100),
+                                                        lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
         
         ## caps
         elif tray_location == 3:
-            image_contour, self.grid = detect_contour2(self.current_frame, grid_size=(3,3), pixel_size=(910,650), starting_pixel=(180,0))
+            image_contour, self.grid = detect_contour2(self.current_frame,grid_size=(3,3),pixel_size=(910,750),starting_pixel=(180,0),
+                                                        lower_thresh=np.array([0,90,0]), upper_thresh=np.array([180,255,255]))
         
     
         return [self.grid]
