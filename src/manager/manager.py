@@ -8,34 +8,12 @@ class manage:
     def __init__(self):
         self.ans = []
 
-    def fbsearch(self, arr, data):
-        """
-        Given a target data value, this function will look 
-        for data that is similar in a seperate array.
-        """
-        threshold = 3
-        if len(arr) < 2:
-            ans = deepcopy(arr[0])
-            # del arr[0]
-            return ans
-        front = 0
-        back = len(arr)-1
-        while front <= back:
-            if self.colorMatch(arr[front], data, threshold) or self.colorMatch(arr[back], data, threshold):
-                if arr[front] == data:
-                    ans = front
-                    # del arr[front] Not certain whether this value needs to be deleted. Should be used for comparison later.
-                else:
-                    ans = back
-                    # del arr[back]
-                return ans
-            front += 1
-            back -= 1
-        return None
-
     def matchedSearch(self, pairs, candidate):
             """
-            This search looks for whether two elements are already paired.
+            Function:matchedSearch: Takes a list of pairs and a candidate and returns true if either element of
+            the candidate exists in the list of pairs.
+            Param:pairs: List of pairs
+            Param:candidates: Candidate to be added to list of pairs.
             """
             for item in pairs:
                 if item[1] == candidate[1] or item[0] == candidate[0]:
@@ -43,6 +21,12 @@ class manage:
             return False
 
     def thoroughMatching(self, arr1, arr2):
+        """
+        Function:thoroughMatching: Matches items of two arrays together.
+        Param:arr1: Array of items to be matched to arr2
+        Param:arr2: Array of items to be matched to arr1
+        Return:ans: List matching pairs indices from arr1 and arr2
+        """
         ans=[]
         for index, item in enumerate(arr1):
             if item == 0: continue
@@ -56,7 +40,12 @@ class manage:
         return ans
 
     def fullSearch(self, arr, data):
-        """Returns a list of multiple values that can match with data"""
+        """
+        Function:fullSearch: Returns a list of multiple values that can match with data
+        Param:arr: An array of values to search through.
+        Param:data: The item we are searching for in the array.
+        Return:ans: List of index values that links to data that is similar to item being searched for.
+        """
         if data == 0:
             threshold = 1
         else:
@@ -69,11 +58,10 @@ class manage:
 
     def colorMatch(self, a, b, threshold):
         """
-        Given two one d array of 3 elements this function will compare hsv values
-        And return whether the two pieces of data are similar enough to match. 
+        Given two h values and a threshold, return true if the difference of the two h values is
+        less than or equal to the threshold.
         """
         return (abs(a-b) <= threshold)
-
 
     def genList(self, lst):
         """
@@ -87,10 +75,16 @@ class manage:
             yield index, item
 
     def swap(self, A, p, q):
+        """
+        Helper function that swaps two elements of an array.
+        """
         A[p], A[q] = A[q], A[p]
         return A
 
     def partition(self, A, p, r):
+        """
+        Helper function that partitions for QuickSort.
+        """
         x = A[r][0]
         i = p-1
         for j in range(p, r):
@@ -101,12 +95,20 @@ class manage:
         return i+1
     
     def QuickSort(self, A, p, r):
+        """Standard QuickSort Algorithm"""
         if p < r:
             q = self.partition(A, p, r)
             self.QuickSort(A, p, q-1)
             self.QuickSort(A, q+1, r)
 
     def bind(self, A, B):
+        """
+        Function:Bind:Takes a list of items with its match list and creates a new list where
+        the items of the list include an a list containing the item in the first index
+        and the second element is its corresponding matched pair.
+        Param:A:List of items
+        Param:B:List of matching pairs
+        """
         def compress(B):
             return A[B[0]]
         def tie(A, B):

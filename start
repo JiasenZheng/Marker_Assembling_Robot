@@ -2,14 +2,10 @@
 
 bash sourceWS $1
 
-xterm -title "Panda ssh" -e "ssh -oSendEnv=ROS_MASTER_URI student@station; roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de"&
-sleep 10s
-xterm -title "Robot Launcher" -e "bash; roslaunch group4 launch_robot.launch"&
-sleep 10s
-xterm -title "SMACH Launcher" -e "bash; rosrun group4 TaskMaster"&
-sleep 10s
-bash wsSourceRemove
+gnome-terminal -e 'sh -c "ssh -oSendEnv=ROS_MASTER_URI student@station ; roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de"'&
+# sleep 1s
+xterm -title 'sh -c "roslaunch group4 launch_robot.launch"'&
+# sleep 3s
+xterm -title 'sh -c "rosrun group4 TaskMaster"'&
 
-xterm -title "app1" -e "echo Hello World; sleep 3s"
-echo I ran
-sleep 10s
+bash wsSourceRemove
