@@ -13,7 +13,7 @@ from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \
     StopAction, GraspActionGoal, MoveActionGoal, HomingActionGoal, \
         StopActionGoal, MoveGoal, StopGoal, GraspGoal, HomingGoal, GraspEpsilon
 from franka_msgs.msg import ErrorRecoveryActionGoal
-from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, GetFloatListResponse, DeltaMove
+from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, GetFloatListResponse, DeltaMove, CollisionSet
 from numpy import pi
 from manipulation.translationUtilities import *
 
@@ -46,6 +46,8 @@ Publishers:
 
 class ManipulationCapNode:
     def __init__(self):
+
+
 
         ## Setting up for moveit "arm" and "hand" control
         self.robot = moveit_commander.RobotCommander()
@@ -213,6 +215,9 @@ class ManipulationCapNode:
         handle_gripper_close closes the gripper
         Args:
             franka_gripper/GraspGoal
+        Returns:
+            bool success is the return status of the service
+            string error is the message return status
         """
         goal = req.grasp_goal
         self.gripper_grasp_client.send_goal(goal)
@@ -221,11 +226,26 @@ class ManipulationCapNode:
         return result.success, result.error
 
     def handle_error_recovery(self, req):
+        """
+        handle_error_recovery publishes an error recovery message via action
+        Args:
+            None:
+        Returns:
+            bool success is the return boolean of the service
+            string error is the completion message
+        """
         goal = ErrorRecoveryActionGoal()
         self.error_recovery_pub.publish(goal)
         return EmptyResponse()
 
     def handle_to_standoff(self, req):
+        """
+        handle_to_standoff commands the robot to a set of joint angle pre-specified
+        Args:
+            None
+        Returns:
+            None
+        """
         rospy.loginfo("current joint vals:")
         rospy.loginfo(self.arm.get_current_joint_values())
         rospy.loginfo("standoff:")
@@ -235,30 +255,76 @@ class ManipulationCapNode:
         return EmptyResponse()
 
     def handle_get_arm_pose(self, req):
+        """
+        handle_get_arm_pose reads the pose of the robot arm
+        Args:
+            None
+        Returns:
+            geometry_msgs/PoseStamped pose is the pose of the robot arm
+        """
         current_pose = self.arm.get_current_pose()
         return current_pose
 
     def handle_get_arm_joints(self, req):
+        """
+        handle_get_arm_joints gets the joint angles of the robot joints
+        Args:
+            None
+        Returns:
+            float64[] list is the list of angles in radians
+        """
         current_joints = self.arm.get_current_joint_values()
         rospy.loginfo(type(current_joints))
         rospy.loginfo(current_joints)
         return GetFloatListResponse(list(current_joints))
 
     def handle_get_arm_rpy(self, req):
+        """
+        handle_get_arm_rpy  gets the roll, pitch, yaw angles of the robot
+        Args:
+            None
+        Returns:
+            float64[] list is the rpy angle list
+        """
         current_rpy = self.arm.get_current_rpy()
         return GetFloatListResponse(list(current_rpy))
 
     def handle_get_gripper_joints(self, req):
+        """
+        handle_get_gripper_joints
+        Args:
+            None
+        Returns:
+            float64[] list returns the gripper joint info
+        """
         current_joints = self.gripper.get_current_joint_values()
         return list(current_joints)
 
     def grip_cap(self, req):
+        """
+        grip_cap of type Trigger grips the cap via action
+        Args:
+            None
+        Returns:
+            bool success is the completion status of the service
+            string message is the associated message with the return
+        
+        """
         self.gripper_grasp_client.send_goal(self.cap_grip)
         self.gripper_grasp_client.wait_for_result()
         result = self.gripper_grasp_client.get_result()
         return result.success, "Done"
 
     def release_cap(self, req):
+        """
+        grip_cap of type Trigger releases the cap via action
+        Args:
+            None
+        Returns:
+            bool success is the completion status of the service
+            string message is the associated message with the return
+        
+        """
         self.gripper_move_client.send_goal(self.cap_release)
         self.gripper_move_client.wait_for_result()
         result = self.gripper_move_client.get_result()
