@@ -1,5 +1,5 @@
 geometry_msgs/Point point # XYZ coordinate data
-geometry_msgs/Vector3 orientation # angular orientation (RPY)
+geometry_msgs/Vector3 orientation # angular orientation (RPY)   
 int32 velocityLevel ## only applicable for "cartesian_pose_move" service; ignored otherwise
                     ## 0 for slow(vel and accel reduction), 1 for fast (no reduction)
 ---
