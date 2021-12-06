@@ -58,7 +58,7 @@ class ManipulationPress:
         ## !!Should verify somehow that press was complete
         if success:
             self.listen_for_max_ext_F()
-            dz = -0.005
+            dz = -0.006
             result = self.delta_move(2.0,dz)
             force_response = self.get_local_max_ext_F()
             rospy.loginfo("Max External Force:")

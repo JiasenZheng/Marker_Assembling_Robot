@@ -165,7 +165,8 @@ class PickAndPlaceNode():
 
         ## go to a standoff location
         if success:
-            result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
+            #result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
+            result = self.joints_move([1, -29, 26, -138, 13, 110, 64])
 
         ## go to clearance, fast
         if success:

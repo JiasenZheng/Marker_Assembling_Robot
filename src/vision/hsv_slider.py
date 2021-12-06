@@ -1,3 +1,10 @@
+"""
+A helper python script to find the appropriate ranges of HSV values for the marker images.
+The range of HSV values will be later used in the detection algorithms to filter out any
+colors that is out of the marker.
+"""
+
+
 from __future__ import print_function
 import cv2 as cv
 import argparse
@@ -70,7 +77,7 @@ while True:
     # ret, frame = cap.read()
     # if frame is None:
     #     break
-    frame = cv.imread("/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png")
+    frame = cv.imread("pictures/assembled3.png")
     frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     frame_threshold = cv.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
     
