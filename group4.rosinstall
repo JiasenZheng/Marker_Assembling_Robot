@@ -1,0 +1,17 @@
+repositories:
+  src/executive_smach:
+    type: git
+    url: https://github.com/ros/executive_smach.git
+    version: noetic-devel
+  src/franka_ros:
+    type: git
+    url: https://github.com/frankaemika/franka_ros.git
+    version: develop
+  src/panda_moveit_config:
+    type: git
+    url: https://github.com/ros-planning/panda_moveit_config.git
+    version: melodic-devel
+  src/realsense-ros:
+    type: git
+    url: https://github.com/IntelRealSense/realsense-ros.git
+    version: development
