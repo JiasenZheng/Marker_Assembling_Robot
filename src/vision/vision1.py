@@ -53,7 +53,7 @@ def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel
 
     return img0, grid
 
-def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200]):
+def detect_contour2(img0,grid_size,pixel_size, starting_pixel, lower_thresh,upper_thresh):
     """
     Divides the image into grids, blurs the image using Gaussian Function, provides a bounding box on the image 
     and returns an image with contours
@@ -76,8 +76,8 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (7,7), 2)
     img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-    lower_thresh = np.array([6,100,20])
-    upper_thresh = np.array([180,255,255])
+    # lower_thresh = np.array([6,60,60])
+    # upper_thresh = np.array([180,255,255])
     mask = cv.inRange(img_hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     x_interval = pixel_size[0]/grid_size[1]
@@ -99,8 +99,8 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             if gx == 1 and gy == 1:
                 cx+=10
                 cy+=10
-            if img_hsv[cy,cx][0]<= 9:
-                continue
+            # if img_hsv[cy,cx][0]<= 9:
+            #     continue
             cv.circle(img0, (cx,cy), 3, (255,0,0), 2)
             grid[gy,gx] = img_hsv[cy,cx]
             cs.append(c)
@@ -154,8 +154,16 @@ def plot_image(filename):
 
 if __name__ == "__main__":
     # Test the detect_contour2 function with the sample images
-    image = cv.imread('pictures/RepositionedPhotos/markers4.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(750,510),starting_pixel=(200,100))
+    # image = cv.imread('vision/pictures/RepositionedPhotos/assembled1.png')
+    # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(550,390),starting_pixel=(400,150),
+    #                                 lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
+    image = cv.imread('vision/pictures/RepositionedPhotos/markers6.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(750,510),starting_pixel=(200,100),
+                                    lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
+    # image = cv.imread('vision/pictures/RepositionedPhotos/caps1.png')
+    # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(910,750),starting_pixel=(180,0),
+    #                                 lower_thresh=np.array([0,90,0]), upper_thresh=np.array([180,255,255]))
+
 
     print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
