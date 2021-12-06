@@ -66,6 +66,7 @@ manager = manage()
 genList = manager.genList
 search = manager.fullSearch
 match = manager.thoroughMatching
+sort = manager.sort
 
 
 
@@ -101,8 +102,8 @@ class Caps(smach.State):
         rospy.loginfo('Executing state CAPS')
         userdata.capList_output = takeImage(3).data
         rospy.loginfo(userdata.capList_output)
-        print(type(userdata.capList_output))
-        print(userdata.capList_output)
+        # print(type(userdata.capList_output))
+        # print(userdata.capList_output)
         assembly_standoff()
         rospy.loginfo('At assembly standoff')
         assemblyLocList = takeImage(1).data
@@ -119,7 +120,6 @@ class Markers(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state MARKERS')
         marker_standoff()
-        # markerList = np.argsort(takeImage(2).data)
         markerList = takeImage(2).data
         userdata.markerList_output = markerList
         rospy.loginfo(f"Marker List: {userdata.markerList_output}")
@@ -134,6 +134,8 @@ class genMatch(smach.State):
     def execute(self, userdata):
         rospy.loginfo('Executing state GENERATE-MATCH')
         matchList = match(userdata.markerList_input, userdata.capList_input)
+        unsortedmatchList = matchList
+        matchList = sort(userdata.markerList_input, unsortedmatchList)
         rospy.loginfo(f"match list: {matchList}")
         if matchList == []:
             rospy.loginfo('Could not find matches going to STAND-BY')
