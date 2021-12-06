@@ -124,7 +124,7 @@ def detect(img0):
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
-    lower_thresh = np.array([0,100,20])
+    lower_thresh = np.array([6,100,20])
     upper_thresh = np.array([180,255,255])
     mask = cv.inRange(hsv, lower_thresh, upper_thresh)
     contours, hierarchy = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
