@@ -210,7 +210,9 @@ class ManipulationCapNode:
 
     def handle_gripper_close(self, req):
         """
-        
+        handle_gripper_close closes the gripper
+        Args:
+            franka_gripper/GraspGoal
         """
         goal = req.grasp_goal
         self.gripper_grasp_client.send_goal(goal)
