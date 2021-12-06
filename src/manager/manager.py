@@ -109,10 +109,6 @@ class manage:
                 return False
         return True
 
-    def nilCheck(loc):
-        """Checks if a cell is empty"""
-        return
-
 
 # m = manage()
 

@@ -1,8 +1,30 @@
+"""
+Python Package to detect contours on images of color markers and return 
+a list of color information based on the locations of the marker
+"""
+
+
+
 import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 
 def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200]):
+    """
+    Divides the image into grids, blurs the image using Gaussian Function, provides a bounding box on the image 
+    and returns an image with contours
+
+    Args:
+    img0 : OpenCV Image
+    grid_size : size of the Grid for the image
+    pixel_size : size of the bounding box
+    starting_pixel : reference starting coordinate for the bounding box
+
+    Returns:
+    img0 : Processed Image with contours
+    grid : 2D array of HSV values 
+
+    """
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
@@ -32,6 +54,22 @@ def detect_contour(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel
     return img0, grid
 
 def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixel = [125,200]):
+    """
+    Divides the image into grids, blurs the image using Gaussian Function, provides a bounding box on the image 
+    and returns an image with contours
+
+    Args:
+    img0 : OpenCV Image
+    grid_size : size of the Grid for the image
+    pixel_size : size of the bounding box
+    starting_pixel : reference starting coordinate for the bounding box
+
+    Returns:
+    img0 : Processed Image with contours
+    grid : list of 9 H values
+
+    """
+    
     list_H = []
     img0 = img0[starting_pixel[1]:starting_pixel[1]+pixel_size[1],starting_pixel[0]:starting_pixel[0]+pixel_size[0]]
     grid_len = grid_size[0]*grid_size[1]
@@ -68,6 +106,16 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     return img0, list_H
 
 def detect(img0):
+    """
+    A function to detect the contours of marker images based on a specific 
+    HSV range
+    
+    Args:
+    img0 : The original openCV image data
+
+    Returns:
+    img0 : The processed openCV image with contours drawing on it 
+    """
     img = cv.GaussianBlur(img0, (5, 5), 2)
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
@@ -85,20 +133,17 @@ def detect(img0):
 
 ## Utility helper function
 def plot_image(filename):
+    """
+    Helper Function to print values for image at each location
+    
+    Args:
+    filename : OpenCV Image
+    """
     img = cv.imread(filename)
     plt.imshow(cv.cvtColor(img, cv.COLOR_BGR2RGB))
     plt.show()
 
-# def find_matching(markers,caps,ignores,error = 3):
-#     for a, marker in enumerate(markers):
-#         if (marker == 0) or (a in ignores): 
-#             continue
-#         for b, cap in enumerate(caps):
-#             if abs(marker - cap) <= error:
-#                 return [a,b],ignores
-#         ignores.append(a)
-#         return [None, None],ignores
-        
+
         
 
     ## assembled
@@ -118,86 +163,11 @@ def plot_image(filename):
 
 
 if __name__ == "__main__":
-    image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/assembled3.png')
+    # Test the detect_contour2 function with the sample images
+    image = cv.imread('pictures/assembled3.png')
     image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size = (550,390), starting_pixel = (380,130))
 
     print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
     plt.show()
-    # image = cv.imread('/home/jason/ros/fpws/src/final-project-group-4-inc/src/vision/pictures/markers1.png')
-    # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(830,580),starting_pixel=(150,50))
-    # markers = [0, 77, 109, 10,0]
-    # caps = [0,109, 0, 10,0]
-    # ignores = []
-    # [a,b] = find_matching(markers, caps, ignores)
-    # print(a,b)
-    # print(list_H)
-    # plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
-    # plt.show()
-
-
-    # # Example runs of detect_contour2
-    # ## assembled
-    # image1 = cv.imread('pictures/assembled.png')
-    # img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
-    # print("assembled: ", grid1)
-
-    # ## assembled1
-    # image1 = cv.imread('pictures/assembled1.png')
-    # img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
-    # print("assembled: ", grid1)
-
-    # ## assembled2
-    # image1 = cv.imread('pictures/assembled2.png')
-    # img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
-    # print("assembled: ", grid1)
-
-    # ## assembled3
-    # image1 = cv.imread('pictures/assembled3.png')
-    # img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
-    # print("assembled: ", grid1)
-
-    # ## assembled4
-    # image1 = cv.imread('pictures/assembled4.png')
-    # img1, grid1 = detect_contour2(image1,(3,3), [650, 520], [330, 80])
-    # print("assembled: ", grid1)
-    
-    # ## caps1
-    # image2 = cv.imread('pictures/caps1.png')
-    # img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
-    # print("caps1: ", grid2)
-
-    # ## caps2
-    # image2 = cv.imread('pictures/caps2.png')
-    # img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
-    # print("caps1: ", grid2)
-
-    # ## caps3
-    # image2 = cv.imread('pictures/caps3.png')
-    # img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
-    # print("caps1: ", grid2)
-
-    # ## caps4
-    # image2 = cv.imread('pictures/caps4.png')
-    # img2, grid2 = detect_contour2(image2,(3,3), [910,650], [180,0])
-    # print("caps1: ", grid2)
-
-    # ## markers1
-    # image3 = cv.imread('pictures/markers1.png')
-    # img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
-    # print("markers2: ", grid3)
-
-    # ## markers2
-    # image3 = cv.imread('pictures/markers2.png')
-    # img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
-    # print("markers2: ", grid3)
-
-    # ## markers3
-    # image3 = cv.imread('pictures/markers3.png')
-    # img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
-    # print("markers2: ", grid3)
-
-    # ## markers4
-    # image3 = cv.imread('pictures/markers4.png')
-    # img3, grid3 = detect_contour2(image3,(3,3), [830,580], [150,50])
-    # print("markers2: ", grid3)
+   
