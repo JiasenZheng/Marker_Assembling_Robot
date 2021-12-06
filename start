@@ -1,0 +1,15 @@
+#!/bin/sh
+
+sourceWS $1
+
+xterm -title "Panda ssh" -e "ssh -oSendEnv=ROS_MASTER_URI student@station; roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de"&
+sleep 1s
+xterm -title "Robot Launcher" -e "roslaunch group4 launch_robot.launch"&
+sleep 3s
+xterm -title "SMACH Launcher" -e "rosrun group4 TaskMaster"&
+
+wsSourceRemove
+
+# xterm -title "app1" -e "echo Hello World; sleep 3s"
+# echo I ran
+# sleep 3s

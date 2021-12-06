@@ -1,0 +1,8 @@
+#!/bin/bash
+#!/usr/bin/env bash
+
+echo -e "Initializing rosworkspace."
+
+echo "source ~/$1/devel/setup.bash" >> ~/.bashrc
+
+echo -e "Initializaition complete."
