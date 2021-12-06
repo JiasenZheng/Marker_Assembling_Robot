@@ -74,7 +74,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     img0 = img0[starting_pixel[1]:starting_pixel[1]+pixel_size[1],starting_pixel[0]:starting_pixel[0]+pixel_size[0]]
     grid_len = grid_size[0]*grid_size[1]
     grid = np.zeros((grid_size[0],grid_size[1],3), np.uint8)
-    img = cv.GaussianBlur(img0, (5, 5), 2)
+    img = cv.GaussianBlur(img0, (7,7), 2)
     img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
     lower_thresh = np.array([6,100,20])
     upper_thresh = np.array([180,255,255])
@@ -94,10 +94,12 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             # c = np.subtract(c,starting_pixel)
             gx = int(c[0]//x_interval)
             gy = int(c[1]//y_interval)
+            cx = cx +(gx-1)*20
+            cy = cy +(gy-1)*20
             if gx == 1 and gy == 1:
                 cx+=10
                 cy+=10
-            if img_hsv[cy,cx][0]<= 6:
+            if img_hsv[cy,cx][0]<= 9:
                 continue
             cv.circle(img0, (cx,cy), 3, (255,0,0), 2)
             grid[gy,gx] = img_hsv[cy,cx]
@@ -152,8 +154,8 @@ def plot_image(filename):
 
 if __name__ == "__main__":
     # Test the detect_contour2 function with the sample images
-    image = cv.imread('pictures/RepositionedPhotos/caps2.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(910,650), starting_pixel=(180,0))
+    image = cv.imread('pictures/RepositionedPhotos/markers4.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(750,510),starting_pixel=(200,100))
 
     print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
