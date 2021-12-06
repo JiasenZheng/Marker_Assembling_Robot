@@ -164,6 +164,13 @@ class ManipulationCapNode:
         return "Done"
 
     def handle_named_move(self, req):
+        """
+        handle_named_move sends the robot to a prenamed pose
+        Args:
+            string target is the name of the prenamed pose
+        Returns:
+            string result is the status of the service upon completion
+        """
         target= rospy.get_param(req.target, None)
         if target:
             joint_angles = [i*pi/180  for i in target]
@@ -174,6 +181,9 @@ class ManipulationCapNode:
         return "Invalid parameter name given"
 
     def handle_delta_move(self, req):
+        """
+        handle_delta_move shifts the robot along an axis 
+        """
         self.arm.shift_pose_target(axis=int(req.axis), value=req.val)
         self.arm.go(wait=True)
         return "Done"
