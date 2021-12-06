@@ -85,7 +85,7 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
     cs = []
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 500:
+        if area > 1500:
             M = cv.moments(contour)
             cv.drawContours(img0,contour,-1,(0,255,0),3)
             cx = int(M['m10']/M['m00'])
@@ -97,6 +97,9 @@ def detect_contour2(img0,grid_size = (1,3),pixel_size = [475,125], starting_pixe
             if gx == 1 and gy == 1:
                 cx+=10
                 cy+=10
+            if img_hsv[cy,cx][0]<= 6:
+                continue
+            cv.circle(img0, (cx,cy), 3, (255,0,0), 2)
             grid[gy,gx] = img_hsv[cy,cx]
             cs.append(c)
     grid = grid.reshape(1,grid_len,3)[0]
@@ -149,8 +152,8 @@ def plot_image(filename):
 
 if __name__ == "__main__":
     # Test the detect_contour2 function with the sample images
-    image = cv.imread('pictures/RepositionedPhotos/marker1.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(750,530),starting_pixel=(200,100))
+    image = cv.imread('pictures/RepositionedPhotos/caps2.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(910,650), starting_pixel=(180,0))
 
     print(list_H)
     plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
