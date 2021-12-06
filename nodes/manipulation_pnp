@@ -96,11 +96,11 @@ class PickAndPlaceNode():
             success = True
             msg = "[Report @ Grip]" + result.message
 
-        ## withdraw from tray to standoff, slow
-        if success == True:
-            result = self.go_to_trayLoc(2, loc0, 1, 0)
-            success = result.success
-            msg = "[Report @ GoToStandoff2]" + result.error_msg
+        # ## withdraw from tray to standoff, fast
+        # if success == True:
+        #     result = self.go_to_trayLoc(2, loc0, 1, 1)
+        #     success = result.success
+        #     msg = "[Report @ GoToStandoff2]" + result.error_msg
         
         ## go to clearance, fast
         if success:
@@ -139,9 +139,15 @@ class PickAndPlaceNode():
             msg = "[Report @ GoToAssyStandoff2]" + result.error_msg
         
 
-        #Neutral location
+        # #Neutral location
+        # if success:
+        #     result = self.joints_move([0,-5,0,-138,-1,133,46])
+
+                ## go to a caps standoff location, fast
+
         if success:
-            result = self.joints_move([0,-5,0,-138,-1,133,46])
+            #result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
+            result = self.joints_move([1, -29, 26, -138, 13, 110, 64])
 
         return success, msg
 
@@ -163,10 +169,10 @@ class PickAndPlaceNode():
         success = result.success
         msg = "[Report @ Ungrip]" + result.message
 
-        ## go to a standoff location
-        if success:
-            #result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
-            result = self.joints_move([1, -29, 26, -138, 13, 110, 64])
+        # ## go to a caps standoff location, fast
+        # if success:
+        #     #result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
+        #     result = self.joints_move([1, -29, 26, -138, 13, 110, 64])
 
         ## go to clearance, fast
         if success:
@@ -192,9 +198,9 @@ class PickAndPlaceNode():
             success = result.success
             msg = "[Report @ Grip]" + result.message
 
-        ## withdraw from tray to standoff, slow
+        ## withdraw from tray to standoff, fast
         if success == True:
-            result = self.go_to_trayLoc(3, loc0, 1, 0)
+            result = self.go_to_trayLoc(3, loc0, 1, 1)
             success = result.success
             msg = "[Report @ GoToStandoff2]" + result.error_msg
         
