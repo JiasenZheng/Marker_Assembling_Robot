@@ -2,10 +2,28 @@
 
 bash sourceWS $1
 
-gnome-terminal -e 'sh -c "ssh -oSendEnv=ROS_MASTER_URI student@station ; roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de"'&
-# sleep 1s
-xterm -title 'sh -c "roslaunch group4 launch_robot.launch"'&
-# sleep 3s
-xterm -title 'sh -c "rosrun group4 TaskMaster"'&
+function terminal(){xdotool key ctrl+alt+t;sleep 0.5};
+
+function Enter(){xdotool key KP_Enter;sleep 0.5};
+
+step1 = "roscore"
+step2 = "ssh -oSendEnv=ROS_MASTER_URI student@station"
+step3 = "roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de"
+step4 = "roslaunch group4 launch_robot.launch"
+step5 = "rosrun group4 TaskMaster"
+
+terminal()
+xdotool type step1
+Enter()
+terminal()
+xdotool type step2
+xdotool type step3
+Enter()
+terminal()
+xdotool type step4
+Enter()
+terminal()
+xdotool type step5
+Enter()
 
 bash wsSourceRemove
