@@ -1,6 +1,7 @@
 """
 This class is used to manage markers and caps
 """
+import numpy as np
 from copy import deepcopy
 
 class manage:
@@ -41,12 +42,25 @@ class manage:
                     return True
             return False
 
+    def thoroughMatching(self, arr1, arr2):
+        ans=[]
+        for index, item in enumerate(arr1):
+            if item == 0: continue
+            pm = self.fullSearch(arr2, item)
+            for item2 in pm:
+                if arr2[item2] == 0: continue
+                candidate = [index, item2]
+                if len(ans) == 0: ans.append(candidate)
+                if not self.matchedSearch(ans, candidate): ans.append(candidate)
+            # print(ans)
+        return ans
+
     def fullSearch(self, arr, data):
         """Returns a list of multiple values that can match with data"""
         if data == 0:
             threshold = 1
         else:
-            threshold = 6   
+            threshold = 6
         ans = []
         for index, item in enumerate(arr):
             if self.colorMatch(item, data, threshold):
@@ -60,32 +74,6 @@ class manage:
         """
         return (abs(a-b) <= threshold)
 
-    def thoroughMatching(self, arr1, arr2):
-        ans=[]
-        for index, item in enumerate(arr1):
-            pm = self.fullSearch(arr2, item)
-            for item2 in pm:
-                # print(item)
-                candidate = [index, item2]
-                # print(candidate)
-                # print(len(ans) == 0)
-                # print(not self.matchedSearch(ans, candidate))
-                if len(ans) == 0: ans.append(candidate)
-                if not self.matchedSearch(ans, candidate): ans.append(candidate)
-            # print(ans)
-        return ans
-
-    def matching(self, sub1, sub2):
-        """
-        Func:matching: Returns an array of items that "match" eachother
-        Param:sub1: First list of values.
-        Param:sub2: Second list of vlaues.
-        """
-        for x, item in enumerate(sub1):
-            y = self.fbsearch(sub2, item)
-            if y != None:
-                self.ans.append([x, y])
-        return self.ans
 
     def genList(self, lst):
         """
@@ -98,31 +86,62 @@ class manage:
         for index, item in enumerate(lst):
             yield index, item
 
-    def allNil(self, data, nil):
-        """
-        Func:allNil: Returns true if all data being compared is equal to some nil value.
-        Param:data:Data being observed.
-        Param:nil:Nil value to compare.
-        """
-        for t in data:
-            if t != 0:
-                return False
-        return True
+    def swap(self, A, p, q):
+        A[p], A[q] = A[q], A[p]
+        return A
 
+    def partition(self, A, p, r):
+        x = A[r][0]
+        i = p-1
+        for j in range(p, r):
+            if A[j][0] <= x:
+                i += 1
+                self.swap(A, i, j)
+        self.swap(A, i+1, r)
+        return i+1
+    
+    def QuickSort(self, A, p, r):
+        if p < r:
+            q = self.partition(A, p, r)
+            self.QuickSort(A, p, q-1)
+            self.QuickSort(A, q+1, r)
 
-# m = manage()
+    def bind(self, A, B):
+        def compress(B):
+            return A[B[0]]
+        def tie(A, B):
+            # print(B)
+            return [A, B]
+        newA = list(map(compress, B))
+        return list(map(tie, newA, B))
 
-# a = [1, 2, 0, 5, 3, 5, 0]
+    def unbind(self, C):
+        def untie(C):
+            return C[1]
+        return list(map(untie, C))
 
-# b = [1, 5, 2, 3, 5, 6]
+    def sort(self, A, B):
+        # if type(A) != type(list()):
+        #     A = A.tolist()
+        # if type(B) != type(list()):
+        #     B = B.tolist()
+        C = self.bind(A, B)
+        # print(C)
+        self.QuickSort(C, 0, len(C)-1)
+        # print(C)
+        return self.unbind(C)
 
-# ans = m.thoroughMatching(a, b)
+m = manage()
 
-# ans2 = m.fullSearch(a, 0)
+a = [78,27,122, 77, 11, 121, 25, 11, 100]
 
-# print(ans)
-# print(f"this is a failed fullSearch {m.fullSearch(a, 90)}")
-# for i in ans:
-#     print(f"{a[i[0]]} == {b[i[1]]}")
+b = [[0,2],[1,8],[2,5],[3,3],[4,0],[5,7],[8,1]]
 
-# print(f"{ans2}")
+# print(a[b[0]])
+
+c = m.sort(a, b)
+
+print(c)
+
+for i in c:
+    print(a[i[0]])

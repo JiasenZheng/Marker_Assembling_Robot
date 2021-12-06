@@ -183,12 +183,25 @@ class ManipulationCapNode:
     def handle_delta_move(self, req):
         """
         handle_delta_move shifts the robot along an axis 
+        Args:
+            float64 axis is the axis along which to switch
+            float64 val is the distance in meters to switch
+        Returns:
+            string result is the status of completion
         """
         self.arm.shift_pose_target(axis=int(req.axis), value=req.val)
         self.arm.go(wait=True)
         return "Done"
 
     def handle_gripper_open(self, req):
+        """
+        handle_gripper_open opens the gripper
+        Args:
+            franka_gripper/MoveGoal move_goal sets the gripper action goal
+        Returns:
+            bool success is the status of completion
+            string error provides info on the return 
+        """
         goal = req.move_goal
         self.gripper_move_client.send_goal(goal)
         self.gripper_move_client.wait_for_result()
@@ -196,6 +209,9 @@ class ManipulationCapNode:
         return result.success, result.error
 
     def handle_gripper_close(self, req):
+        """
+        
+        """
         goal = req.grasp_goal
         self.gripper_grasp_client.send_goal(goal)
         self.gripper_grasp_client.wait_for_result()
