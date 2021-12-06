@@ -111,85 +111,85 @@ class ManageTestCase(unittest.TestCase):
         print("expects: ", test_dict["truth_sort"].tolist())
         return result, test_dict["truth_sort"].tolist()
         
-    # def test_t1MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t1)
+    def test_t1MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t1)
+        self.assertEquals(result, expected)
+
+    # def test_t2MatchCapsAndMarkers(self):
+    #     result, expected = self.create_matchTest(self.t2)
     #     self.assertEquals(result, expected)
 
-    # # def test_t2MatchCapsAndMarkers(self):
-    # #     result, expected = self.create_matchTest(self.t2)
-    # #     self.assertEquals(result, expected)
+    def test_t3MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t3)
+        self.assertEquals(result, expected)
 
-    # def test_t3MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t3)
-    #     self.assertEquals(result, expected)
+    def test_t4MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t4)
+        self.assertEquals(result, expected)
 
-    # def test_t4MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t4)
-    #     self.assertEquals(result, expected)
+    def test_t5MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t5)
+        self.assertEquals(result, expected)
 
-    # def test_t5MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t5)
-    #     self.assertEquals(result, expected)
+    def test_t6MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t6)
+        self.assertEquals(result, expected)
 
-    # def test_t6MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t6)
-    #     self.assertEquals(result, expected)
+    def test_t7MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t7)
+        self.assertEquals(result, expected)
 
-    # def test_t7MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t7)
-    #     self.assertEquals(result, expected)
+    def test_t8MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t8)
+        self.assertEquals(result, expected)
 
-    # def test_t8MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t8)
-    #     self.assertEquals(result, expected)
+    def test_t9MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t9)
+        self.assertEquals(result, expected)
 
-    # def test_t9MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t9)
-    #     self.assertEquals(result, expected)
+    def test_t10MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t10)
+        self.assertEquals(result, expected)
 
-    # def test_t10MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t10)
-    #     self.assertEquals(result, expected)
+    def test_t1DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t1)
+        self.assertEquals(result, expected) 
 
-    # def test_t1DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t1)
-    #     self.assertEquals(result, expected) 
+    def test_t2DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t2)
+        self.assertEquals(result, expected) 
 
-    # def test_t2DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t2)
-    #     self.assertEquals(result, expected) 
+    def test_t3DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t3)
+        self.assertEquals(result, expected) 
 
-    # def test_t3DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t3)
-    #     self.assertEquals(result, expected) 
+    def test_t4DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t4)
+        self.assertEquals(result, expected) 
 
-    # def test_t4DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t4)
-    #     self.assertEquals(result, expected) 
-
-    # def test_t5DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t5)
-    #     self.assertEquals(result, expected) 
+    def test_t5DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t5)
+        self.assertEquals(result, expected) 
     
-    # def test_t6DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t6)
-    #     self.assertEquals(result, expected) 
+    def test_t6DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t6)
+        self.assertEquals(result, expected) 
 
-    # def test_t7DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t7)
-    #     self.assertEquals(result, expected) 
+    def test_t7DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t7)
+        self.assertEquals(result, expected) 
 
-    # def test_t8DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t8)
-    #     self.assertEquals(result, expected) 
+    def test_t8DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t8)
+        self.assertEquals(result, expected) 
 
-    # def test_t9DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t9)
-    #     self.assertEquals(result, expected) 
+    def test_t9DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t9)
+        self.assertEquals(result, expected) 
 
-    # def test_t10DestinationDecision(self):
-    #     result, expected = self.create_destinationTest(self.t10)
-    #     self.assertEquals(result, expected) 
+    def test_t10DestinationDecision(self):
+        result, expected = self.create_destinationTest(self.t10)
+        self.assertEquals(result, expected) 
     
     def test_t1Sorting(self):
         result, expected = self.create_sortTest(self.t1)

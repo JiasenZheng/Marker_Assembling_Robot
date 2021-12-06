@@ -42,12 +42,25 @@ class manage:
                     return True
             return False
 
+    def thoroughMatching(self, arr1, arr2):
+        ans=[]
+        for index, item in enumerate(arr1):
+            if item == 0: continue
+            pm = self.fullSearch(arr2, item)
+            for item2 in pm:
+                if arr2[item2] == 0: continue
+                candidate = [index, item2]
+                if len(ans) == 0: ans.append(candidate)
+                if not self.matchedSearch(ans, candidate): ans.append(candidate)
+            # print(ans)
+        return ans
+
     def fullSearch(self, arr, data):
         """Returns a list of multiple values that can match with data"""
         if data == 0:
             threshold = 1
         else:
-            threshold = 6   
+            threshold = 6
         ans = []
         for index, item in enumerate(arr):
             if self.colorMatch(item, data, threshold):
@@ -61,18 +74,6 @@ class manage:
         """
         return (abs(a-b) <= threshold)
 
-    def thoroughMatching(self, arr1, arr2):
-        ans=[]
-        for index, item in enumerate(arr1):
-            if item == 0: continue
-            pm = self.fullSearch(arr2, item)
-            for item2 in pm:
-                if arr2[item2] == 0: continue
-                candidate = [index, item2]
-                if len(ans) == 0: ans.append(candidate)
-                if not self.matchedSearch(ans, candidate): ans.append(candidate)
-            # print(ans)
-        return ans
 
     def genList(self, lst):
         """
