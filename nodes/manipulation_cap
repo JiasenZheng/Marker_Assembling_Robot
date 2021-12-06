@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# from os import wait
 from os import wait
 
 import rospy
@@ -8,24 +7,33 @@ import rospy
 import actionlib
 import sys
 import moveit_commander
-import moveit_msgs.msg 
 from geometry_msgs.msg import Pose
-from rospy.rostime import Duration
 from std_srvs.srv import Trigger, EmptyResponse, Empty as E
-from std_msgs.msg import Empty
 from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \
     StopAction, GraspActionGoal, MoveActionGoal, HomingActionGoal, \
         StopActionGoal, MoveGoal, StopGoal, GraspGoal, HomingGoal, GraspEpsilon
 from franka_msgs.msg import ErrorRecoveryActionGoal
 from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, GetFloatListResponse, DeltaMove
 from numpy import pi
-import numpy as np
-from tf_conversions import transformations
 from manipulation.translationUtilities import *
 
 
 
 """
+This node provides a series of low level services used in the manipulation portion of the project
+
+Services:
+    pose_move of type PoseMove moves the robot to a specific pose
+    cartesian_pose_move of type PoseMove moves the robot to a pose using cartesian movements
+    joints_move of type JointsMove moves the robot joints to a specifc configuration in degrees with a list of values
+    named_move of type Named_Move moves the robot to named pose
+    delta_move of type DeltaMove shift the robot arm linearly along an axis
+    to_standoff moves the robot to a specific standoff pose
+    get_arm_pose of type GetPose returns the the pose of the robot arm
+    get_arm_joints of type GetFloatList returns the joint angle values
+    get_arm_rpy of type GetFloatList list returns the roll, pitch yaw values of the robot arm
+    get_current_gripper_state  of type GetFloatList   
+
 
 """
 
@@ -103,7 +111,6 @@ class ManipulationCapNode:
         targetPose = Pose(req.point, rpyVec3ToQuaternion(req.orientation))
         rospy.loginfo("targetPose from cart_pose_move")
         rospy.loginfo(targetPose)
-        # waypoints = [curPose, targetPose]
         waypoints = [ targetPose]
         eef_step = 0.01
         jump_threshold = 0.1
@@ -135,13 +142,6 @@ class ManipulationCapNode:
         return "Invalid parameter name given"
 
     def handle_delta_move(self, req):
-        # if len(req.val) != len(req.axes):
-        #     return "Inputs should be of matched lengths"
-        # for i in range(len(req.vals)):
-        #     rospy.loginfo("req.vals[i]")
-        #     rospy.loginfo(req.vals[i])
-        #     rospy.loginfo("req.axes[i]")
-        #     rospy.loginfo(req.axes[i])
         self.arm.shift_pose_target(axis=int(req.axis), value=req.val)
         self.arm.go(wait=True)
         return "Done"

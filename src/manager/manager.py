@@ -47,7 +47,7 @@ class manage:
         if data == 0:
             threshold = 1
         else:
-            threshold = 6
+            threshold = 6   
         ans = []
         for index, item in enumerate(arr):
             if self.colorMatch(item, data, threshold):
@@ -59,7 +59,7 @@ class manage:
         Given two one d array of 3 elements this function will compare hsv values
         And return whether the two pieces of data are similar enough to match. 
         """
-        return (abs(a-b) < threshold)
+        return (abs(a-b) <= threshold)
 
     def thoroughMatching(self, arr1, arr2):
         ans=[]
