@@ -1,3 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classmanipulation_1_1trayPositions_1_1TrayPositions.html" title=" " alt="" coords="5,5,207,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,129,85,156"/>
+<area shape="rect" id="node2" href="$classtest__manager_1_1ManageTestCase.html" title=" " alt="" coords="139,5,365,32"/>
+<area shape="rect" id="node3" href="$classtest__manipulation_1_1ManipulationTestCase.html" title=" " alt="" coords="137,57,367,98"/>
+<area shape="rect" id="node4" href="$classtest__SIM__singlePPP_1_1TestSinglePPPSeqNode.html" title=" " alt="" coords="144,122,360,163"/>
+<area shape="rect" id="node5" href="$classtest__singlePickPlacePressSequence_1_1TestSinglePPPSeqNode.html" title=" " alt="" coords="133,187,371,229"/>
+<area shape="rect" id="node6" href="$classtest__vision_1_1VisionTestCase.html" title=" " alt="" coords="155,253,349,280"/>
 </map>
