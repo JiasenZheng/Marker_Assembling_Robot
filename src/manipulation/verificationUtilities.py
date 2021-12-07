@@ -32,3 +32,4 @@ def isPoseClose(currentPose, targetPose, posTol=0.002, orientTol=0.005):
     else:
         msg = f"[Error] Current pose {currentPose} does not match the Target pose {targetPose}"
     return match, msg
+

@@ -106,18 +106,19 @@ class ManageTestCase(unittest.TestCase):
     
     def create_sortTest(self, test_dict):
         man = manage()
-        result = man.sort(test_dict["markers"], test_dict["truth"])
-        print("result: ", result)
-        print("expects: ", test_dict["truth_sort"].tolist())
+        result = man.sort(test_dict["markers"].tolist(), test_dict["truth"].tolist())
+        print("result: ", result,"type ", type(result))
+        print("expects: ", test_dict["truth_sort"].tolist(),"type: ", type(test_dict["truth_sort"].tolist()))
         return result, test_dict["truth_sort"].tolist()
         
     def test_t1MatchCapsAndMarkers(self):
         result, expected = self.create_matchTest(self.t1)
+        a = np.all
         self.assertEquals(result, expected)
 
-    # def test_t2MatchCapsAndMarkers(self):
-    #     result, expected = self.create_matchTest(self.t2)
-    #     self.assertEquals(result, expected)
+    def test_t2MatchCapsAndMarkers(self):
+        result, expected = self.create_matchTest(self.t2)
+        self.assertEquals(result, expected)
 
     def test_t3MatchCapsAndMarkers(self):
         result, expected = self.create_matchTest(self.t3)

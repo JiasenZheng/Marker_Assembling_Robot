@@ -376,7 +376,7 @@ class ManipulationCapNode:
 
     def grip_cap(self, req):
         """
-        grip_cap of type Trigger grips the cap via action
+        grip_cap of type Trigger grips the cap via action (with speed, grasp tolerance and force)
         Args:
             None
         Returns:

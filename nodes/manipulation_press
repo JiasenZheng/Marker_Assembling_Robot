@@ -29,7 +29,7 @@ class ManipulationPress:
         self.press_service = rospy.Service("press",Press,self.handle_press)
         
         self.delta_move = rospy.ServiceProxy('delta_move',DeltaMove)
-        self.close_gripper = rospy.ServiceProxy('grip_cap', Trigger)  #Not used, in favor of moveitComanmader/movegroup
+        self.close_gripper = rospy.ServiceProxy('grip_cap', Trigger) 
         self.open_gripper = rospy.ServiceProxy('release_cap', Trigger)
         self.go_to_tray_loc = rospy.ServiceProxy("go_to_trayLocation", TrayLocationMove)
         self.listen_for_max_ext_F = rospy.ServiceProxy('getMax_F_ext', Trigger)

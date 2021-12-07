@@ -8,14 +8,25 @@ from group4.srv import GetMaxWrenches
 from group4.msg import MaxWrenches
 
 """
+This node records external forces.
 To get the max external force:
  - call the getMax_F_ext service to start the tracking
  - call the stop_recording_F_ext to stop recording and to return the max
  * can visualize the F_exts py rqt_plot
  - publish each max F_ext
 
+Services:
+    getMax_F_ext of type Trigger starts force recording
+    stop_recording_F_ext of type GetMaxWreneches stops recording the external forces
 
-should probably record time and location of max force experienced
+Publishers:
+    max_F_exts of type MaxWrenches publishes the maximal forces experienced
+
+Subscribers:
+    /franka_state_controller/F_ext subscribes to the external forces
+
+
+
 """
 
 class DebugNode:
@@ -36,18 +47,26 @@ class DebugNode:
         self.max_t = 0
 
     def handle_getMax_F_ext(self, req):
-        # self.max_fx = 0
-        # self.max_fy = 0
-        # self.max_fz = 0
-        # self.max_tx = 0
-        # self.max_ty = 0
-        # self.max_tz = 0
-        # self.max_f = 0
-        # self.max_t = 0
+        """
+        handle_getMax_F_ext of type Trigger initiates max force recording
+        Args:
+            None
+        Returns:
+            bool success is a boolean status
+            string message is a message status report
+        """
+
         self.recording_F_exts = True
         return self.recording_F_exts, "Recording external Forces"
 
     def handle_stop_recording_F_exts(self, req):
+        """
+        handle_stop_recording_F_exts of type GetMaxWrenches gets the wrenches of the robot
+        Args:
+            None
+        Returns:
+            group4/MaxWrenches is the maximum robot force data
+        """
         self.recording_F_exts = False
         rospy.loginfo("Stopped recording external forces")
         result = MaxWrenches()
@@ -68,14 +87,15 @@ class DebugNode:
         self.max_f = 0
         self.max_t = 0
         rospy.loginfo(result)
-        # if result:
-        #     success = True
-        # else:
-        #     success = False
+
         self.max_F_ext_pub.publish(result)
         return result 
     
     def max_F_ext_callback(self, data):
+        """
+        max_F_ext_callback subscribes to the raw data
+        """
+
         if self.recording_F_exts:
             self.max_fx = max(abs(data.wrench.force.x), self.max_fx)
             self.max_fy = max(abs(data.wrench.force.y), self.max_fy)
