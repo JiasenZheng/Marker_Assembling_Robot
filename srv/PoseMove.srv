@@ -3,4 +3,6 @@ geometry_msgs/Vector3 orientation # angular orientation (RPY)
 int32 velocityLevel ## only applicable for "cartesian_pose_move" service; ignored otherwise
                     ## 0 for slow(vel and accel reduction), 1 for fast (no reduction)
 ---
-string result # string resulting station
+bool success #completion status
+geometry_msgs/Pose pose #goal position
+string error_msg #return status message

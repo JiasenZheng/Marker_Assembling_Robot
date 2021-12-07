@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from os import wait
+import re
 
 import rospy
 
@@ -15,7 +16,9 @@ from franka_gripper.msg import MoveAction, GraspAction, HomingAction, \
 from franka_msgs.msg import ErrorRecoveryActionGoal
 from group4.srv import  NamedMove, JointsMove, GripperOpen, GripperClose, PoseMove, GetPose, GetFloatList, GetFloatListResponse, DeltaMove, CollisionSet
 from numpy import pi
+from tf_conversions import transformations
 from manipulation.translationUtilities import *
+from manipulation.verificationUtilities import *
 
 
 
@@ -43,6 +46,12 @@ Publishers:
     /franka_control/error_recovery/goal this topic recovers the robot from an error
 
 """
+
+
+## Pose Matching tolerances
+
+matchPosTol = 0.002
+matchOrientTol = 0.005
 
 class ManipulationCapNode:
     def __init__(self):
@@ -100,6 +109,8 @@ class ManipulationCapNode:
         self.grip_cap_service = rospy.Service("grip_cap", Trigger, self.grip_cap)
         self.release_cap_service = rospy.Service("release_cap", Trigger, self.release_cap)
 
+
+
     def handle_pose_move(self, req):
         """
         handle_pose_move moves the robot to a particular pose
@@ -108,7 +119,9 @@ class ManipulationCapNode:
             geometry_msgs/Vector3 orientation is the pose orientation
             int32 velocityLevel is the speed of the move
         Returns:
-            string code is the return message
+            bool success returns the status of the movement
+            geometry_msgs/Pose pose logs the end position
+            string error_msg provides a return message with info
         """
         x = req.point.x
         y = req.point.y
@@ -119,7 +132,17 @@ class ManipulationCapNode:
         pose = [x, y, z, rot_x, rot_y, rot_z]
         self.arm.set_pose_target(pose)
         self.arm.go(wait=True)
-        return "Done"
+
+        
+        currentPose = self.handle_get_arm_pose(req).pose
+        
+        q = transformations.quaternion_from_euler(rot_x,rot_y,rot_z)     
+        qOrientation = Quaternion(q[0], q[1], q[2], q[3]) 
+        targetPose = Pose(req.point, qOrientation)
+
+        success, msg = isPoseClose(currentPose, targetPose, matchPosTol, matchOrientTol)
+
+        return success, currentPose, msg
 
     def handle_cartesian_pose_move(self, req):
         """
@@ -129,28 +152,49 @@ class ManipulationCapNode:
             geometry_msgs/Vector3 orientation is the pose orientation
             int32 velocityLevel is the speed level
         Returns:
-            string code is a return status message
+            bool success returns the status of the movement
+            geometry_msgs/Pose pose logs the end position
+            string error_msg provides a return message with info
         """
         curPose = self.arm.get_current_pose()
         curPose = curPose.pose
+        
         rospy.loginfo("curPose from cart_pose_move")
         rospy.loginfo(curPose)
+        
         targetPose = Pose(req.point, rpyVec3ToQuaternion(req.orientation))
+        
         rospy.loginfo("targetPose from cart_pose_move")
         rospy.loginfo(targetPose)
+        
         waypoints = [ targetPose]
+        
         eef_step = 0.01
+        
         jump_threshold = 0.1
+        
         path, fraction = self.arm.compute_cartesian_path(waypoints, eef_step, 0.0)
+        
         rospy.loginfo('path')
         rospy.loginfo(path)
+        
         if req.velocityLevel == 0:
             currState = self.arm.get_current_state()
             path = self.arm.retime_trajectory(currState, path, 0.05, 0.05)
             rospy.loginfo('updated path')
             rospy.loginfo(path)
+        
         self.arm.execute(path, wait=True)
-        return "Done"
+        
+        currentPose = self.handle_get_arm_pose(req).pose
+        
+        q = transformations.quaternion_from_euler(req.orientation.x,req.orientation.y,req.orientation.z)     
+        qOrientation = Quaternion(q[0], q[1], q[2], q[3]) 
+        targetPose = Pose(req.point, qOrientation)
+
+        success, msg = isPoseClose(currentPose, targetPose, matchPosTol, matchOrientTol)
+
+        return success, currentPose, msg
 
     def handle_joints_move(self, req):
         """
@@ -163,7 +207,38 @@ class ManipulationCapNode:
         joint_angles = [i*pi/180  for i in req.joint_angles]
         self.arm.set_joint_value_target(joint_angles)
         self.arm.go(wait=True)
-        return "Done"
+
+
+        ref1 = joint_angles[0]
+        ref2 = joint_angles[1]
+        ref3 = joint_angles[2]
+        ref4 = joint_angles[3]
+        ref5 = joint_angles[4]
+        ref6 = joint_angles[5]
+        ref7 = joint_angles[6]
+
+        current_joint_angles = self.handle_get_arm_joints(req).data
+        
+        cur1 = current_joint_angles[0]
+        cur2 = current_joint_angles[1]
+        cur3 = current_joint_angles[2]
+        cur4 = current_joint_angles[3]
+        cur5 = current_joint_angles[4]
+        cur6 = current_joint_angles[5]
+        cur7 = current_joint_angles[6]
+
+
+
+        if np.allclose(np.array([cur1,cur2,cur3,cur4,cur5,cur6,cur7]),np.array([ref1,ref2,ref3,ref4,ref5,ref6,ref7]),atol = 0.01, rtol = 0.01):
+            success = True
+            error_msg = f"Final XYZ matches reference{joint_angles}"
+
+        else:
+            success = False
+            error_msg = f"[ERROR]: Final XYZ {current_joint_angles} does not match the target pose {joint_angles}"
+
+        return success, current_joint_angles, error_msg
+  
 
     def handle_named_move(self, req):
         """
@@ -229,10 +304,9 @@ class ManipulationCapNode:
         """
         handle_error_recovery publishes an error recovery message via action
         Args:
-            None:
+            None
         Returns:
-            bool success is the return boolean of the service
-            string error is the completion message
+            None
         """
         goal = ErrorRecoveryActionGoal()
         self.error_recovery_pub.publish(goal)
@@ -271,7 +345,7 @@ class ManipulationCapNode:
         Args:
             None
         Returns:
-            float64[] list is the list of angles in radians
+            float64[] data is the list of angles in radians
         """
         current_joints = self.arm.get_current_joint_values()
         rospy.loginfo(type(current_joints))
@@ -284,7 +358,7 @@ class ManipulationCapNode:
         Args:
             None
         Returns:
-            float64[] list is the rpy angle list
+            float64[] data is the rpy angle list
         """
         current_rpy = self.arm.get_current_rpy()
         return GetFloatListResponse(list(current_rpy))
