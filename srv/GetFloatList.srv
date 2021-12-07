@@ -1,2 +1,2 @@
 ---
-float64[] list #Return a list of floats for angles
+float64[] data #Return a list of floats for angles

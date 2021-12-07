@@ -1,3 +1,5 @@
 float32[] joint_angles # joint angles to move to
 ---
-string result # string message return status
+bool success #completion status
+float32[] target_angles # joint angles to move to
+string error_msg #return status message

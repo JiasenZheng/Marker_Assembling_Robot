@@ -1,0 +1,9 @@
+#!/bin/bash
+#!/usr/bin/env bash
+
+echo "Removing line"
+
+#RESULT = "source $1/devel/setup.bash/d"
+bash buBashrc
+sed -i '$d' ~/.bashrc
+echo "Line removed"

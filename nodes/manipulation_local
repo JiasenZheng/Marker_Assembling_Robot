@@ -16,6 +16,7 @@ Services:
     XYZ coordinates.
 """
 
+
 class LocalManipulationNode():
     def __init__(self):
         self.go_to_trayLocation = rospy.Service("go_to_trayLocation", TrayLocationMove, self.handle_goToTrayLocation)
@@ -74,7 +75,8 @@ class LocalManipulationNode():
                             self.markersXPitch, self.markersyYPitch, 
                             sorted([self.markersZStandoff, self.markersZPick, self.markersZClear]))
 
-        capsRPY = [np.pi, -0.0212150281, np.pi/4]
+        # capsRPY = [np.pi, -0.0212150281, np.pi/4]
+        capsRPY = [np.pi, -0.0278679411670870753, np.pi/4]
         self.capsTray = tP.TrayPositions(
                             self.capsX, self.capsY, 
                             self.capsXPitch, self.capsyYPitch, 
@@ -82,9 +84,10 @@ class LocalManipulationNode():
                             capsRPY)
 
         ## Pose Matching tolerances
-
         self.matchPosTol = 0.002
         self.matchOrientTol = 0.005
+
+
 
     def handle_goToTrayLocation(self, req):
         """

@@ -83,9 +83,9 @@ class PickAndPlaceNode():
             success = result.success
             msg = "[Report @ GoToStandoff]" + result.error_msg
 
-        ## go to pick height, slow
+        ## go to pick height, fast
         if success == True:
-            result = self.go_to_trayLoc(2, loc0, 0, 0)
+            result = self.go_to_trayLoc(2, loc0, 0, 1)
             success = result.success
             msg = "[Report @ GoToPickHeight]" + result.error_msg
 
@@ -116,7 +116,7 @@ class PickAndPlaceNode():
 
         ## go to assembly standoff, fast
         if success:
-            result = self.go_to_trayLoc(1, loc1, 4, 1)
+            result = self.go_to_trayLoc(1, loc1, 3, 1)
             success = result.success
             msg = "[Report @ GoToAssyStandoff]" + result.error_msg
 
@@ -147,7 +147,7 @@ class PickAndPlaceNode():
 
         if success:
             #result = self.joints_move([-3, -5, 33, -156, 7, 151, 68])
-            result = self.joints_move([1, -29, 26, -138, 13, 110, 64])
+            result = self.joints_move([1, -25, 29, -146, 14, 122, 64])
 
         return success, msg
 
@@ -186,9 +186,9 @@ class PickAndPlaceNode():
             success = result.success
             msg = "[Report @ GoToStandoff]" + result.error_msg
 
-        ## go to pick height, slow
+        ## go to pick height, fast
         if success == True:
-            result = self.go_to_trayLoc(3, loc0, 0, 0)
+            result = self.go_to_trayLoc(3, loc0, 0, 1)
             success = result.success
             msg = "[Report @ GoToPickHeight]" + result.error_msg
 
