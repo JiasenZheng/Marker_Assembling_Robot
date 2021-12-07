@@ -13,7 +13,7 @@ The subsequent seuqence of steps are (first ensure a roscore is running, and you
 `ssh -oSendEnv=ROS_MASTER_URI student@station`
 
 2) Launch the the franka ros controller using the following command in the SSH terminal:
-`roslaunch panda_moveit_config panda_control_moveit_rviz.launch launch_franka_control:=false robot_ip:=robot.franka.de`
+`roslaunch franka_control franka_control.launch robot_ip:=robot.franka.de`
 
 
 3) Up the collision limits for the robot by calling the following node and service:
