@@ -103,11 +103,12 @@ class manage:
 
     def bind(self, A, B):
         """
-        Function:Bind:Takes a list of items with its match list and creates a new list where
+        Function:Bind: Takes a list of items with its match list and creates a new list where
         the items of the list include an a list containing the item in the first index
         and the second element is its corresponding matched pair.
-        Param:A:List of items
-        Param:B:List of matching pairs
+        Param:A: List of items
+        Param:B: List of matching pairs
+        Returns: List of elements that follow the format [A, B]
         """
         def compress(B):
             return A[B[0]]
@@ -118,11 +119,23 @@ class manage:
         return list(map(tie, newA, B))
 
     def unbind(self, C):
+        """
+        Function:unbind: Unbinds a binded list.
+        Param:C: A binded list.
+        Returns: List from the B part of the Binded list
+        """
         def untie(C):
             return C[1]
         return list(map(untie, C))
 
     def sort(self, A, B):
+        """
+        function:sort: Binds two lists Sorts the list according to the values of the A list
+        And returns a sorted version of the B List.
+        Param:A: List of values to sort by.
+        Param:B: List of values to be sorted.
+        Returns: A sorted version of list B.
+        """
         # if type(A) != type(list()):
         #     A = A.tolist()
         # if type(B) != type(list()):
@@ -133,17 +146,17 @@ class manage:
         # print(C)
         return self.unbind(C)
 
-m = manage()
+# m = manage()
 
-a = [78,27,122, 77, 11, 121, 25, 11, 100]
+# a = [78,27,122, 77, 11, 121, 25, 11, 100]
 
-b = [[0,2],[1,8],[2,5],[3,3],[4,0],[5,7],[8,1]]
+# b = [[0,2],[1,8],[2,5],[3,3],[4,0],[5,7],[8,1]]
 
-# print(a[b[0]])
+# # print(a[b[0]])
 
-c = m.sort(a, b)
+# c = m.sort(a, b)
 
-print(c)
+# print(c)
 
-for i in c:
-    print(a[i[0]])
+# for i in c:
+#     print(a[i[0]])

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-bash sourceWS $1
+# bash sourceWS $1
 
 function terminal () { xdotool key ctrl+alt+t; sleep 0.5; }
 
@@ -28,4 +28,4 @@ Enter;
 terminal;
 xdotool type "rosrun group4 TaskMaster";
 Enter;
-bash wsSourceRemove;
+# bash wsSourceRemove;

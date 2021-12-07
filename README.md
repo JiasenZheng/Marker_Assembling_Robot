@@ -28,7 +28,14 @@ The subsequent seuqence of steps are:
 5) Run the state machine to initiate the pick and place sequence using the following command:
 `rosrun group4 TaskMaster`
 
-
+### Automated Startup
+Incase you want a faster startup method a bash script is set up which at least creates the terminals necessary for start up.
+1) start by running the command: `bash sourceWS`
+- This will source the workspace directory in your .bashrc
+2) Run this command to begin: `bash start`
+- This should start up every process to get the project started.  If it doesn't please refer to the section above.
+3) When you are done using the start script run this command: `bash wsSourceRemove`
+- This will remove the workspace from your .bashrc file, **only run once**.
 
 ## Subsystems 
 
@@ -43,14 +50,47 @@ The manipulation package relies on several different nodes in order to function:
 6) debug_manipulation logs the external forces experienced by the robot
 
 ### Vision
-
+#### Install OpenCV
+* run the following command in a terminal: 
+```shell
+pip3 install opencv-python
+```
+#### vision python package
+* All the computer vision algorithms are embeded in the `vision` python package, functions in the package can be called in a node by 
+```import <package name>.<script name>``` such as 
+```shell
+import vision.vision1
+```
+* `sample_capture.py`:  A helper python script to capture images using realsense 435i rgbd camera
+    1. Connect the realsense camera to you laptop
+    2. Run the python script in a terminal:
+    ```shell
+    python3 sample_capture.py
+    ```
+    3. Press 'a' to capture and save an image and use 'q' to quit the image window
+* `hsv_slider.py`: A helper python script to find the appropriate HSV range for color detection
+    1. Add the path of the image to  `frame = cv.imread()` to read the image
+    2. Run the python script in a terminal:
+    ```shell
+    python3 hsv_slider.py
+    ```
+    3. A window of original image and a window of HSV image with silde bars will show up
+    4. Test with HSV slide bars to find an appropraite range
+* `vision.py` A python script to detect contours and return list of hue values
+    1. For testing purpose, an image can be loaded by setting the path to `image = cv.imread()`
+    2. Run the python script in a terminal:
+    ```shell
+    python3 vision1.py
+    ```
+    3. A processed image with contours and a list of hue values will be returned
 
 ### SMACH
+
+* If you are interested in editing or changing the behavior we encourage you take a look at SMACHs tutorial at: http://wiki.ros.org/smach
+
 #### Installing and using SMACH-ROS
-* run the following command in a terminal: `sudo apt-get install ros-noetic-smach ros-noetic-smach-ros ros-noetic-executive-smach ros-noetic-smach-viewer`
-* smach is out of date and not maintained properly but most of the files can be fixed with a single key press.
-#### Smach_viewer
-* This package uses its own version of smach_viewer and is a node within the package.
+* run the following command in a terminal: `sudo apt-get install ros-noetic-smach ros-noetic-smach-ros ros-noetic-executive-smach`
+
 #### Running Task master
 * To run task master simply run: `rosrun group4 TaskMaster`
 
