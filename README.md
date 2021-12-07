@@ -28,6 +28,16 @@ The subsequent seuqence of steps are:
 5) Run the state machine to initiate the pick and place sequence using the following command:
 `rosrun group4 TaskMaster`
 
+## Instructions to run the rosinstall
+
+Download and install the group4.rosinstall file to run the external packages used for this project:
+`cd group4`
+`vcs import src <path_to_rosinstall_file'.rosinstall>`
+
+## Instructions to view the Sphinx Documentation of the Project
+
+Open the `html` folder inside the `doc` directory using a web browser to view the Sphinx Documentation
+
 ### Automated Startup
 Incase you want a faster startup method a bash script is set up which at least creates the terminals necessary for start up.
 1) start by running the command: `bash sourceWS`
@@ -83,6 +93,12 @@ import vision.vision1
     python3 vision1.py
     ```
     3. A processed image with contours and a list of hue values will be returned
+
+* `vision_bridge node`: Node that publishes a stream of ROS Images and implements a service `capture` that returns a list of H values of the detected   markers and/or caps from an image.
+    1. run `rosservice call /capture` and specify the `tray_location` to run the service.
+        tray_location 1 : Represents Assembly Location
+        tray_location 2 : Represents Markers Location
+        tray_location 3 : Represents Caps Location
 
 ### SMACH
 
