@@ -64,6 +64,7 @@ Simulation with RVIZ can be run by running the following commands:
 `roslaunch group4 planning_sim.launch`
 
 Manipulation also relies on a python package called manipulation with translational, array position, and verification utilities.
+A scene.yaml files is used for specifying parameters in the plan_scene node and the main manipulation movements scene elsewhere in the project.
 
 ### Vision
 #### Install OpenCV
