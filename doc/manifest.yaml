@@ -1,0 +1,58 @@
+actions: []
+authors: ''
+brief: ''
+bugtracker: ''
+depends:
+- sensor_msgs
+- roslib
+- catkin
+- panda_moveit_config
+- moveit_commander
+- smach
+- rosunit
+- realsense2_camera
+- moveit_msgs
+- franka_gripper
+- tf2_ros
+- rospy
+- std_msgs
+- robot_state_publisher
+- rostest
+- message_runtime
+- message_generation
+- joint_state_publisher
+- geometry_msgs
+- joint_state_publisher_gui
+- rviz
+- rqt_gui
+description: The final-project-group-4-inc package
+license: MIT
+maintainers: hawk <iankennedy2022@u.northwestern.edu>
+msgs:
+- .msg
+- MaxWrenches
+package_type: package
+repo_url: ''
+srvs:
+- GetState
+- GetMaxWrenches
+- GotoMarker
+- ImageCapture
+- GetPose
+- LocationMove
+- PickNPlace
+- GetStringList
+- TrayLocationMove
+- JointsMove
+- CollisionSet
+- PoseMove
+- Grasp
+- NamedMove
+- GetFloatList
+- GripperClose
+- GotoPos
+- DeltaMove
+- GripperOpen
+- .srv
+- Press
+url: ''
