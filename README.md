@@ -1,6 +1,6 @@
 # Group4 - Picking, placing, and cappings markers and caps
 
-The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. The state machine intelligence implemented sorting of colors by hue based off of camera data coming from the realsense perception subsystem. Intelligence then leveraged the manipulation to pick, place and press caps and markers in the assembly tray. 
+The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. The state machine intelligence implemented sorting of colors by hue based off of camera data coming from the realsense perception subsystem. Intelligence then leveraged the manipulation to pick, place and press caps and markers in the assembly tray. THe  launch files custom to this project are launch_robot.launch (master launch file) and planning_sim.launch (simulation launch file for motion planning in).
 Ensure that the panda_moveit_config and the franka_control packages are sourced and configured as detailed here: https://nu-msr.github.io/me495_site/franka.html
 
 
@@ -67,7 +67,7 @@ Simulation with RVIZ can be run by running the following commands:
 Manipulation also relies on a python package called manipulation with translational, array position, and verification utilities.
 A scene.yaml files is used for specifying parameters in the plan_scene node and the main manipulation movements scene elsewhere in the project.
 
-### Vision
+### Vision/Perception
 #### Install OpenCV
 * run the following command in a terminal: 
 ```shell
@@ -122,3 +122,6 @@ import vision.vision1
 # Video demo
 * The user interface of processed images and Franka arm visualizations on Rviz:   https://youtu.be/oCTd5CoBUqM
 * The side view of the video record of Franka arm assembling the markers (3.0X faster): https://youtu.be/m37ZtrH2SsE
+
+####
+Contributors: Keaton Griffith, Kojo Welbeck, Bhagyesh Agresar, Ian Kennedy
