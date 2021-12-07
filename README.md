@@ -30,6 +30,8 @@ The subsequent seuqence of steps are:
 
 ### Manipulation
 
+The manipulation
+
 ### Vision
 
 
