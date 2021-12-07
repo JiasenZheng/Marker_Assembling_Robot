@@ -1,5 +1,5 @@
 """
-This sequence test the manager python packages ability to 
+This sequence tests the manager python packages ability to 
 
 (1) match and pair markers and caps by color and returns a list of pairs of 
     indicies in sequence for the state machine ("match list")
