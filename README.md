@@ -1,6 +1,6 @@
 # Group4 - Picking, placing, and sorting markers and caps
 
-The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. The state machine intelligence implemented sorting of colors by hue based off of camera data coming from the realsense perception subsystem. Intelligence then leveraged the manipulation to pick, place and press caps and markers in the assembly tray. THe  launch files custom to this project are launch_robot.launch (master launch file) and planning_sim.launch (simulation launch file for motion planning in).
+The goal of this project was assemble markers and caps together through sequences of pick, place, press and sort operations. The intent was largely inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. The state machine intelligence implemented sorting of colors by hue based off of camera data coming from the realsense perception subsystem. Intelligence then leveraged the manipulation to pick, place and press caps and markers in the assembly tray. THe  launch files custom to this project are launch_robot.launch (master launch file) and planning_sim.launch (simulation launch file for motion planning in).
 Ensure that the panda_moveit_config and the franka_control packages are sourced and configured as detailed here: https://nu-msr.github.io/me495_site/franka.html
 
 
@@ -17,7 +17,7 @@ The subsequent seuqence of steps are (first ensure a roscore is running, and you
 
 
 3) Up the collision limits for the robot by calling the following node and service:
-`rosrun group4 limit_set`
+`rosrun group4 limit_set` then
 `rosservice call /coll_hi`
 
 
@@ -52,14 +52,14 @@ Incase you want a faster startup method a bash script is set up which at least c
 ### Manipulation
 
 The manipulation package relies on several different nodes in order to function:
-1) manipulation_cap provides low level position and orientation sensing services, along with error recovery, movements and gripper grasping
-2) manipulation_macro_a provides position movement services for image captures using the realsense
-3) manipulation_press provides a pressing service to cap the markers
-4) manipulation_local provides manipulation services for moving in between trays
-5) manipulation_pnp provides pick and place services between the feed and assembly trays
-6) debug_manipulation logs the external forces experienced by the robot
-7) plan_scene provides a planning scene for simulation based motion planning in Moveit
-8) limit_set provides services to be used with the franka_control file launched prior to Moveit being launched. It allows the user to reconfigure the collision limits on the robot. 
+1) `manipulation_cap` provides low level position and orientation sensing services, along with error recovery, movements and gripper grasping
+2) `manipulation_macro_a` provides position movement services for image captures using the realsense
+3) `manipulation_press` provides a pressing service to cap the markers
+4) `manipulation_local` provides manipulation services for moving in between trays
+5) `manipulation_pnp` provides pick and place services between the feed and assembly trays
+6) `debug_manipulation` logs the external forces experienced by the robot
+7) `plan_scene` provides a planning scene for simulation based motion planning in Moveit
+8) `limit_set` provides services to be used with the franka_control file launched prior to Moveit being launched. It allows the user to reconfigure the collision limits on the robot. 
 
 Simulation with RVIZ can be run by running the following commands:
 `roslaunch group4 planning_sim.launch`
@@ -111,13 +111,17 @@ import vision.vision1
 
 ### SMACH
 
-* If you are interested in editing or changing the behavior we encourage you take a look at SMACHs tutorial at: http://wiki.ros.org/smach. The state machine iterates between a series of states (Standby, Caps, Markers, genMatch, setTarget, Assemble). It relies on a manager package provided in source for sorting and matching. 
+* If you are interested in editing or changing the behavior we encourage you take a look at SMACHs tutorial at: http://wiki.ros.org/smach. The state machine iterates between a series of states (Standby, Caps, Markers, genMatch, setTarget, Assemble). It relies on a manager python package provided in source for sorting and matching. 
 
 #### Installing and using SMACH-ROS
 * run the following command in a terminal: `sudo apt-get install ros-noetic-smach ros-noetic-smach-ros ros-noetic-executive-smach`
 
 #### Running Task master
 * To run task master simply run: `rosrun group4 TaskMaster`
+
+#### Unit Testing
+The project employs a series of unit tests on the manager python package to verify its matching, sorting and destination-setting functionality.
+Run `catkin_make run_tests` 
 
 # Video demo
 * The user interface of processed images and Franka arm visualizations on Rviz:   https://youtu.be/oCTd5CoBUqM

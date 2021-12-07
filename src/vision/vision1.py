@@ -161,14 +161,14 @@ if __name__ == "__main__":
     #                                 lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
 
     ## Marker Tray
-    image = cv.imread('vision/pictures/RepositionedPhotos/markers7.png')
-    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(750,510),starting_pixel=(200,100),
-                                    lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
+    # image = cv.imread('vision/pictures/RepositionedPhotos/markers7.png')
+    # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(750,510),starting_pixel=(200,100),
+    #                                 lower_thresh=np.array([6,30,60]),upper_thresh=np.array([180,255,255]))
 
     ## Cap Tray
-    # image = cv.imread('pictures/RepositionedPhotos/caps6.png')
-    # image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(910,750),starting_pixel=(180,0),
-    #                                 lower_thresh=np.array([0,90,0]), upper_thresh=np.array([180,255,255]))
+    image = cv.imread('pictures/RepositionedPhotos/caps6.png')
+    image, list_H = detect_contour2(image,grid_size=(3,3),pixel_size=(910,750),starting_pixel=(180,0),
+                                    lower_thresh=np.array([0,90,0]), upper_thresh=np.array([180,255,255]))
 
 
     print(list_H)

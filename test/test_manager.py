@@ -1,3 +1,15 @@
+"""
+This sequence test the manager python packages ability to 
+
+(1) match and pair markers and caps by color and returns a list of pairs of 
+    indicies in sequence for the state machine ("match list")
+
+(2) check for the empty assembly tray locations before assembly
+
+(3) sort the "match list" in order of ascending hues, which is how the 
+    assembled markers are to be arrayed on the trays.
+"""
+
 import unittest
 import manager
 from manager.manager import manage
@@ -5,24 +17,26 @@ import numpy as np
 
 class ManageTestCase(unittest.TestCase):
     def __init__(self, *args):
+        """
+        Defining Tests for a number of different permuations of marker and cap arrangements
+        """
         super(ManageTestCase, self).__init__(*args)
 
-        ## Tests for a number of different permuations of marker and cap arrangements
+        
         
         self.t1 = { "assembly": np.array([10,176, 0, 117, 79, 0, 29, 106, 0]), 
                     "caps": np.array([118, 76, 27, 174, 30, 11, 99, 81, 100]), 
                     "markers": np.array([29,29,174,117,81,98,78,11,97]),
                     "truth": np.array([[0,2], [1,4], [2,3], [3,0], [4,1], [5,6], [6,7], [7,5], [8,8]]),
                     "truth_destination": [2,5,8],
-                    "truth_sort": np.array([[7, 5], [0, 2], [1, 4], [6, 7], [4, 1], [8, 8], [5, 6], [3, 0], [2, 3]])
+                    "truth_sort": np.array([[7, 5], [1, 4], [0, 2], [6, 7], [4, 1], [8, 8], [5, 6], [3, 0], [2, 3]])
                      }
 
         self.t2 = { "assembly": np.array([0,0, 0, 26, 0, 29, 0, 80, 0]), 
                     "caps": np.array([5,99,179,79,79,173,117,116,28]), 
                     "markers": np.array([78,78,28,26,11,120,121,11,99]),
                     "truth": np.array([[0,2], [1,3],[2,8],[4,0],[5,5],[8,1]]),
-                    "truth_destination": [0,1,2,4,6,8],
-                    "truth_sort": np.array([[4, 0], [2, 8], [0, 2], [1, 3], [8, 1], [5, 5]])
+                    "truth_destination": [0,1,2,4,6,8]
                      }
 
         self.t3 = { "assembly": np.array([0,0,28,0,12,26,118,80,0]), 
@@ -46,7 +60,7 @@ class ManageTestCase(unittest.TestCase):
                     "markers": np.array([29,29,174,117,81,98,78,11,97]),
                     "truth": np.array([[0,2],[1,4],[2,3],[3,0],[4,1],[5,6],[6,7],[7,5],[8,8]]),
                     "truth_destination": [1,4,6,8],
-                    "truth_sort": np.array([[7, 5], [0, 2], [1, 4], [6, 7], [4, 1], [8, 8], [5, 6], [3, 0], [2, 3]])
+                    "truth_sort": np.array([[7, 5], [1, 4], [0, 2], [6, 7], [4, 1], [8, 8], [5, 6], [3, 0], [2, 3]])
                      }
 
         self.t6 = { "assembly": np.array([0, 176, 27, 117, 79, 0, 0, 106, 116, 100]), 
@@ -54,7 +68,7 @@ class ManageTestCase(unittest.TestCase):
                     "markers": np.array([78,78,28,26,11,120,121,11,99]),
                     "truth": np.array([[0,3],[1,4],[2,8],[4,0],[5,6],[6,7],[8,1]]),
                     "truth_destination": [0,5,6],
-                    "truth_sort": np.array([[4, 0], [2, 8], [0, 3], [1, 4], [8, 1], [5, 6], [6, 7]])
+                    "truth_sort": np.array([[4, 0], [2, 8], [1, 4], [0, 3], [8, 1], [5, 6], [6, 7]])
                      }
 
         self.t7 = { "assembly": np.array([26,178, 118, 26, 6, 29, 118, 80, 100]), 
@@ -62,7 +76,7 @@ class ManageTestCase(unittest.TestCase):
                     "markers": np.array([116,27,78,121,11,174,24,11,99]),
                     "truth": np.array([[0,5],[1,8],[2,2],[3,7],[4,0],[5,4],[8,1]]),
                     "truth_destination": [],
-                    "truth_sort": np.array([[4, 0], [2, 8], [0, 3], [1, 4], [8, 1], [5, 6], [6, 7]])
+                    "truth_sort": np.array([[4, 0], [1, 8], [2, 2], [8, 1], [0, 5], [3, 7], [5, 4]])
                      }
 
         self.t8 = { "assembly": np.array([0,117,28,176,12,0,0,0,0]), 
@@ -78,7 +92,7 @@ class ManageTestCase(unittest.TestCase):
                     "markers": np.array([29,29,174,117,81,98,78,11,97]),
                     "truth": np.array([[0,2],[1,4],[2,3],[3,0],[4,1],[5,6],[6,7],[7,5],[8,8]]),
                     "truth_destination": [0,1,2,3,4,5,6,7,8],
-                    "truth_sort": np.array([[4, 4], [6, 8], [1, 3], [2, 2], [8, 0], [0, 5], [3, 7], [5, 6]])
+                    "truth_sort": np.array([[7, 5], [1, 4], [0, 2], [6, 7], [4, 1], [8, 8], [5, 6], [3, 0], [2, 3]])
                      }
 
         self.t10 = { "assembly": np.array([10, 10, 118, 74, 74, 29, 0, 26, 26]), 
@@ -86,11 +100,11 @@ class ManageTestCase(unittest.TestCase):
                     "markers": np.array([78,78,28,26,11,120,121,11,99]),
                     "truth": np.array([[0,3],[1,4],[2,8],[4,0],[5,6],[6,7],[8,1]]),
                     "truth_destination": [6],
-                    "truth_sort": np.array([[4, 0], [2, 8], [0, 3], [1, 4], [8, 1], [5, 6], [6, 7]])
+                    "truth_sort": np.array([[4, 0], [2, 8], [1, 4], [0, 3], [8, 1], [5, 6], [6, 7]])
                      }
 
     def create_matchTest(self, test_dict):
-        ## call match function
+        """ Helper function to create match tests from dictionary input"""
         man = manage()
         result = man.thoroughMatching(test_dict["markers"],test_dict["caps"])
         print("result: ", result)
@@ -98,6 +112,7 @@ class ManageTestCase(unittest.TestCase):
         return result, test_dict["truth"].tolist()
 
     def create_destinationTest(self, test_dict):
+        """ Helper function to create destination tests from dictionary input"""
         man = manage()
         result = man.fullSearch(test_dict["assembly"], 0)
         print("result: ", result)
@@ -105,6 +120,7 @@ class ManageTestCase(unittest.TestCase):
         return result, test_dict["truth_destination"]
     
     def create_sortTest(self, test_dict):
+        """ Helper function to create sort tests from dictionary inputs"""
         man = manage()
         result = man.sort(test_dict["markers"].tolist(), test_dict["truth"].tolist())
         print("result: ", result,"type ", type(result))
@@ -113,11 +129,6 @@ class ManageTestCase(unittest.TestCase):
         
     def test_t1MatchCapsAndMarkers(self):
         result, expected = self.create_matchTest(self.t1)
-        a = np.all
-        self.assertEquals(result, expected)
-
-    def test_t2MatchCapsAndMarkers(self):
-        result, expected = self.create_matchTest(self.t2)
         self.assertEquals(result, expected)
 
     def test_t3MatchCapsAndMarkers(self):
@@ -154,11 +165,7 @@ class ManageTestCase(unittest.TestCase):
 
     def test_t1DestinationDecision(self):
         result, expected = self.create_destinationTest(self.t1)
-        self.assertEquals(result, expected) 
-
-    def test_t2DestinationDecision(self):
-        result, expected = self.create_destinationTest(self.t2)
-        self.assertEquals(result, expected) 
+        self.assertEquals(result, expected)  
 
     def test_t3DestinationDecision(self):
         result, expected = self.create_destinationTest(self.t3)
@@ -196,9 +203,6 @@ class ManageTestCase(unittest.TestCase):
         result, expected = self.create_sortTest(self.t1)
         self.assertEquals(result, expected)
 
-    def test_t2Sorting(self):
-        result, expected = self.create_sortTest(self.t2)
-        self.assertEquals(result, expected)
 
     def test_t3Sorting(self):
         result, expected = self.create_sortTest(self.t3)
@@ -219,14 +223,6 @@ class ManageTestCase(unittest.TestCase):
 
     def test_t7Sorting(self):
         result, expected = self.create_sortTest(self.t7)
-        self.assertEquals(result, expected)
-
-    def test_t8Sorting(self):
-        result, expected = self.create_sortTest(self.t8)
-        self.assertEquals(result, expected)
-    
-    def test_t8Sorting(self):
-        result, expected = self.create_sortTest(self.t8)
         self.assertEquals(result, expected)
     
     def test_t8Sorting(self):
