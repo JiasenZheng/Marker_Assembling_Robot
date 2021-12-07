@@ -1,9 +1,34 @@
-# final-project-group-4-inc
+# Group4 - Picking, placing, and cappings markers and caps
 
-# Dependencies
+The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. 
 
-## SMACH
-### Installing and using SMACH-ROS
+## Instructions to run the robot
+
+The robot is run by issuing the following set of commands. To start, the user must connect to the Franka robot and enable ROS by activating the FCI.
+
+The subsequent seuqence of steps are:
+1) SSH into the robot using: 
+'ssh -oSendEnv=ROS_MASTER_URI student@station'
+
+2) Launch the the franka ros controller using the following command in the SSH terminal:
+'roslaunch panda_moveit_config panda_control_moveit_rviz.launch launch_franka_control:=false robot_ip:=robot.franka.de'
+
+3) Launch the robot manipulation and vision commands using the following launch file:
+'roslaunch group4 launch_robot.launch'
+
+4) Run the state machine to initiate the pick and place sequence using the following command:
+'rosrun group4 TaskMaster' 
+
+
+## Subsystems
+
+### Manipulation
+
+### Vision
+
+
+### SMACH
+#### Installing and using SMACH-ROS
 * run the following command in a terminal: `sudo apt-get install ros-noetic-smach ros-noetic-smach-ros ros-noetic-executive-smach ros-noetic-smach-viewer`
 * smach is out of date and not maintained properly but most of the files can be fixed with a single key press.
 #### Smach_viewer
