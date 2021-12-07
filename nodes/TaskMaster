@@ -14,20 +14,12 @@ from group4.srv import Press, PickNPlace, GotoPos, ImageCapture
 
 #Array of nine values where the index specifies locaition.
 
-# from std_msgs.msg import String
 from copy import deepcopy
 import numpy as np
 from manager.manager import manage
 
 box = [False, False]
 
-# def OpenBox(cat):
-#     """Returns that the box is open and sets the state of the cat"""
-#     return [True, cat]
-
-# def CloseBox():
-#     """Resets the box such that its state is unknown"""
-#     return box
 
 def createProxy(service, type):
     rospy.wait_for_service(service)
@@ -47,15 +39,6 @@ marker_standoff = rospy.ServiceProxy('go_to_marker', GotoPos)
 takeImage = rospy.ServiceProxy('capture', ImageCapture)
 
 #New Method of calling required services
-# press_down = createProxy('press', Press)
-# marker_to_assembly = createProxy('pnpMarker', PickNPlace)
-# cap_to_assembly = createProxy('pnpCap', PickNPlace)
-# assembly_standoff = createProxy('go_to_master', GotoPos)
-# dispose = createProxy('go_to_disposal', GotoPos)
-# cap_standoff = createProxy('go_to_cap', GotoPos)
-# marker_standoff = createProxy('go_to_marker', GotoPos)
-
-# takeImage = createProxy('capture', ImageCapture)
 
 #This finite state machine for the time being is a test.
 #Factors I didn't take into consideraition lead me to believe there is another state that I need to add for dictating that
@@ -108,15 +91,11 @@ class Caps(smach.State):
                             input_keys = ['capList_output', 'locList_output'],
                             output_keys = ['capList_output', 'locList_output'])
     
-    #Things to keep note of incase it causes logic errors down the line
-    #I don't know if services output data has to be passed between each state
 
     def execute(self, userdata):
         rospy.loginfo('Executing state CAPS')
         userdata.capList_output = takeImage(3).data
         rospy.loginfo(userdata.capList_output)
-        # print(type(userdata.capList_output))
-        # print(userdata.capList_output)
         assembly_standoff()
         rospy.loginfo('At assembly standoff')
         assemblyLocList = takeImage(1).data
@@ -213,27 +192,18 @@ class Assemble(smach.State):
     
     def execute(self, userdata):
         rospy.loginfo('Executing state ASSEMBLE')
-        # marker_standoff()
         rospy.loginfo('Getting Marker')
         marker_to_assembly(userdata.target_input[0], userdata.loc_input)
-        # assembly_standoff()
-        # cap_standoff()
         rospy.loginfo('Getting Caps')
         cap_to_assembly(userdata.target_input[1], userdata.loc_input)
         rospy.loginfo('Finishing')
         press_down(userdata.loc_input)
         return 'Next?'
 
-# def starterCallback():
-#     return 
-
-# def stopCallback():
-#     return
 
 def main():
     rospy.init_node('marker_assymbly_task_master')
-    # markers = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    # caps = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
     markers = []
     caps = []
     #Create state machine
@@ -246,8 +216,6 @@ def main():
     sm.userdata.locList = []
     sm.userdata.loc = 0
 
-    # start = rospy.Service("start", Empty, starterCallback)
-    # stop = rospy.Service("stop", Empty, stopCallback)
     
     #Open the container
     with sm:
@@ -312,16 +280,9 @@ def main():
                                 })
 
 
-
-    # start = rospy.Service('start', Empty, starterCallback)
-
-    # sis = smach_ros.IntrospectionServer('TaskMaster', sm, '/SM_ROOT')
-    # sis.start()
-
     outcome = sm.execute()
 
     rospy.spin()
-    # sis.stop()
 
 if __name__ == '__main__':
     try:

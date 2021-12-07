@@ -1,16 +1,15 @@
 # Group4 - Picking, placing, and cappings markers and caps
 
-The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. 
+The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. ENsure that the panda_moveit_config and the franka_control packages are sourced and configured as detailed here: https://nu-msr.github.io/me495_site/franka.html
+
 
 ## Instructions to run the robot
 
 The robot is run by issuing the following set of commands. To start, the user must connect to the Franka robot and enable ROS by activating the FCI.
 
-The subsequent seuqence of steps are:
+The subsequent seuqence of steps are (first ensure a roscore is running, and you have configured your ROS_MASTER_URI appropriately):
 1) SSH into the robot using: 
 `ssh -oSendEnv=ROS_MASTER_URI student@station`
-
-
 
 2) Launch the the franka ros controller using the following command in the SSH terminal:
 `roslaunch panda_moveit_config panda_control_moveit_rviz.launch launch_franka_control:=false robot_ip:=robot.franka.de`
@@ -48,6 +47,13 @@ The manipulation package relies on several different nodes in order to function:
 4) manipulation_local provides manipulation services for moving in between trays
 5) manipulation_pnp provides pick and place services between the feed and assembly trays
 6) debug_manipulation logs the external forces experienced by the robot
+7) plan_scene provides a planning scene for simulation based motion planning in Moveit
+8) limit_set provides services to be used with the franka_control file launched prior to Moveit being launched. It allows the user to reconfigure the collision limits on the robot. 
+
+Simulation with RVIZ can be run by running the following commands:
+`roslaunch group4 planning_sim.launch`
+
+Manipulation also relies on a python package called manipulation with translational, array position, and verification utilities.
 
 ### Vision
 #### Install OpenCV
@@ -56,7 +62,7 @@ The manipulation package relies on several different nodes in order to function:
 pip3 install opencv-python
 ```
 #### vision python package
-* All the computer vision algorithms are embeded in the `vision` python package, functions in the package can be called in a node by 
+* All the computer vision algorithms are embedded in the `vision` python package, functions in the package can be called in a node by 
 ```import <package name>.<script name>``` such as 
 ```shell
 import vision.vision1
@@ -84,9 +90,11 @@ import vision.vision1
     ```
     3. A processed image with contours and a list of hue values will be returned
 
+    The node that uses this library is called vision_bridge.
+
 ### SMACH
 
-* If you are interested in editing or changing the behavior we encourage you take a look at SMACHs tutorial at: http://wiki.ros.org/smach
+* If you are interested in editing or changing the behavior we encourage you take a look at SMACHs tutorial at: http://wiki.ros.org/smach. The state machine iterates between a series of states (Standby, Caps, Markers, genMatch, setTarget, Assemble). It relies on a manager package provided in source for sorting and matching. 
 
 #### Installing and using SMACH-ROS
 * run the following command in a terminal: `sudo apt-get install ros-noetic-smach ros-noetic-smach-ros ros-noetic-executive-smach`
