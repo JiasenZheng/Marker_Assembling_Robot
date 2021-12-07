@@ -8,19 +8,25 @@ The robot is run by issuing the following set of commands. To start, the user mu
 
 The subsequent seuqence of steps are:
 1) SSH into the robot using: 
-'ssh -oSendEnv=ROS_MASTER_URI student@station'
+`ssh -oSendEnv=ROS_MASTER_URI student@station`
+
+
 
 2) Launch the the franka ros controller using the following command in the SSH terminal:
-'roslaunch panda_moveit_config panda_control_moveit_rviz.launch launch_franka_control:=false robot_ip:=robot.franka.de'
+`roslaunch panda_moveit_config panda_control_moveit_rviz.launch launch_franka_control:=false robot_ip:=robot.franka.de`
+
+
 
 3) Launch the robot manipulation and vision commands using the following launch file:
-'roslaunch group4 launch_robot.launch'
+`roslaunch group4 launch_robot.launch`
+
 
 4) Run the state machine to initiate the pick and place sequence using the following command:
-'rosrun group4 TaskMaster' 
+`rosrun group4 TaskMaster`
 
 
-## Subsystems
+
+## Subsystems 
 
 ### Manipulation
 
