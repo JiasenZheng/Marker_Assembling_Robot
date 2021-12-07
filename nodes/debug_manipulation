@@ -23,7 +23,7 @@ Publishers:
     max_F_exts of type MaxWrenches publishes the maximal forces experienced
 
 Subscribers:
-    /franka_state_controller/F_ext subscribes to the external forces
+    /franka_state_controller/F_ext subscribes to the external forces of type WrenchStamped
 
 
 
@@ -93,7 +93,7 @@ class DebugNode:
     
     def max_F_ext_callback(self, data):
         """
-        max_F_ext_callback subscribes to the raw data
+        max_F_ext_callback subscribes to the raw data of type WrenchStamped
         """
 
         if self.recording_F_exts:
