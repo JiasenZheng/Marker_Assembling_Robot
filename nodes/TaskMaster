@@ -73,6 +73,12 @@ sort = manager.sort
 #Test Code:
 
 class StandBy(smach.State):
+    """
+    State:Standby:Puts the state machine in a loop until cap input is detected.
+    Outcome:input-detected: Transitions to Caps state.
+    Outcome:wait: Transitions back to StandBy State
+    Keys:changeFlag: Boolean value that determines whether the state machine needs to go through its procedure.
+    """
     def __init__(self):
         smach.State.__init__(self, outcomes=['input-detected', 'wait'],
                                 input_keys = ['changeFlag_input'],
@@ -90,6 +96,13 @@ class StandBy(smach.State):
         return 'wait'
 
 class Caps(smach.State):
+    """
+    State:Caps: Goes to a positon to collect data on Caps and then gets data on 
+    what output slots are availabe.
+    Outcome:look: Transitions to Markers state.
+    Keys:capList_ouput: List of data relating to the caps.
+    Keys:locList_output: List of data relating to what positons are available to assemble markers in.
+    """
     def __init__(self):
         smach.State.__init__(self, outcomes=['look'],
                             input_keys = ['capList_output', 'locList_output'],
@@ -112,6 +125,12 @@ class Caps(smach.State):
         return 'look'
 
 class Markers(smach.State):
+    """
+    States:Markers: Goes to a position to collect informaition about Markers.
+    Outcomes:match!: Transitions to genMatch state
+    Keys:markerList_output: List of marker hue data.
+    """
+
     def __init__(self):
         smach.State.__init__(self, outcomes=['match!'],
                                 input_keys = ['markerList_output'],
@@ -127,6 +146,15 @@ class Markers(smach.State):
         return 'match!'
 
 class genMatch(smach.State):
+    """
+    State:genMatch: Generates match list and sorts it.
+    Outcome:next?: transitions to setTarget.
+    Outcome:wait: transition to StanBy state
+    Key:markerList_input: List of marker data
+    Key:capList_input: List of cap data
+    Key:matchList_output: List of pairs, specifically their coordinate locaitions.
+    Key:changeFlag_output: Boolean value switched to false
+    """
     def __init__(self):
         smach.State.__init__(self, outcomes=['next?', 'wait'],
                                     input_keys = ['markerList_input', 'capList_input'],
@@ -145,6 +173,16 @@ class genMatch(smach.State):
         return 'next?'
 
 class setTarget(smach.State):
+    """
+    State:setTarget: sets the target matching pair and the target locaition to put the matching pair.
+    Outcome:move!:Transitions to Assemble state.
+    Outcome:finished: Transitions to Finished outcome which stops the StateMachine.
+    Keys:matchList_Input: List of the coordinates of matched elements.
+    Keys:loc_output: Locaition data of where to put marker
+    Keys:locList_output: List of locaitions that will be iterated through.
+    Keys:target_output: Current target.
+    Keys:changeFlag_ouput: Bool value set to false if there is no more items to iterate through.
+    """
     def __init__(self):
         smach.State.__init__(self, outcomes=['move!', 'finished'],
                                 input_keys = ['matchList_input', 'loc_input', 'target_output', 'loc_output', 'locList_input'],
@@ -163,6 +201,12 @@ class setTarget(smach.State):
             return 'finished'
 
 class Assemble(smach.State):
+    """
+    State:Assemble: This state performs all of the actions necessary for marker assembly.
+    Outcome:Next?: Transitions to setTarget state
+    Keys:target_input: Matched pair to be assembled.
+    Keys:loc_input: The locaition in the assembly trey the marker will be assembled in.
+    """
     def __init__(self):
         smach.State.__init__(self, outcomes=['Next?'],
                                 input_keys = ['target_input', 'loc_input'])

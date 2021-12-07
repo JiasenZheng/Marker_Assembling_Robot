@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Group4 - Picking, placing, and cappings markers and caps
 
 The goal of this project was to pick, place and cap markers with caps, and was thus heavily inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. 
@@ -47,3 +48,8 @@ The manipulation
 # Video demo
 * The user interface of processed images and Franka arm visualizations on Rviz:   https://youtu.be/oCTd5CoBUqM
 * The side view of the video record of Franka arm assembling the markers (3.0X faster): https://youtu.be/m37ZtrH2SsE
+=======
+# final-project-group-4-inc
+Contributors:
+Ian Kennedy
+>>>>>>> 1d1f5e487121daa09c85d2757c23ddcb8e05ea43
