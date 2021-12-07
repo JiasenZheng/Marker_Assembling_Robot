@@ -36,10 +36,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abdf274f4e23b559956e78275e6c824e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad546f7a0288c23ff290574147daf972b"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmanager_1_1manager_1_1manage.html#ad546f7a0288c23ff290574147daf972b">bind</a> (self, A, B)</td></tr>
 <tr class="separator:ad546f7a0288c23ff290574147daf972b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81b722804243c7c90b021ae9c57bf6ea"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmanager_1_1manager_1_1manage.html#a81b722804243c7c90b021ae9c57bf6ea">colorMatch</a> (self, <a class="el" href="namespacemanager_1_1manager.html#a1ad881249c73e867b099eb9b5a713a67">a</a>, <a class="el" href="namespacemanager_1_1manager.html#a294fd42283d80c71228daad345bdefb7">b</a>, threshold)</td></tr>
+<tr class="memitem:a81b722804243c7c90b021ae9c57bf6ea"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmanager_1_1manager_1_1manage.html#a81b722804243c7c90b021ae9c57bf6ea">colorMatch</a> (self, a, b, threshold)</td></tr>
 <tr class="separator:a81b722804243c7c90b021ae9c57bf6ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03b86dc17ce60789dabc731ec750b084"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmanager_1_1manager_1_1manage.html#a03b86dc17ce60789dabc731ec750b084">fbsearch</a> (self, arr, data)</td></tr>
-<tr class="separator:a03b86dc17ce60789dabc731ec750b084"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a828fbcc4377ff91c59c72b1b10ae104f"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmanager_1_1manager_1_1manage.html#a828fbcc4377ff91c59c72b1b10ae104f">fullSearch</a> (self, arr, data)</td></tr>
 <tr class="separator:a828fbcc4377ff91c59c72b1b10ae104f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa1b7aa09189ad17a994c23dc7f8dbd1"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmanager_1_1manager_1_1manage.html#afa1b7aa09189ad17a994c23dc7f8dbd1">genList</a> (self, lst)</td></tr>
@@ -120,8 +118,14 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00109">109</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Function:Bind: Takes a list of items with its match list and creates a new list where
+the items of the list include an a list containing the item in the first index
+and the second element is its corresponding matched pair.
+Param:A: List of items
+Param:B: List of matching pairs
+Returns: List of elements that follow the format [A, B]
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00104">104</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -162,48 +166,10 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Given two one d array of 3 elements this function will compare hsv values
-And return whether the two pieces of data are similar enough to match. 
+<pre class="fragment">Given two h values and a threshold, return true if the difference of the two h values is
+less than or equal to the threshold.
 </pre> 
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00070">70</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
-
-</div>
-</div>
-<a id="a03b86dc17ce60789dabc731ec750b084"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03b86dc17ce60789dabc731ec750b084">&#9670;&nbsp;</a></span>fbsearch()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def manager.manager.manage.fbsearch </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>arr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<pre class="fragment">Given a target data value, this function will look 
-for data that is similar in a seperate array.
-</pre> 
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00011">11</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00059">59</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -238,8 +204,12 @@ for data that is similar in a seperate array.
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Returns a list of multiple values that can match with data</pre> 
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00058">58</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Function:fullSearch: Returns a list of multiple values that can match with data
+Param:arr: An array of values to search through.
+Param:data: The item we are searching for in the array.
+Return:ans: List of index values that links to data that is similar to item being searched for.
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00042">42</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -274,7 +244,7 @@ General Use: In order to iterate through object say:
     iter = next(obj)
 Param:lst: List of matches
 </pre> 
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00078">78</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00066">66</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -309,9 +279,12 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">This search looks for whether two elements are already paired.
+<pre class="fragment">Function:matchedSearch: Takes a list of pairs and a candidate and returns true if either element of
+the candidate exists in the list of pairs.
+Param:pairs: List of pairs
+Param:candidates: Candidate to be added to list of pairs.
 </pre> 
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00036">36</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00011">11</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -352,8 +325,9 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00093">93</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Helper function that partitions for QuickSort.
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00084">84</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -394,8 +368,8 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00103">103</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Standard QuickSort Algorithm</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00097">97</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -430,8 +404,13 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00123">123</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">function:sort: Binds two lists Sorts the list according to the values of the A list
+And returns a sorted version of the B List.
+Param:A: List of values to sort by.
+Param:B: List of values to be sorted.
+Returns: A sorted version of list B.
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00131">131</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -472,8 +451,9 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00089">89</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Helper function that swaps two elements of an array.
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00077">77</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -508,8 +488,12 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00045">45</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Function:thoroughMatching: Matches items of two arrays together.
+Param:arr1: Array of items to be matched to arr2
+Param:arr2: Array of items to be matched to arr1
+Return:ans: List matching pairs indices from arr1 and arr2
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00023">23</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -538,8 +522,11 @@ Param:lst: List of matches
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00118">118</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
+<pre class="fragment">Function:unbind: Unbinds a binded list.
+Param:C: A binded list.
+Returns: List from the B part of the Binded list
+</pre> 
+<p class="definition">Definition at line <a class="el" href="manager_8py_source.html#l00121">121</a> of file <a class="el" href="manager_8py_source.html">manager.py</a>.</p>
 
 </div>
 </div>
@@ -569,7 +556,7 @@ Param:lst: List of matches
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/group4">group4</a><br />
 Author(s): </br />
-<small>autogenerated on Mon Dec 6 2021 22:47:04</small>
+<small>autogenerated on Tue Dec 7 2021 01:22:50</small>
 </div>
 </body>
 </html>

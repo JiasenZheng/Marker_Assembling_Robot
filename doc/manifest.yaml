@@ -3,28 +3,28 @@ authors: ''
 brief: ''
 bugtracker: ''
 depends:
-- sensor_msgs
-- roslib
-- catkin
-- panda_moveit_config
+- rostest
+- franka_gripper
+- std_msgs
+- message_generation
+- tf2_ros
+- joint_state_publisher
+- geometry_msgs
+- rqt_gui
 - moveit_commander
 - smach
 - rosunit
-- realsense2_camera
-- moveit_msgs
-- franka_gripper
-- tf2_ros
 - rospy
-- std_msgs
-- robot_state_publisher
-- rostest
-- message_runtime
-- message_generation
-- joint_state_publisher
-- geometry_msgs
 - joint_state_publisher_gui
+- realsense2_camera
+- roslib
+- robot_state_publisher
+- moveit_msgs
+- message_runtime
+- sensor_msgs
 - rviz
-- rqt_gui
+- catkin
+- panda_moveit_config
 description: The final-project-group-4-inc package
 license: MIT
 maintainers: hawk <iankennedy2022@u.northwestern.edu>

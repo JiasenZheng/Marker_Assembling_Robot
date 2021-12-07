@@ -194,14 +194,12 @@ catkin_install_python(PROGRAMS nodes/TaskMaster
 #   scripts/my_python_script
 nodes/manipulation_cap
 nodes/plan_scene
-nodes/manipulation_pen
 nodes/debug_manipulation
 nodes/manipulation_macro_a
 nodes/manipulation_local
 nodes/manipulation_press
 nodes/manipulation_pnp
 nodes/limit_set
-nodes/bridge
 nodes/vision_bridge
 nodes/manipulation_press
 DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

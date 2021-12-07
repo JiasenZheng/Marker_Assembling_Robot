@@ -1,7 +1,0 @@
-<launch>
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
-    <node pkg = "group4" name="bridge" type="bridge"/>
-    <node pkg = "group4" name="vision_bridge" type="vision_bridge"/>
-
-    <!-- <node pkg = "usb_cam" name="" -->
-</launch>

@@ -3,6 +3,9 @@ from geometry_msgs.msg import Pose, Point, Vector3, Quaternion
 from tf_conversions import transformations
 
 def poseToXYZRPYList(pose):
+    """
+    Converts a pose to an XYZ, RPY pose
+    """
     x = pose.point.x
     y = pose.point.y
     z = pose.point.z
@@ -13,10 +16,16 @@ def poseToXYZRPYList(pose):
     return poseAsList
 
 def rpyVec3ToQuaternion(rpyVec):
+    """
+    Returns the quaternion of an RPY orientation
+    """
     q0, q1, q2, q3 = transformations.quaternion_from_euler(rpyVec.x, rpyVec.y, rpyVec.z)
     return Quaternion(q0, q1, q2, q3)
 
 def quaternionToRPYVec3(q):
+    """
+    returns an RPY orientation from a quaternion
+    """
     r, p, y = transformations.euler_from_quaternion([q.x, q.y, q.z, q.w])
     return Vector3(r, p, y)
 

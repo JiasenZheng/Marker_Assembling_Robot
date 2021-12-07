@@ -30,34 +30,43 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">from</span> tf_conversions <span class="keyword">import</span> transformations</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="namespacemanipulation_1_1translationUtilities.html#a574d8c5d0fdc4e5495b52ee0f19c9891">    5</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacemanipulation_1_1translationUtilities.html#a574d8c5d0fdc4e5495b52ee0f19c9891">poseToXYZRPYList</a>(pose):</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    x = pose.point.x</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    y = pose.point.y</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    z = pose.point.z</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    rot_x = pose.orientation.x</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    rot_y = pose.orientation.y</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    rot_z = pose.orientation.z</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    poseAsList = [x, y, z, rot_x, rot_y, rot_z]</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordflow">return</span> poseAsList</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="namespacemanipulation_1_1translationUtilities.html#a793cbbf10973a12a2f037cd72b4ebc02">   15</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacemanipulation_1_1translationUtilities.html#a793cbbf10973a12a2f037cd72b4ebc02">rpyVec3ToQuaternion</a>(rpyVec):</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    q0, q1, q2, q3 = transformations.quaternion_from_euler(rpyVec.x, rpyVec.y, rpyVec.z)</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordflow">return</span> Quaternion(q0, q1, q2, q3)</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="namespacemanipulation_1_1translationUtilities.html#a411ccc52d436d8b78f294d7a94767a74">   19</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacemanipulation_1_1translationUtilities.html#a411ccc52d436d8b78f294d7a94767a74">quaternionToRPYVec3</a>(q):</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    r, p, y = transformations.euler_from_quaternion([q.x, q.y, q.z, q.w])</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">return</span> Vector3(r, p, y)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="stringliteral">&quot;&quot;&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="stringliteral">    Converts a pose to an XYZ, RPY pose</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="stringliteral">    &quot;&quot;&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    x = pose.point.x</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    y = pose.point.y</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    z = pose.point.z</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    rot_x = pose.orientation.x</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    rot_y = pose.orientation.y</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    rot_z = pose.orientation.z</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    poseAsList = [x, y, z, rot_x, rot_y, rot_z]</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordflow">return</span> poseAsList</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacemanipulation_1_1translationUtilities.html#a793cbbf10973a12a2f037cd72b4ebc02">   18</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacemanipulation_1_1translationUtilities.html#a793cbbf10973a12a2f037cd72b4ebc02">rpyVec3ToQuaternion</a>(rpyVec):</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="stringliteral">&quot;&quot;&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="stringliteral">    Returns the quaternion of an RPY orientation</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="stringliteral">    &quot;&quot;&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    q0, q1, q2, q3 = transformations.quaternion_from_euler(rpyVec.x, rpyVec.y, rpyVec.z)</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordflow">return</span> Quaternion(q0, q1, q2, q3)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacemanipulation_1_1translationUtilities.html#a411ccc52d436d8b78f294d7a94767a74">   25</a></span>&#160;<span class="keyword">def </span><a class="code" href="namespacemanipulation_1_1translationUtilities.html#a411ccc52d436d8b78f294d7a94767a74">quaternionToRPYVec3</a>(q):</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="stringliteral">&quot;&quot;&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="stringliteral">    returns an RPY orientation from a quaternion</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="stringliteral">    &quot;&quot;&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    r, p, y = transformations.euler_from_quaternion([q.x, q.y, q.z, q.w])</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">return</span> Vector3(r, p, y)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    </div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacemanipulation_1_1translationUtilities_html_a793cbbf10973a12a2f037cd72b4ebc02"><div class="ttname"><a href="namespacemanipulation_1_1translationUtilities.html#a793cbbf10973a12a2f037cd72b4ebc02">manipulation.translationUtilities.rpyVec3ToQuaternion</a></div><div class="ttdeci">def rpyVec3ToQuaternion(rpyVec)</div><div class="ttdef"><b>Definition:</b> <a href="translationUtilities_8py_source.html#l00015">translationUtilities.py:15</a></div></div>
-<div class="ttc" id="anamespacemanipulation_1_1translationUtilities_html_a411ccc52d436d8b78f294d7a94767a74"><div class="ttname"><a href="namespacemanipulation_1_1translationUtilities.html#a411ccc52d436d8b78f294d7a94767a74">manipulation.translationUtilities.quaternionToRPYVec3</a></div><div class="ttdeci">def quaternionToRPYVec3(q)</div><div class="ttdef"><b>Definition:</b> <a href="translationUtilities_8py_source.html#l00019">translationUtilities.py:19</a></div></div>
+<div class="ttc" id="anamespacemanipulation_1_1translationUtilities_html_a793cbbf10973a12a2f037cd72b4ebc02"><div class="ttname"><a href="namespacemanipulation_1_1translationUtilities.html#a793cbbf10973a12a2f037cd72b4ebc02">manipulation.translationUtilities.rpyVec3ToQuaternion</a></div><div class="ttdeci">def rpyVec3ToQuaternion(rpyVec)</div><div class="ttdef"><b>Definition:</b> <a href="translationUtilities_8py_source.html#l00018">translationUtilities.py:18</a></div></div>
+<div class="ttc" id="anamespacemanipulation_1_1translationUtilities_html_a411ccc52d436d8b78f294d7a94767a74"><div class="ttname"><a href="namespacemanipulation_1_1translationUtilities.html#a411ccc52d436d8b78f294d7a94767a74">manipulation.translationUtilities.quaternionToRPYVec3</a></div><div class="ttdeci">def quaternionToRPYVec3(q)</div><div class="ttdef"><b>Definition:</b> <a href="translationUtilities_8py_source.html#l00025">translationUtilities.py:25</a></div></div>
 <div class="ttc" id="anamespacemanipulation_1_1translationUtilities_html_a574d8c5d0fdc4e5495b52ee0f19c9891"><div class="ttname"><a href="namespacemanipulation_1_1translationUtilities.html#a574d8c5d0fdc4e5495b52ee0f19c9891">manipulation.translationUtilities.poseToXYZRPYList</a></div><div class="ttdeci">def poseToXYZRPYList(pose)</div><div class="ttdef"><b>Definition:</b> <a href="translationUtilities_8py_source.html#l00005">translationUtilities.py:5</a></div></div>
 
 <br clear="all" />
 <hr size="1"><div style="align: right;">
 <a href="http://wiki.ros.org/group4">group4</a><br />
 Author(s): </br />
-<small>autogenerated on Mon Dec 6 2021 22:47:04</small>
+<small>autogenerated on Tue Dec 7 2021 01:22:50</small>
 </div>
 </body>
 </html>
