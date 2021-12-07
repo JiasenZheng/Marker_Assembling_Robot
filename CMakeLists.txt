@@ -194,7 +194,6 @@ catkin_install_python(PROGRAMS nodes/TaskMaster
 #   scripts/my_python_script
 nodes/manipulation_cap
 nodes/plan_scene
-nodes/manipulation_pen
 nodes/debug_manipulation
 nodes/manipulation_macro_a
 nodes/manipulation_local
