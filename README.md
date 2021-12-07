@@ -92,8 +92,8 @@ import vision.vision1
     ```shell
     python3 hsv_slider.py
     ```
-    3. A window of original image and a window of HSV image with silde bars will show up
-    4. Test with HSV slide bars to find an appropraite range
+    3. A window of original image and a window of HSV image with slide bars will show up
+    4. Test with HSV slide bars to find an appropriate range
 * `vision.py` A python script to detect contours and return list of hue values
     1. For testing purpose, an image can be loaded by setting the path to `image = cv.imread()`
     2. Run the python script in a terminal:
@@ -124,4 +124,4 @@ import vision.vision1
 * The side view of the video record of Franka arm assembling the markers (3.0X faster): https://youtu.be/m37ZtrH2SsE
 
 ####
-Contributors: Keaton Griffith, Kojo Welbeck, Bhagyesh Agresar, Ian Kennedy
+Contributors: Keaton Griffith, Kojo Welbeck, Bhagyesh Agresar, Ian Kennedy, Jiasen Zheng
