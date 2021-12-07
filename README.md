@@ -16,12 +16,16 @@ The subsequent seuqence of steps are:
 `roslaunch panda_moveit_config panda_control_moveit_rviz.launch launch_franka_control:=false robot_ip:=robot.franka.de`
 
 
+3) Up the collision limits for the robot by calling the following node and service:
+`rosrun group4 limit_set`
+`rosservice call /coll_hi`
 
-3) Launch the robot manipulation and vision commands using the following launch file:
+
+4) Launch the robot manipulation and vision commands using the following launch file:
 `roslaunch group4 launch_robot.launch`
 
 
-4) Run the state machine to initiate the pick and place sequence using the following command:
+5) Run the state machine to initiate the pick and place sequence using the following command:
 `rosrun group4 TaskMaster`
 
 
@@ -30,7 +34,13 @@ The subsequent seuqence of steps are:
 
 ### Manipulation
 
-The manipulation
+The manipulation package relies on several different nodes in order to function:
+1) manipulation_cap provides low level position and orientation sensing services, along with error recovery, movements and gripper grasping
+2) manipulation_macro_a provides position movement services for image captures using the realsense
+3) manipulation_press provides a pressing service to cap the markers
+4) manipulation_local provides manipulation services for moving in between trays
+5) manipulation_pnp provides pick and place services between the feed and assembly trays
+6) debug_manipulation logs the external forces experienced by the robot
 
 ### Vision
 #### Install OpenCV
