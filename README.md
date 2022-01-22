@@ -3,6 +3,10 @@
 The goal of this project was to assemble markers and caps together through sequences of pick, place, press and sort operations. The intent was largely inspired by the application of robots in manufacturing and industry. Our project used a RealSense camera to detect colors of the markers, and MoveIt manipulation commands to actuate the robot. Franka-specific actions also were used to grip caps and markers during movement. The framework of the project was controlled using a state machine developed in the ROS package called SMACH. The state machine intelligence implemented sorting of colors by hue based off of camera data coming from the realsense perception subsystem. Intelligence then leveraged the manipulation to pick, place and press caps and markers in the assembly tray. THe  launch files custom to this project are launch_robot.launch (master launch file) and planning_sim.launch (simulation launch file for motion planning in).
 Ensure that the panda_moveit_config and the franka_control packages are sourced and configured as detailed here: https://nu-msr.github.io/me495_site/franka.html
 
+## Video demo
+* The user interface of processed images and Franka arm visualizations on Rviz:   https://youtu.be/oCTd5CoBUqM
+* The side view of the video record of Franka arm assembling the markers (2.0X faster): https://youtu.be/m37ZtrH2SsE
+* The combined view of the user interface and the real robot (2.0X faster): https://youtu.be/SXJP4yIiKOU
 
 ## Instructions to run the robot
 
@@ -123,9 +127,10 @@ import vision.vision1
 The project employs a series of unit tests on the manager python package to verify its matching, sorting and destination-setting functionality.
 Run `catkin_make run_tests` 
 
-# Video demo
-* The user interface of processed images and Franka arm visualizations on Rviz:   https://youtu.be/oCTd5CoBUqM
-* The side view of the video record of Franka arm assembling the markers (3.0X faster): https://youtu.be/m37ZtrH2SsE
 
-####
-Contributors: Keaton Griffith, Kojo Welbeck, Bhagyesh Agresar, Ian Kennedy, Jiasen Zheng
+#### Contributors: 
+* Jiasen Zheng (Perception & 3D modeling)
+* Keaton Griffith
+* Kojo Welbeck
+* Bhagyesh Agresar
+* Ian Kennedy
